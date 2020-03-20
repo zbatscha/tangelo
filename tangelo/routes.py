@@ -10,25 +10,20 @@ from tangelo.tangeloService import getGreetingDayTime
 from tangelo.models import User
 from flask import request, make_response, abort, redirect, url_for
 from flask import render_template, session
+from flask_login import login_user, logout_user, login_required #, current_user
 
 #-----------------------------------------------------------------------
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
+@login_required
 def index():
 
-    username = CASClient().inSession()
+    username = CASClient().authenticate()
 
-    if username:
-        username = username.strip()
-        html = render_template('index.html',
-            ampm=getGreetingDayTime(),
-            username=username)
-        response = make_response(html)
-        return response
-
-    # is user not in session, redirect to login page
-    html = render_template('login.html')
+    html = render_template('index.html',
+        ampm=getGreetingDayTime(),
+        username=username)
     response = make_response(html)
     return response
 
@@ -38,7 +33,12 @@ def index():
 def login():
 
     username = CASClient().authenticate()
-    return redirect(url_for('index'))
+
+    user = User.query.filter_by(netid=username).first()
+    login_user(user)
+    # redirect to requested page
+    next_page = request.args.get('next')
+    return redirect(next_page) if next_page else redirect(url_for('index'))
 
 #-----------------------------------------------------------------------
 
@@ -47,9 +47,8 @@ def logout():
 
     casClient = CASClient()
     casClient.authenticate()
+    logout_user()
     casClient.logout()
-
-    return redirect(url_for('index'))
 
 #-----------------------------------------------------------------------
 
@@ -57,14 +56,9 @@ def logout():
 def about():
 
     username = CASClient().authenticate()
-    username = username.strip()
+
     html = render_template('about.html',
         ampm=getGreetingDayTime(),
         username=username)
-    response = make_response(html)
-    return response
-
-    # is user not in session, redirect to login page
-    html = render_template('login.html')
     response = make_response(html)
     return response

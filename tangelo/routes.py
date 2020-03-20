@@ -1,21 +1,15 @@
 #!/usr/bin/env python
 
 #-----------------------------------------------------------------------
-# tangelo.py
+# routes.py
 #-----------------------------------------------------------------------
 
-from sys import argv
-from database import Database
-from tangeloService import getGreetingDayTime
-from flask import Flask, request, make_response, abort, redirect, url_for
+from tangelo import app, db
+from tangelo.CASClient import CASClient
+from tangelo.tangeloService import getGreetingDayTime
+from tangelo.models import User
+from flask import request, make_response, abort, redirect, url_for
 from flask import render_template, session
-from CASClient import CASClient
-
-#-----------------------------------------------------------------------
-
-app = Flask(__name__, template_folder='./templates')
-
-app.secret_key = b'\xa1\xef\x97\xe0\xa3\xbe\xe8\xbcb\xaf\x81]Np`B'
 
 #-----------------------------------------------------------------------
 
@@ -48,7 +42,7 @@ def login():
 
 #-----------------------------------------------------------------------
 
-@app.route('/logout', methods=['GET'])
+@app.route('/logout')
 def logout():
 
     casClient = CASClient()
@@ -74,11 +68,3 @@ def about():
     html = render_template('login.html')
     response = make_response(html)
     return response
-
-#-----------------------------------------------------------------------
-
-if __name__ == '__main__':
-    if len(argv) != 2:
-        print('Usage: ' + argv[0] + ' port')
-        exit(1)
-    app.run(host='localhost', port=int(argv[1]), debug=True)

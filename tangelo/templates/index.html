@@ -9,12 +9,8 @@
       Dashboard here!
       <br>
       <h2>{{ current_user.first_name }} {{ current_user.last_name }}, {{ current_user.email }}</h2>
-      {% for widget_id, position in current_user.displayed_widgets.items() %}
-       <p>Widget_id={{ widget_id }} : Position={{ position }}</p>
-      {% endfor %}
-      Administrator of these Widgets:
-      {% for admin_w in current_user.admin_widgets %}
-       <p>{{ admin_w }}</p>
+      {% for sub in current_user.subscriptions %}
+       <p>{{ sub.widget }} , Grid_Row: {{ sub.grid_row }}, Grid_Col: {{ sub.grid_col }}, Admin: {{ sub.admin }}</p>
       {% endfor %}
       <br>
    </body>

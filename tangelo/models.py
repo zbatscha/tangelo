@@ -139,12 +139,12 @@ class Subscription(db.Model):
 # # db.session.commit()
 
 
-all_users = User.query.all()
-for us in all_users:
-    print(us, ':')
-    for sub in us.subscriptions:
-        print(sub.widget, f'Grid_Row: {sub.grid_row}', f'Grid_Col: {sub.grid_col}', f'Admin: {sub.admin}')
-
-all_widgets = Widget.query.all()
-for w in all_widgets:
-    print(w, w.users)
+# all_users = User.query.all()
+# for us in all_users:
+#     print(us, ':')
+#     for sub in us.subscriptions:
+#         print(sub.widget, f'Grid_Row: {sub.grid_row}', f'Grid_Col: {sub.grid_col}', f'Admin: {sub.admin}')
+#
+# all_widgets = Widget.query.all()
+# for w in all_widgets:
+#     print(w, w.users)

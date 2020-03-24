@@ -11,19 +11,16 @@ from tangelo.models import User
 from flask import request, make_response, abort, redirect, url_for
 from flask import render_template, session
 from flask_login import login_user, logout_user, login_required #, current_user
-
+from tangelo.generic import generic
+ 
 #-----------------------------------------------------------------------
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 @login_required
 def index():
-
-    username = CASClient().authenticate()
-
     html = render_template('index.html',
-        ampm=getGreetingDayTime(),
-        username=username)
+        ampm=getGreetingDayTime())
     response = make_response(html)
     return response
 
@@ -55,10 +52,24 @@ def logout():
 @app.route('/about', methods=['GET'])
 def about():
 
-    username = CASClient().authenticate()
-
     html = render_template('about.html',
-        ampm=getGreetingDayTime(),
-        username=username)
+        ampm=getGreetingDayTime())
     response = make_response(html)
     return response
+
+#----------------------------------------------------------------------
+@app.route('/account', methods=['GET', 'POST'])
+@login_required
+def account():
+    html = render_template('account.html')
+    response = make_response(html)
+    return response
+
+#----------------------------------------------------------------------
+@app.route('/generic')
+@login_required
+def genericSetup():
+    html = render_template('generic.html')
+    response = make_response(html)
+    return response
+

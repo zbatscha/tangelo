@@ -38,6 +38,7 @@ class Widget(db.Model):
     name = db.Column(db.Text, unique=True, nullable=False)
     description = db.Column(db.Text)
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
+    creator = db.Column(db.Text, default="Tangelo_admin")
     users = db.relationship("User", secondary="subscriptions")
     # posts = db.relationship("Post", secondary="posts")
     #posts = db.relationship('Post', backref='widget', lazy=True)

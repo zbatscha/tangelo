@@ -8,10 +8,10 @@ from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey, Bool
 
 POSTGRES_URL="127.0.0.1:5432"
 POSTGRES_DB="tangelo_test"
-# POSTGRES_USER="postgres"
-# POSTGRES_PW="password"
-#DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
-DB_URL = 'postgresql+psycopg2://{url}/{db}'.format(url=POSTGRES_URL,db=POSTGRES_DB)
+POSTGRES_USER="postgres"
+POSTGRES_PW="password"
+DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
+#DB_URL = 'postgresql+psycopg2://{url}/{db}'.format(url=POSTGRES_URL,db=POSTGRES_DB)
 
 db = create_engine(DB_URL)
 base = declarative_base()
@@ -39,6 +39,7 @@ class Widget(base):
     name = Column(Text, unique=True, nullable=False)
     description = Column(Text)
     create_dttm = Column(DateTime, default=datetime.utcnow)
+    creator = Column( Text, default="Tangelo_admin")
     users = relationship("User", secondary="subscriptions")
     # posts = relationship("Post", secondary="posts")
     #posts = relationship('Post', backref='widget', lazy=True)
@@ -126,13 +127,14 @@ session.commit()
 # widget = session.query(Widget).filter(Widget.name=='Prospect').first()
 # session.delete(widget)
 # session.commit()
-
+'''
 all_users = session.query(User)
 for us in all_users:
     print(us, ':')
     for sub in us.subscriptions:
         print(sub.widget, f'Grid_Row: {sub.grid_row}', f'Grid_Col: {sub.grid_col}', f'Admin: {sub.admin}')
-
+'''
 all_widgets = session.query(Widget)
 for w in all_widgets:
-    print(w, w.users)
+    for sub in w.subscriptions:
+        print(w, sub.user, sub.admin)

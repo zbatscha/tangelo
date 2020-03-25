@@ -1,0 +1,82 @@
+body {
+    margin: 0px;
+    font-family: 'Lato', sans-serif;
+    background:url(tangelojoin.png) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-color: #ff8f00;
+}
+
+#centerPanel {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 30%;
+    min-width: 300px;
+    height: 40%;
+    padding-top: 20px;
+    background-color: white;
+    text-align: center;
+}
+
+.bg {
+    min-height: 100%;
+    width:100%;
+}
+
+h1 {
+    font-size: 80pt;
+    line-height: 0px;
+}
+
+h2 {
+    font-size: 30pt;
+    line-height: 0px;
+}
+
+#applyWrapper {
+    color: #ff8f00;
+}
+
+#bgcontainer {
+    background-color: black;
+}
+
+input[type=text] {
+    height: 40px;
+    margin: 5px;
+    width: 220px;
+    padding-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 12px;
+}
+
+input[type=submit] {
+    height: 40px;
+    margin: 5px;
+    width: 220px;
+    border-radius: 0px;
+    box-shadow: 0;
+    padding: 10px 20px;
+    margin: 8px 0;
+    color: white;
+    background-color: #ff8f00;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+input[type=submit]:hover {
+    color: #E5E5E5;
+    background-color: #E58919;
+    border-color: #E58919;
+    -webkit-transition: .5s; /* Safari */
+    transition: .5s;
+}

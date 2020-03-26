@@ -8,10 +8,10 @@ from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey, Bool
 
 POSTGRES_URL="127.0.0.1:5432"
 POSTGRES_DB="tangelo_test"
-POSTGRES_USER="postgres"
-POSTGRES_PW="password"
-DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
-#DB_URL = 'postgresql+psycopg2://{url}/{db}'.format(url=POSTGRES_URL,db=POSTGRES_DB)
+# POSTGRES_USER="postgres"
+# POSTGRES_PW="password"
+# DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
+DB_URL = 'postgresql+psycopg2://{url}/{db}'.format(url=POSTGRES_URL,db=POSTGRES_DB)
 
 db = create_engine(DB_URL)
 base = declarative_base()

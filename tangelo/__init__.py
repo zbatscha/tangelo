@@ -20,7 +20,7 @@ POSTGRES_DB="tangelo_test"
 POSTGRES_USER="postgres"
 POSTGRES_PW="password"
 DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
-#DB_URL = 'postgresql+psycopg2://{url}/{db}'.format(url=POSTGRES_URL,db=POSTGRES_DB)
+# DB_URL = 'postgresql+psycopg2://{url}/{db}'.format(url=POSTGRES_URL,db=POSTGRES_DB)
 
 app.config['SECRET_KEY'] = b'\xa1\xef\x97\xe0\xa3\xbe\xe8\xbcb\xaf\x81]Np`B'
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL

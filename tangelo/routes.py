@@ -12,8 +12,16 @@ from flask import request, make_response, abort, redirect, url_for
 from flask import render_template, session
 from flask_login import login_user, logout_user, login_required #, current_user
 from tangelo.generic import generic
- 
+
 #-----------------------------------------------------------------------
+
+
+@app.route('/landing', methods=['GET'])
+def welcome():
+
+    html = render_template('tangelohome.html')
+    response = make_response(html)
+    return response
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
@@ -72,4 +80,3 @@ def genericSetup():
     html = render_template('generic.html')
     response = make_response(html)
     return response
-

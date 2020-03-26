@@ -10,44 +10,41 @@ from tangelo.tangeloService import getGreetingDayTime
 from tangelo.models import User
 from flask import request, make_response, abort, redirect, url_for
 from flask import render_template, session
-from flask_login import login_user, logout_user, login_required #, current_user
+from flask_login import login_user, logout_user, login_required, current_user
 from tangelo.generic import generic
 
 #-----------------------------------------------------------------------
 
-
+@app.route('/', methods=['GET'])
+@app.route('/welcome', methods=['GET'])
 @app.route('/landing', methods=['GET'])
 def welcome():
+    if current_user.is_authenticated:
+         return redirect(url_for('dashboard'))
+    return make_response(render_template("tangelohome.html"))
 
-    html = render_template('tangelohome.html')
-    response = make_response(html)
-    return response
-
-@app.route('/', methods=['GET'])
-@app.route('/index', methods=['GET'])
+@app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
-def index():
-    html = render_template('index.html',
-        ampm=getGreetingDayTime())
-    response = make_response(html)
-    return response
+def dashboard():
+
+    return make_response(render_template('dashboard.html',
+                         ampm=getGreetingDayTime()))
 
 #-----------------------------------------------------------------------
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
 
     username = CASClient().authenticate()
-
     user = User.query.filter_by(netid=username).first()
     login_user(user)
     # redirect to requested page
     next_page = request.args.get('next')
-    return redirect(next_page) if next_page else redirect(url_for('index'))
+    return redirect(next_page) if next_page else redirect(url_for('dashboard'))
 
 #-----------------------------------------------------------------------
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
 
     casClient = CASClient()
@@ -57,26 +54,21 @@ def logout():
 
 #-----------------------------------------------------------------------
 
-@app.route('/about', methods=['GET'])
+@app.route('/about', methods=['GET', 'POST'])
 def about():
-
-    html = render_template('about.html',
-        ampm=getGreetingDayTime())
-    response = make_response(html)
-    return response
+    return make_response(render_template('about.html',
+                         ampm=getGreetingDayTime()))
 
 #----------------------------------------------------------------------
+
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    html = render_template('account.html')
-    response = make_response(html)
-    return response
+    return make_response(render_template('account.html'))
 
 #----------------------------------------------------------------------
-@app.route('/generic')
+
+@app.route('/generic', methods=['GET', 'POST'])
 @login_required
 def genericSetup():
-    html = render_template('generic.html')
-    response = make_response(html)
-    return response
+    return make_response(render_template('generic.html'))

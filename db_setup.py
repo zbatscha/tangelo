@@ -92,12 +92,12 @@ user_6 = User(netid='rdondero', email='rdondero@cs.princeton.edu',
               first_name='Robert', middle_name='', last_name='Dondero',
               display_name='Professor Dondero')
 
-db.session.add(user_1)
-db.session.add(user_2)
-db.session.add(user_3)
-db.session.add(user_4)
-db.session.add(user_5)
-db.session.add(user_6)
+session.add(user_1)
+session.add(user_2)
+session.add(user_3)
+session.add(user_4)
+session.add(user_5)
+session.add(user_6)
 
 # create widgets
 
@@ -106,10 +106,10 @@ widget_2 = Widget(name = 'Dhall', description = 'Today\'s Entrees')
 widget_3 = Widget(name = 'Umbrella', description = 'Yes/No')
 widget_4 = Widget(name = 'Princeton News', description = 'Life at Princeton Updates')
 
-db.session.add(widget_1)
-db.session.add(widget_2)
-db.session.add(widget_3)
-db.session.add(widget_4)
+session.add(widget_1)
+session.add(widget_2)
+session.add(widget_3)
+session.add(widget_4)
 
 # create subscriptions
 
@@ -126,20 +126,20 @@ subscription_10 = Subscription(user=user_5, widget=widget_3, admin=False, grid_r
 subscription_11 = Subscription(user=user_6, widget=widget_3, admin=False, grid_row=0, grid_col=1)
 subscription_12 = Subscription(user=user_6, widget=widget_4, admin=False, grid_row=1, grid_col=0)
 
-db.session.add(subscription_1)
-db.session.add(subscription_2)
-db.session.add(subscription_3)
-db.session.add(subscription_4)
-db.session.add(subscription_5)
-db.session.add(subscription_6)
-db.session.add(subscription_7)
-db.session.add(subscription_8)
-db.session.add(subscription_9)
-db.session.add(subscription_10)
-db.session.add(subscription_11)
-db.session.add(subscription_12)
+session.add(subscription_1)
+session.add(subscription_2)
+session.add(subscription_3)
+session.add(subscription_4)
+session.add(subscription_5)
+session.add(subscription_6)
+session.add(subscription_7)
+session.add(subscription_8)
+session.add(subscription_9)
+session.add(subscription_10)
+session.add(subscription_11)
+session.add(subscription_12)
 
-db.session.commit()
+session.commit()
 
 all_widgets = session.query(Widget)
 for w in all_widgets:

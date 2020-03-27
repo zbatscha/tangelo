@@ -79,29 +79,41 @@ user_1 = User(netid='zbatscha', email='zbatscha@princeton.edu',
 user_2 = User(netid='rmthorpe', email='rmthorpe@princeton.edu',
               first_name='Ryan', middle_name='', last_name='Thorpe',
               display_name='Ryyyaaannn')
-user_3 = User(netid='almejia', email='almejia@princeton.edu ',
+user_3 = User(netid='almejia', email='almejia@princeton.edu',
               first_name='Austin', middle_name='', last_name='Mejia',
               display_name='Auuuussstiiinnn')
 user_4 = User(netid='fawaza', email='fawaza@princeton.edu',
               first_name='Fawaz', middle_name='', last_name='Ahmad',
               display_name='Fawwaaazzz')
+user_5 = User(netid='josephoe', email='josephoe@princeton.edu',
+              first_name='Joseph', middle_name='', last_name='Eichenhofer',
+              display_name='Joseph')
+user_6 = User(netid='rdondero', email='rdondero@cs.princeton.edu',
+              first_name='Robert', middle_name='', last_name='Dondero',
+              display_name='Professor Dondero')
 
-session.add(user_1)
-session.add(user_2)
-session.add(user_3)
-session.add(user_4)
+db.session.add(user_1)
+db.session.add(user_2)
+db.session.add(user_3)
+db.session.add(user_4)
+db.session.add(user_5)
+db.session.add(user_6)
+
+# create widgets
 
 widget_1 = Widget(name = 'Prospect', description = 'Open clubs')
 widget_2 = Widget(name = 'Dhall', description = 'Today\'s Entrees')
 widget_3 = Widget(name = 'Umbrella', description = 'Yes/No')
 widget_4 = Widget(name = 'Princeton News', description = 'Life at Princeton Updates')
 
-session.add(widget_1)
-session.add(widget_2)
-session.add(widget_3)
-session.add(widget_4)
+db.session.add(widget_1)
+db.session.add(widget_2)
+db.session.add(widget_3)
+db.session.add(widget_4)
 
-subscription_1 = Subscription(user=user_1, widget=widget_1, admin=True, grid_row=2, grid_col=1)
+# create subscriptions
+
+subscription_1 = Subscription(user=user_1, widget=widget_1, admin=False, grid_row=2, grid_col=1)
 subscription_2 = Subscription(user=user_1, widget=widget_2, admin=False, grid_row=0, grid_col=2)
 subscription_3 = Subscription(user=user_2, widget=widget_2, admin=False, grid_row=0, grid_col=0)
 subscription_4 = Subscription(user=user_2, widget=widget_3, admin=True, grid_row=1, grid_col=0)
@@ -109,31 +121,26 @@ subscription_5 = Subscription(user=user_3, widget=widget_2, admin=False, grid_ro
 subscription_6 = Subscription(user=user_3, widget=widget_4, admin=True, grid_row=0, grid_col=1)
 subscription_7 = Subscription(user=user_4, widget=widget_1, admin=True, grid_row=0, grid_col=1)
 subscription_8 = Subscription(user=user_4, widget=widget_2, admin=False, grid_row=1, grid_col=0)
+subscription_9 = Subscription(user=user_5, widget=widget_4, admin=False, grid_row=0, grid_col=1)
+subscription_10 = Subscription(user=user_5, widget=widget_3, admin=False, grid_row=1, grid_col=0)
+subscription_11 = Subscription(user=user_6, widget=widget_3, admin=False, grid_row=0, grid_col=1)
+subscription_12 = Subscription(user=user_6, widget=widget_4, admin=False, grid_row=1, grid_col=0)
 
-session.add(subscription_1)
-session.add(subscription_2)
-session.add(subscription_3)
-session.add(subscription_4)
-session.add(subscription_5)
-session.add(subscription_6)
-session.add(subscription_7)
-session.add(subscription_8)
+db.session.add(subscription_1)
+db.session.add(subscription_2)
+db.session.add(subscription_3)
+db.session.add(subscription_4)
+db.session.add(subscription_5)
+db.session.add(subscription_6)
+db.session.add(subscription_7)
+db.session.add(subscription_8)
+db.session.add(subscription_9)
+db.session.add(subscription_10)
+db.session.add(subscription_11)
+db.session.add(subscription_12)
 
-session.commit()
+db.session.commit()
 
-#user = session.query(User).filter(User.netid=='zbatscha').first()
-#session.delete(user)
-
-# widget = session.query(Widget).filter(Widget.name=='Prospect').first()
-# session.delete(widget)
-# session.commit()
-'''
-all_users = session.query(User)
-for us in all_users:
-    print(us, ':')
-    for sub in us.subscriptions:
-        print(sub.widget, f'Grid_Row: {sub.grid_row}', f'Grid_Col: {sub.grid_col}', f'Admin: {sub.admin}')
-'''
 all_widgets = session.query(Widget)
 for w in all_widgets:
     for sub in w.subscriptions:

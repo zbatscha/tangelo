@@ -8,10 +8,12 @@ from tangelo import app, db
 from tangelo.CASClient import CASClient
 from tangelo.tangeloService import getGreetingDayTime
 from tangelo.models import User
-from flask import request, make_response, abort, redirect, url_for
+from flask import request, make_response, abort, redirect, url_for, flash
 from flask import render_template, session
 from flask_login import login_user, logout_user, login_required, current_user
 from tangelo.generic import generic
+from tangelo.forms import CreateWidget, WidgetPost
+from tangelo import model_api
 
 #-----------------------------------------------------------------------
 
@@ -64,11 +66,26 @@ def about():
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    return make_response(render_template('account.html'))
+    form = WidgetPost()
+    if form.validate_on_submit():
+        # model_api.addPost(form)
+        # flash(f'Your Post has been created!', 'success')
+        flash(f'Still Working on this!', 'danger')
+        return redirect(url_for('account'))
+    return make_response(render_template('account.html', current_user=current_user, form=form))
 
 #----------------------------------------------------------------------
 
-@app.route('/generic', methods=['GET', 'POST'])
+@app.route('/create', methods=['GET', 'POST'])
 @login_required
-def genericSetup():
-    return make_response(render_template('generic.html'))
+def createWidget():
+    form = CreateWidget()
+    if form.validate_on_submit():
+        try:
+            model_api.addWidget(form)
+            flash(f'Your Widget has been created!', 'success')
+            return redirect(url_for('account'))
+        except Exception as e:
+            print(e)
+            flash(f'Error occured! Check stderr', 'danger')
+    return make_response(render_template('create.html', title='Create Your Widget!', form=form))

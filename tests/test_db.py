@@ -5,7 +5,7 @@
 #-----------------------------------------------------------------------
 
 import unittest
-from tangelo.models import User, Widget, Subscription, Post
+from tangelo.models import User, Widget, Subscription, Post, AdminAssociation
 from tangelo import app, db
 
 #-----------------------------------------------------------------------
@@ -25,8 +25,8 @@ class DBTest(unittest.TestCase):
         return app
 
     def setUp(self):
+        db.drop_all()
         db.create_all()
-
         # create users
 
         user_1 = User(netid='zbatscha', email='zbatscha@princeton.edu',
@@ -62,25 +62,27 @@ class DBTest(unittest.TestCase):
         widget_3 = Widget(name = 'Umbrella', description = 'Yes/No')
         widget_4 = Widget(name = 'Princeton News', description = 'Life at Princeton Updates')
 
+        widget_1.admins.append(user_1)
+        widget_1.admins.extend([user_2, user_3])
+
         db.session.add(widget_1)
         db.session.add(widget_2)
         db.session.add(widget_3)
         db.session.add(widget_4)
 
         # create subscriptions
-
-        subscription_1 = Subscription(user=user_1, widget=widget_1, admin=False, grid_row=2, grid_col=1)
-        subscription_2 = Subscription(user=user_1, widget=widget_2, admin=False, grid_row=0, grid_col=2)
-        subscription_3 = Subscription(user=user_2, widget=widget_2, admin=False, grid_row=0, grid_col=0)
-        subscription_4 = Subscription(user=user_2, widget=widget_3, admin=True, grid_row=1, grid_col=0)
-        subscription_5 = Subscription(user=user_3, widget=widget_2, admin=False, grid_row=1, grid_col=1)
-        subscription_6 = Subscription(user=user_3, widget=widget_4, admin=True, grid_row=0, grid_col=1)
-        subscription_7 = Subscription(user=user_4, widget=widget_1, admin=True, grid_row=0, grid_col=1)
-        subscription_8 = Subscription(user=user_4, widget=widget_2, admin=False, grid_row=1, grid_col=0)
-        subscription_9 = Subscription(user=user_5, widget=widget_4, admin=False, grid_row=0, grid_col=1)
-        subscription_10 = Subscription(user=user_5, widget=widget_3, admin=False, grid_row=1, grid_col=0)
-        subscription_11 = Subscription(user=user_6, widget=widget_3, admin=False, grid_row=0, grid_col=1)
-        subscription_12 = Subscription(user=user_6, widget=widget_4, admin=False, grid_row=1, grid_col=0)
+        subscription_1 = Subscription(user=user_1, widget=widget_1, grid_location={'row': 2, 'col': 1})
+        subscription_2 = Subscription(user=user_1, widget=widget_2, grid_location={'row': 2, 'col': 1})
+        subscription_3 = Subscription(user=user_2, widget=widget_2, grid_location={'row': 2, 'col': 1})
+        subscription_4 = Subscription(user=user_2, widget=widget_3, grid_location={'row': 2, 'col': 1})
+        subscription_5 = Subscription(user=user_3, widget=widget_2, grid_location={'row': 2, 'col': 1})
+        subscription_6 = Subscription(user=user_3, widget=widget_4, grid_location={'row': 2, 'col': 1})
+        subscription_7 = Subscription(user=user_4, widget=widget_1, grid_location={'row': 2, 'col': 1})
+        subscription_8 = Subscription(user=user_4, widget=widget_2, grid_location={'row': 2, 'col': 1})
+        subscription_9 = Subscription(user=user_5, widget=widget_4, grid_location={'row': 2, 'col': 1})
+        subscription_10 = Subscription(user=user_5, widget=widget_3, grid_location={'row': 2, 'col': 1})
+        subscription_11 = Subscription(user=user_6, widget=widget_3, grid_location={'row': 2, 'col': 1})
+        subscription_12 = Subscription(user=user_6, widget=widget_4, grid_location={'row': 2, 'col': 1})
 
         db.session.add(subscription_1)
         db.session.add(subscription_2)
@@ -95,15 +97,16 @@ class DBTest(unittest.TestCase):
         db.session.add(subscription_11)
         db.session.add(subscription_12)
 
-
         post_1 = Post(title='My First Post!', body='Did this work?', author=user_1, widget=widget_1)
+        post_2 = Post(title='Our Second Post!', body='Did this also work?', author=user_2, widget=widget_1)
+
         db.session.add(post_1)
 
         db.session.commit()
 
     def tearDown(self):
         db.session.remove()
-        db.drop_all()
+        # db.drop_all()
 
     def test_getAllUsers(self):
         users = User.query.all()
@@ -121,18 +124,106 @@ class DBTest(unittest.TestCase):
         user = User.query.filter_by(netid='rdondero').first()
         assert user.email == 'test@gmail.com'
 
-    def test_deleteUser(self):
-        # check if user deleted
+    def test_deleteUserMem(self):
+        # delete user loaded from memory, check if user deleted
         user = User.query.filter_by(netid='zbatscha').first()
         db.session.delete(user)
         db.session.commit()
         user = User.query.filter_by(netid='zbatscha').first()
         assert not user
-        # once user deleted, check that subscriptions are also deleted
-        subscriptions = Subscription.query.all()
-        for sub in subscriptions:
-            if sub.user.netid == 'zbatscha':
-                raise Exception('Subscriptions should also be deleted')
+
+        # check that administrators table reflects removed association
+        widget_admin = AdminAssociation.query.filter_by(user_id=1).all()
+        assert not widget_admin
+
+        # check that subscriptions table reflects removed association
+        subscriptions = Subscription.query.filter_by(user_id=1).first()
+        assert not subscriptions
+
+        # check that posts table reflects removed association
+        posts = Post.query.filter_by(author_id=1).first()
+        assert not posts
+
+        # check that all widgets remain
+        widgets = Widget.query.all()
+        assert len(widgets) == 4
+
+    def test_deleteUserDB(self):
+        # delete user directly from db, check if user deleted
+        db.session.query(User).filter(User.id==1).delete()
+        db.session.commit()
+        user = User.query.filter_by(netid='zbatscha').first()
+        assert not user
+
+        # check that administrators table reflects removed association
+        widget_admin = AdminAssociation.query.filter_by(user_id=1).all()
+        assert not widget_admin
+
+        # check that subscriptions table reflects removed association
+        subscriptions = Subscription.query.filter_by(user_id=1).first()
+        assert not subscriptions
+
+        # check that posts table reflects removed association
+        posts = Post.query.filter_by(author_id=1).first()
+        assert not posts
+
+        # check that all widgets remain
+        widgets = Widget.query.all()
+        assert len(widgets) == 4
+
+    def test_getWidgetAdmins(self):
+        widget_admins = Widget.query.filter_by(name='Prospect').first().admins
+        assert len(widget_admins) == 3
+
+    def test_getAdministeredWidgets(self):
+        user_admin_widgets = User.query.filter_by(netid='zbatscha').first().widgets_admin
+        assert len(user_admin_widgets) == 1
+        assert user_admin_widgets[0].name == 'Prospect'
+
+    def test_deleteWidgetMem(self):
+        widget = Widget.query.filter_by(name='Prospect').first()
+        db.session.delete(widget)
+        db.session.commit()
+
+        # ensure no users were deleted
+        users = User.query.all()
+        assert len(users) == 6
+
+        # ensure that all posts were deleted
+        posts = Post.query.filter_by(widget_id=1).all()
+        assert not posts
+
+        # ensure that all subscriptions were deleted
+        all_subscriptions = Subscription.query.all()
+        for sub in all_subscriptions:
+            assert sub.widget_id != 1
+
+        # ensure that all admin associations were deleted
+        all_admin_associations = AdminAssociation.query.all()
+        for admin_association in all_admin_associations:
+            assert admin_association.widget_id != 1
+
+    def test_deleteWidgetDB(self):
+        db.session.query(Widget).filter(Widget.id==1).delete()
+        db.session.commit()
+
+        # ensure no users were deleted
+        users = User.query.all()
+        assert len(users) == 6
+
+        # ensure that all posts were deleted
+        posts = Post.query.filter_by(widget_id=1).all()
+        assert not posts
+
+        # ensure that all subscriptions were deleted
+        all_subscriptions = Subscription.query.all()
+        for sub in all_subscriptions:
+            assert sub.widget_id != 1
+
+        # ensure that all admin associations were deleted
+        all_admin_associations = AdminAssociation.query.all()
+        for admin_association in all_admin_associations:
+            assert admin_association.widget_id != 1
 
     def test_getSubscriptions(self):
         user = User.query.filter_by(netid='zbatscha').first()
@@ -142,26 +233,28 @@ class DBTest(unittest.TestCase):
     def test_deleteSubscription(self):
         user = User.query.filter_by(netid='zbatscha').first()
         widget = Widget.query.filter_by(name='Prospect').first()
-        subscription = Subscription.query.filter_by(user=user).filter_by(widget=widget).all()
-        for sub in subscription:
+        subscriptions = Subscription.query.filter_by(user_id=user.id).filter_by(widget=widget).all()
+        for sub in subscriptions:
             db.session.delete(sub)
         db.session.commit()
+
+        # check that user was not deleted
         user = User.query.filter_by(netid='zbatscha').first()
         assert user
 
-    def test_updateWidgetAdmin(self):
-        user = User.query.filter_by(netid='zbatscha').first()
-        widget = Widget.query.filter_by(name='Prospect').first()
-        subscription = Subscription.query.filter_by(user=user).filter_by(widget=widget).all()
-        assert len(subscription) == 1
-        sub = subscription[0]
-        assert sub.admin == False
-        sub.admin = True
+        # note!! removing subscription does not update admin association or posts made by that user
+
+
+    def test_removeWidgetAdminMem(self):
+        admin = AdminAssociation.query.filter_by(user_id=1).filter_by(widget_id=1).first()
+        # print(admin)
+        db.session.delete(admin)
         db.session.commit()
-        user = User.query.filter_by(netid='zbatscha').first()
-        widget = Widget.query.filter_by(name='Prospect').first()
-        subscription = Subscription.query.filter_by(user=user).filter_by(widget=widget).first()
-        assert subscription.admin
+
+        # note!! removing admin does not remove posts made by that user, thats likely a good thing
+
+        widget_admins = Widget.query.filter_by(name='Prospect').first().admins
+        assert len(widget_admins) == 2
 
     def test_getPosts(self):
         # by user
@@ -170,5 +263,3 @@ class DBTest(unittest.TestCase):
         # by widget
         widget = Widget.query.filter_by(name='Prospect').first()
         assert widget.posts.first().title == 'My First Post!'
-
-        # by user, delete user, post still there?

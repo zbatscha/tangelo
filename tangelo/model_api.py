@@ -6,6 +6,7 @@ def addWidget(form):
     try:
         widget = Widget(name=form.name.data,
                         description=form.description.data,
+                        access_type=form.access_type.data,
                         post_type=form.post_type.data)
 
         widget.admins.append(current_user)
@@ -18,8 +19,6 @@ def addWidget(form):
         raise Exception(e)
 
 def addPost(form):
-    print(form.content.data)
-    print(form.widget_target.data)
     try:
         # check if valid widget
         widget = Widget.query.filter_by(id=form.widget_target.data).first()

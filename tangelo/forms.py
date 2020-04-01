@@ -10,10 +10,10 @@ class CreateWidget(FlaskForm):
                         Length(min=2, max=30, message='Widget name must be 2-30 characters.')])
     description = StringField('Description',
                         validators=[DataRequired(), Length(max=200, message='Description limited to 200 characters :(')])
-    # access_type = SelectField('New Member Accessibility', choices=[('public', 'Public'),
-    #                                     ('private', 'Private'),
-    #                                     ('secret', 'Secret')],
-    #                                     validators=[DataRequired()])
+    access_type = SelectField('New Member Accessibility', choices=[('public', 'Public'),
+                                        ('private', 'Private'),
+                                        ('secret', 'Secret')],
+                                        validators=[DataRequired()])
     post_type = SelectField('Who can post?', choices=[('public', 'Everyone'),
                                         ('admin', 'Only Me')],
                                         validators=[DataRequired()])

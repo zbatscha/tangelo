@@ -97,8 +97,8 @@ class DBTest(unittest.TestCase):
         db.session.add(subscription_11)
         db.session.add(subscription_12)
 
-        post_1 = Post(title='My First Post!', body='Did this work?', author=user_1, widget=widget_1)
-        post_2 = Post(title='Our Second Post!', body='Did this also work?', author=user_2, widget=widget_1)
+        post_1 = Post(content='My First Post!', author=user_1, widget=widget_1)
+        post_2 = Post(content='Our Second Post!', author=user_2, widget=widget_1)
 
         db.session.add(post_1)
 
@@ -244,7 +244,6 @@ class DBTest(unittest.TestCase):
 
         # note!! removing subscription does not update admin association or posts made by that user
 
-
     def test_removeWidgetAdminMem(self):
         admin = AdminAssociation.query.filter_by(user_id=1).filter_by(widget_id=1).first()
         # print(admin)
@@ -259,7 +258,7 @@ class DBTest(unittest.TestCase):
     def test_getPosts(self):
         # by user
         user = User.query.filter_by(netid='zbatscha').first()
-        assert user.posts.first().title == 'My First Post!'
+        assert user.posts.first().content == 'My First Post!'
         # by widget
         widget = Widget.query.filter_by(name='Prospect').first()
-        assert widget.posts.first().title == 'My First Post!'
+        assert widget.posts.first().content == 'My First Post!'

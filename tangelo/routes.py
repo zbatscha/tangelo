@@ -12,7 +12,7 @@ from flask import request, make_response, abort, redirect, url_for, flash
 from flask import render_template, session
 from flask_login import login_user, logout_user, login_required, current_user
 from tangelo.generic import generic
-from tangelo.forms import CreateWidget, WidgetPost
+from tangelo.forms import CreateWidget, CreatePost
 from tangelo import model_api
 
 #-----------------------------------------------------------------------
@@ -66,26 +66,46 @@ def about():
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    form = WidgetPost()
-    if form.validate_on_submit():
-        # model_api.addPost(form)
-        # flash(f'Your Post has been created!', 'success')
-        flash(f'Still Working on this!', 'danger')
-        return redirect(url_for('account'))
-    return make_response(render_template('account.html', current_user=current_user, form=form))
+    widget_target_choices = model_api.getValidWidgetsPost(current_user)
+    widget_form = CreateWidget()
+    post_form = CreatePost()
+    post_form.widget_target.choices = widget_target_choices
 
-#----------------------------------------------------------------------
+    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, current_user=current_user))
 
-@app.route('/create', methods=['GET', 'POST'])
+@app.route('/createwidget', methods=['GET', 'POST'])
 @login_required
 def createWidget():
-    form = CreateWidget()
-    if form.validate_on_submit():
+
+    widget_target_choices = model_api.getValidWidgetsPost(current_user)
+    widget_form = CreateWidget()
+    post_form = CreatePost()
+    post_form.widget_target.choices = widget_target_choices
+
+    if widget_form.validate_on_submit():
         try:
-            model_api.addWidget(form)
-            flash(f'Your Widget has been created!', 'success')
+            model_api.addWidget(widget_form)
+            flash(f'Your widget has been created!', 'success')
             return redirect(url_for('account'))
         except Exception as e:
             print(e)
-            flash(f'Error occured! Check stderr', 'danger')
-    return make_response(render_template('create.html', title='Create Your Widget!', form=form))
+            flash(f'Error occured!', 'danger')
+    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, current_user=current_user))
+
+@app.route('/createpost', methods=['GET', 'POST'])
+@login_required
+def createPost():
+    widget_target_choices = model_api.getValidWidgetsPost(current_user)
+    widget_form = CreateWidget()
+    post_form = CreatePost()
+    post_form.widget_target.choices = widget_target_choices
+
+    if post_form.validate_on_submit():
+        try:
+            model_api.addPost(post_form)
+            flash(f'Your post has been created!', 'success')
+            return redirect(url_for('account'))
+        except Exception as e:
+            print(e)
+            flash(f'Error occured!', 'danger')
+    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, current_user=current_user))

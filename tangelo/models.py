@@ -39,7 +39,7 @@ class Widget(db.Model):
     name = db.Column(db.Text, unique=True, nullable=False)
     description = db.Column(db.Text, nullable=False)
     access_type = db.Column(db.String(), default='public')
-    post_type = db.Column(db.String(), default='admin')
+    post_type = db.Column(db.String(), default='public')
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
 
     admins = db.relationship('User', secondary='administrators', passive_deletes=True)
@@ -92,8 +92,8 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     widget_id = db.Column(db.Integer, db.ForeignKey('widgets.id', ondelete='CASCADE'))
-    title = db.Column(db.String(120), nullable=False)
-    body = db.Column(db.Text, nullable=True)
+    content = db.Column(db.String(100), nullable=False)
+    # body = db.Column(db.Text, nullable=True)
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):

@@ -10,12 +10,12 @@ class CreateWidget(FlaskForm):
                         Length(min=2, max=30, message='Widget name must be 2-30 characters.')])
     description = StringField('Description',
                         validators=[DataRequired(), Length(max=200, message='Description limited to 200 characters :(')])
-    access_type = SelectField('New Member Accessibility', choices=[('public', 'Public'),
-                                        ('private', 'Private'),
-                                        ('secret', 'Secret')],
-                                        validators=[DataRequired()])
-    post_type = SelectField('Who can post?', choices=[('public', 'All Widget Members'),
-                                        ('admin', 'Me and Selected Admins')],
+    # access_type = SelectField('New Member Accessibility', choices=[('public', 'Public'),
+    #                                     ('private', 'Private'),
+    #                                     ('secret', 'Secret')],
+    #                                     validators=[DataRequired()])
+    post_type = SelectField('Who can post?', choices=[('public', 'Everyone'),
+                                        ('admin', 'Only Me')],
                                         validators=[DataRequired()])
     submit = SubmitField('Create My Widget')
 
@@ -25,10 +25,9 @@ class CreateWidget(FlaskForm):
             raise ValidationError('That widget name is taken. \
                                     Please choose a different one.')
 
-class WidgetPost(FlaskForm):
-    title = StringField('Post Title',
-                        validators=[DataRequired()])
-    body = StringField('Post Body', validators=[DataRequired()])
-    widget_target = SelectField('Post to Widget', choices=getValidWidgetsPost(),
-                                        validators=[DataRequired()])
+class CreatePost(FlaskForm):
+    # title = StringField('Post Title',
+    #                     validators=[DataRequired()])
+    content = StringField('What\'s on your mind?', validators=[DataRequired()])
+    widget_target = SelectField('Post to Widget', choices=[], coerce=int)
     submit = SubmitField('Submit Post')

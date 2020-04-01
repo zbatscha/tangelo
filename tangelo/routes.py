@@ -12,7 +12,7 @@ from flask import request, make_response, abort, redirect, url_for, flash
 from flask import render_template, session
 from flask_login import login_user, logout_user, login_required, current_user
 from tangelo.generic import generic
-from tangelo.forms import CreateWidget, CreatePost
+from tangelo.forms import CreateWidget, CreatePost, CreateAddTeam
 from tangelo import model_api
 
 #-----------------------------------------------------------------------
@@ -67,20 +67,25 @@ def about():
 @login_required
 def account():
     widget_target_choices = model_api.getValidWidgetsPost(current_user)
+    admin_widget_target_choices = model_api.getValidWidgetsAdmin(current_user)
     widget_form = CreateWidget()
     post_form = CreatePost()
+    team_form = CreateAddTeam()
     post_form.widget_target.choices = widget_target_choices
+    team_form.widget_target.choices = admin_widget_target_choices
 
-    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, current_user=current_user))
+    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
 
 @app.route('/createwidget', methods=['GET', 'POST'])
 @login_required
 def createWidget():
-
     widget_target_choices = model_api.getValidWidgetsPost(current_user)
+    admin_widget_target_choices = model_api.getValidWidgetsAdmin(current_user)
     widget_form = CreateWidget()
     post_form = CreatePost()
+    team_form = CreateAddTeam()
     post_form.widget_target.choices = widget_target_choices
+    team_form.widget_target.choices = admin_widget_target_choices
 
     if widget_form.validate_on_submit():
         try:
@@ -90,15 +95,18 @@ def createWidget():
         except Exception as e:
             print(e)
             flash(f'Error occured!', 'danger')
-    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, current_user=current_user))
+    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
 
 @app.route('/createpost', methods=['GET', 'POST'])
 @login_required
 def createPost():
     widget_target_choices = model_api.getValidWidgetsPost(current_user)
+    admin_widget_target_choices = model_api.getValidWidgetsAdmin(current_user)
     widget_form = CreateWidget()
     post_form = CreatePost()
+    team_form = CreateAddTeam()
     post_form.widget_target.choices = widget_target_choices
+    team_form.widget_target.choices = admin_widget_target_choices
 
     if post_form.validate_on_submit():
         try:
@@ -108,4 +116,26 @@ def createPost():
         except Exception as e:
             print(e)
             flash(f'Error occured!', 'danger')
-    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, current_user=current_user))
+    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
+
+@app.route('/addteam', methods=['GET', 'POST'])
+@login_required
+def addTeam():
+    widget_target_choices = model_api.getValidWidgetsPost(current_user)
+    admin_widget_target_choices = model_api.getValidWidgetsAdmin(current_user)
+    widget_form = CreateWidget()
+    post_form = CreatePost()
+    team_form = CreateAddTeam()
+    post_form.widget_target.choices = widget_target_choices
+    team_form.widget_target.choices = admin_widget_target_choices
+
+    if team_form.validate_on_submit():
+        try:
+            model_api.addSubscription(team_form)
+            flash(f'{team_form.user.data} has been added to {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success')
+            return redirect(url_for('account'))
+        except Exception as e:
+            print(e)
+            flash(f'Error occured!', 'danger')
+    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
+        

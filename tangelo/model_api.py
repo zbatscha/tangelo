@@ -32,6 +32,21 @@ def addPost(form):
     except Exception as e:
         db.session.rollback()
         raise Exception(e)
+        
+def addSubscription(form):
+    try:
+        # check if valid widget
+        widget = Widget.query.filter_by(id=form.widget_target.data).first()
+        if not widget:
+            raise Exception('Selected widget does not exist.')
+        sub = Subscription(user=current_user, widget=widget)
+        db.session.add(sub)
+        db.session.commit()
+        
+    except Exception as e:
+        db.session.rollback()
+        raise Exception(e)
+        
 
 def getValidWidgetsPost(current_user):
     all_widgets = current_user.widgets
@@ -39,5 +54,15 @@ def getValidWidgetsPost(current_user):
     for widget in all_widgets:
         if widget.post_type == 'public' or current_user in widget.admins:
             choices.append((widget.id, widget.name))
+    print(choices)
+    return choices
+
+def getValidWidgetsAdmin(current_user):
+    all_widgets = current_user.widgets_admin
+    choices = []
+    for widget in all_widgets:
+        #if widget.access_type == 'private' or widget.access_type == 'secret':
+        choices.append((widget.id, widget.name))
+    print("HERE", all_widgets)
     print(choices)
     return choices

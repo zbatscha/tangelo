@@ -28,9 +28,9 @@ def welcome():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-
+    widget_choices = model_api.getAllWidgets()
     return make_response(render_template('dashboard.html',
-                         ampm=getGreetingDayTime()))
+                         ampm=getGreetingDayTime(), widgets = widget_choices))
 
 #-----------------------------------------------------------------------
 

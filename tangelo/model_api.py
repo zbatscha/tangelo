@@ -2,6 +2,14 @@ from tangelo.models import User, Widget, Post, Subscription
 from tangelo import db, app
 from flask_login import current_user
 
+def getAllWidgets():
+    widgets = Widget.query.all()
+    widgetsSend = []
+    for w in widgets:
+        if w.access_type == 'public':
+            widgetsSend.append(w)
+    return widgetsSend
+
 def addWidget(form):
     try:
         widget = Widget(name=form.name.data,

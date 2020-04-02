@@ -8,6 +8,18 @@
     <link rel="stylesheet" href="../static/grid.css" />
 </head>
 <body>
+    <div class ="widgets">
+        <header>
+            <h1> Widgets Available </h1>
+        </header>
+        <div class="grid">
+            {% for widget in widgets %}
+                <div class="row">
+                    <div class="box" draggable="true">{{widget.name}}</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
     <div class="app">
         <header>
             <h1> Widget Grid</h1>

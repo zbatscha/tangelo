@@ -1,1 +1,1 @@
-web: gunicorn penny:app
+web: gunicorn tangelo:app

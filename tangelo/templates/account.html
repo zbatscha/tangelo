@@ -1,12 +1,181 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>My Account</title>
-    </head>
-    <body>
-        {% include 'header.html' %}
-        <hr>
-        <a href="generic">Create a widget!</a>
-    </body>
-    
-</html>
+{% extends "layout.html" %}
+{% block content %}
+<h1> My Account </h1>
+<h2>{{ current_user.first_name }} {{ current_user.last_name }}, @{{ current_user.netid }}</h2>
+<br>
+
+<h2> My Subscriptions </h2>
+{% for widget in current_user.widgets %}
+    <span>{{ widget.name }}</span> <br>
+{% endfor %}
+<br>
+<h2> Admin Roles </h2>
+{% for widget in current_user.widgets_admin %}
+<span>{{ widget.name }}</span> <br>
+{% endfor %}
+<br>
+<h2> Subscribers to My Widgets </h2>
+{% for widget in current_user.widgets_admin %}
+    <span>{{ widget.name }}</span> <br>
+{% endfor %}
+<br>
+<!-- Create a widget form -->
+<!-- Add your classes to this div -->
+  <div class="">
+    <form action="{{ url_for('createWidget') }}" method="post">
+        {{ widget_form.hidden_tag() }} <!-- hidden_tag method adds csrf token, protects against attacks -->
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Create Your Widget!</legend>
+            <div class="form-group">
+                {{ widget_form.name.label(class="form-control-label") }}
+                {% if widget_form.name.errors %}
+                    {{ widget_form.name(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in widget_form.name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ widget_form.name(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ widget_form.description.label(class="form-control-label") }}
+                {% if widget_form.description.errors %}
+                    {{ widget_form.description(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in widget_form.description.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ widget_form.description(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ widget_form.access_type.label(class="form-control-label") }}
+                {% if widget_form.access_type.errors %}
+                    {{ widget_form.access_type(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in widget_form.access_type.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ widget_form.access_type(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ widget_form.post_type.label(class="form-control-label") }}
+                {% if widget_form.post_type.errors %}
+                    {{ widget_form.post_type(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in widget_form.post_type.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ widget_form.post_type(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ widget_form.submit(class="btn btn-outline-info")}}
+        </div>
+    </form>
+  </div>
+  <br>
+  <br>
+  <!-- Create a post form -->
+  <!-- Add your classes to this div -->
+  <div class="">
+    <form action="{{ url_for('createPost') }}" method="post">
+        {{ post_form.hidden_tag() }} <!-- hidden_tag method adds csrf token, protects against attacks -->
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Make your post!</legend>
+            <div class="form-group">
+                {{ post_form.content.label(class="form-control-label") }}
+                {% if post_form.content.errors %}
+                    {{ post_form.content(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in post_form.content.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ post_form.content(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ post_form.widget_target.label(class="form-control-label") }}
+                {% if post_form.widget_target.errors %}
+                    {{ post_form.widget_target(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in post_form.widget_target.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ post_form.widget_target(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ post_form.submit(class="btn btn-outline-info")}}
+        </div>
+    </form>
+  </div>
+<br>
+<br>
+ <div class="">
+    <form action="{{ url_for('addTeam') }}" method="post">
+        {{team_form.hidden_tag() }} <!-- hidden_tag method adds csrf token, protects against attacks -->
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Manage Users for your Widgets!</legend>
+            <div class="form-group">
+                {{ team_form.widget_target.label(class="form-control-label") }}
+                {% if team_form.widget_target.errors %}
+                    {{ team_form.widget_target(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in team_form.widget_target.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ team_form.widget_target(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ team_form.add_remove.label(class="form-control-label") }}
+                {% if team_form.add_remove.errors %}
+                    {{ team_form.add_remove(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in team_form.add_remove.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ team_form.add_remove(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ team_form.user.label(class="form-control-label") }}
+                {% if team_form.user.errors %}
+                    {{ team_form.user(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in team_form.user.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ team_form.user(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            </fieldset>
+            <div class="form-group">
+            {{team_form.submit(class="btn btn-outline-info")}}
+    </form>
+  </div>
+<br>
+<br>
+{% endblock content %}

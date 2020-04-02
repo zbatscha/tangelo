@@ -1,0 +1,14 @@
+h1 {
+    font-size: 140pt;
+    line-height: 10px;
+    font-weight: 100;
+    color: white;
+}
+
+h2 {
+    font-size: 30pt;
+    line-height: 0px;
+    color: white;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}

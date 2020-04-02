@@ -17,32 +17,10 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    width: 60%;
     min-width: 500px;
     height: 30%;
     padding-bottom: 5%;
     text-align: center;
     transition: .5s ease-in-out;
-}
-
-h1 {
-    font-size: 140pt;
-    line-height: 10px;
-    font-weight: thin;
-    color: white;
-}
-
-h2 {
-    font-size: 30pt;
-    line-height: 0px;
-    color: white;
-    color: rgba(255, 255, 255, 0.8);
-
-}
-
-button {
-    width: 150px;
-    margin: 30px;
-    margin-top: 5px;
-    font-size: 14px;
+    display: inline-block
 }

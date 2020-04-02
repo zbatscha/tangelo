@@ -49,16 +49,17 @@ button {
     color: white;
     background-color: #ff8f00;
     border-color: #ff8f00;
-    -webkit-transition: .5s; /* Safari */
-    transition: .5s;
+    -webkit-transition: .5s ease-in-out; /* Safari */
+    transition: .5s ease-in-out;
 }
 
 #loginContainer:hover {
     color: #E5E5E5;
     background-color: #E58919;
     border-color: #E58919;
-    -webkit-transition: .5s; /* Safari */
-    transition: .5s;
+    -webkit-transition: .5s ease-in-out; /* Safari */
+    transition: .5s ease-in-out;
+    cursor: pointer;
 }
 
 #signupContainer {
@@ -66,14 +67,15 @@ button {
     background-color: white;
     border-color: #ff8f00;
     border-width: 4px;
-    -webkit-transition: .5s; /* Safari */
-    transition: .5s;
+    -webkit-transition: .5s ease-in-out; /* Safari */
+    transition: .5s ease-in-out;
 }
 
 #signupContainer:hover {
     color: #E58919;
     background-color: #E5E5E5;
     border-color: #E58919;   
-    -webkit-transition: .5s; /* Safari */
-    transition: .5s;
+    -webkit-transition: .5s ease-in-out; /* Safari */
+    transition: .5s ease-in-out;
+    cursor: pointer;
 }

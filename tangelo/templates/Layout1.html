@@ -10,78 +10,7 @@
 
 <body class = "container">
     <div clock="clock.html" id = "centerPanel">
-        
+        {% include 'clock.html' %}
     </div>
-
-    <script>
-        setInterval(displayclock, 500)
-        function displayclock() {
-        
-            var now = new Date();
-            var hour = now.getHours();
-            var minute = now.getMinutes();
-            var second = now.getSeconds();
-            var month = now.getMonth();
-            var day = now.getDate();
-            var year = now.getFullYear();
-    
-            if (hour > 12) {
-                hour = hour - 12
-            }
-    
-            if (hour == 0) {
-                hour = 12
-            }
-    
-            month = month + 1
-    
-            if (hour < 10) hour = '0' + hour;
-            if (minute < 10) minute = '0' + minute;
-            if (second < 10) second = '0' + second;
-            if (month < 10) month = '0' + month;
-            if (day < 10) day = '0' + day;
-    
-            year = year + ""
-            year = year.substring(2)
-    
-    
-            document.getElementById('time').innerHTML = hour + "&nbsp&nbsp" + minute + "&nbsp&nbsp" + second
-            document.getElementById('date').innerHTML = month + " &nbsp/&nbsp " + day + " &nbsp/&nbsp " + year
-        }
-    </script>
 </body>
 </html>
-
-<script>
-    function includeHTML() {
-      var z, i, elmnt, file, xhttp;
-      /* Loop through a collection of all HTML elements: */
-      z = document.getElementsByTagName("*");
-      for (i = 0; i < z.length; i++) {
-        elmnt = z[i];
-        /*search for elements with a certain atrribute:*/
-        file = elmnt.getAttribute("clock");
-        if (file) {
-          /* Make an HTTP request using the attribute value as the file name: */
-          xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function() {
-            if (this.readyState == 4) {
-              if (this.status == 200) {elmnt.innerHTML = this.responseText;}
-              if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
-              /* Remove the attribute, and call this function once more: */
-              elmnt.removeAttribute("clock");
-              includeHTML();
-            }
-          }
-          xhttp.open("GET", file, true);
-          xhttp.send();
-          /* Exit the function: */
-          return;
-        }
-      }
-    }
-    </script>
-
-    <script>
-    includeHTML();
-    </script>

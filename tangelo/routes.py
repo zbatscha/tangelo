@@ -63,6 +63,11 @@ def about():
 
 #----------------------------------------------------------------------
 
+@app.route('/testingclock')
+def testingclock():
+    return make_response(render_template("Layout1.html"))
+#----------------------------------------------------------------------
+
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():

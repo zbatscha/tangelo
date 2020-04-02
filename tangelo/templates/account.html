@@ -8,9 +8,15 @@
 {% for widget in current_user.widgets %}
     <span>{{ widget.name }}</span> <br>
 {% endfor %}
+<br>
 <h2> Admin Roles </h2>
 {% for widget in current_user.widgets_admin %}
 <span>{{ widget.name }}</span> <br>
+{% endfor %}
+<br>
+<h2> Subscribers to My Widgets </h2>
+{% for widget in current_user.widgets_admin %}
+    <span>{{ widget.name }}</span> <br>
 {% endfor %}
 <br>
 <!-- Create a widget form -->
@@ -125,7 +131,7 @@
     <form action="{{ url_for('addTeam') }}" method="post">
         {{team_form.hidden_tag() }} <!-- hidden_tag method adds csrf token, protects against attacks -->
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Add Users to your Widget!</legend>
+            <legend class="border-bottom mb-4">Manage Users for your Widgets!</legend>
             <div class="form-group">
                 {{ team_form.widget_target.label(class="form-control-label") }}
                 {% if team_form.widget_target.errors %}
@@ -137,6 +143,19 @@
                     </div>
                 {% else %}
                     {{ team_form.widget_target(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ team_form.add_remove.label(class="form-control-label") }}
+                {% if team_form.add_remove.errors %}
+                    {{ team_form.add_remove(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in team_form.add_remove.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ team_form.add_remove(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
             <div class="form-group">

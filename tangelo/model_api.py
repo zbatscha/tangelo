@@ -35,17 +35,35 @@ def addPost(form):
         
 def addSubscription(form):
     try:
+        print("I am getting here")
+        userName = User.query.filter_by(netid=form.user.data).first()
         # check if valid widget
         widget = Widget.query.filter_by(id=form.widget_target.data).first()
         if not widget:
             raise Exception('Selected widget does not exist.')
-        sub = Subscription(user=current_user, widget=widget)
+        sub = Subscription(user=userName, widget=widget)
         db.session.add(sub)
         db.session.commit()
         
     except Exception as e:
         db.session.rollback()
         raise Exception(e)
+        
+def removeSubscription(form):
+    try:
+        # check if valid widget
+        userName = User.query.filter_by(netid=form.user.data).first()
+        widget = Widget.query.filter_by(id=form.widget_target.data).first()
+        subscription = Subscription.query.filter_by(user_id=userName.id).filter_by(widget=widget).first()
+        if subscription is None:
+            raise Exception('Selected subscriptions does not exist.')
+        db.session.delete(subscription)
+        db.session.commit()
+        
+    except Exception as e:
+        db.session.rollback()
+        raise Exception(e)
+        
         
 
 def getValidWidgetsPost(current_user):

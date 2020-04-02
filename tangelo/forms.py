@@ -34,15 +34,18 @@ class CreatePost(FlaskForm):
     
 class CreateAddTeam(FlaskForm):
     user = StringField('Enter a netid', validators=[DataRequired()])
-    widget_target = SelectField('Post to Widget', choices=[], coerce=int)
-    submit = SubmitField('Add User')
-    
+    add_remove = SelectField('Add or remove user?', choices = [('add', 'Add'), ('remove', 'Remove')])
+    widget_target = SelectField('Widgets', choices=[], coerce=int)
+    submit = SubmitField('Submit change')
     def validate_user(self, user):
         username = User.query.filter_by(netid=user.data).first()
         if username is None:
             raise ValidationError('You have entered an invalid user.')
         widget = Widget.query.filter_by(id = self.widget_target.data).first()
-        if widget in username.widgets:
+        if widget in username.widgets and self.add_remove.data == 'add':
             raise ValidationError('User is already subscribed to this widget.')
+        if widget not in username.widgets and self.add_remove.data == 'remove':
+            raise ValidationError('User is not subscribed to this widget.')
+        
             
             

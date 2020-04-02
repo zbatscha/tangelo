@@ -128,11 +128,18 @@ def addTeam():
     team_form = CreateAddTeam()
     post_form.widget_target.choices = widget_target_choices
     team_form.widget_target.choices = admin_widget_target_choices
+    
 
     if team_form.validate_on_submit():
         try:
-            model_api.addSubscription(team_form)
-            flash(f'{team_form.user.data} has been added to {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success')
+            addBool = (dict(team_form.add_remove.choices).get(team_form.add_remove.data) == 'Add')
+            print(addBool)
+            if addBool:
+                model_api.addSubscription(team_form)
+                flash(f'{team_form.user.data} has been added to {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success')
+            else:
+                model_api.removeSubscription(team_form)
+                flash(f'{team_form.user.data} has been removed from {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success' )
             return redirect(url_for('account'))
         except Exception as e:
             print(e)

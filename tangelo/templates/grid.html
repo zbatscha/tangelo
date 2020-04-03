@@ -3,76 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drag and Drop
-    </title>
-    <link rel="stylesheet" href="../static/grid.css" />
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.min.css" />
+    <link rel="stylesheet" href="grides.css"/>
+<script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
+<title> Grid </title>
 </head>
 <body>
-    <div class ="widgets">
-        <header>
-            <h1> Widgets Available </h1>
-        </header>
-        <div class="grid">
-            {% for widget in widgets %}
-                <div class="row">
-                    <div class="box" draggable="true">{{widget.name}}</div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="app">
-        <header>
-            <h1> Widget Grid</h1>
-        </header>
-        <div class="grid">
-            <div class="row">
-                <div class="box" draggable="true">Widget 1</div>
-                <div class="box" draggable="true">Widget 2</div>
-                <div class="box" draggable="true">Widget 3</div>
-            </div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-        </div>
-        <div class="grid">
-            <div class="row">
-            </div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-        </div>
-        <div class="grid">
-            <div class="row">
-            </div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-        </div>
-        <div class="grid">
-            <div class="row">
-            </div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-        </div>
-        <div class="grid">
-            <div class="row">
-            </div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-            <div class="row"></div>
-        </div>
-    </div>
-    <script src="../static/grid.js"></script>
+
+<div><a class="btn btn-default" onClick="addNewWidget()" href="#">Add Clock</a></div>
+<div class="grid-stack"></div>
+
+<script type="text/javascript">
+  var grid = GridStack.init();
+
+  addNewWidget = function () {
+  var node =  {
+    x: 0,
+    y: 0,
+    width: 5,
+    height: 5
+  };
+  grid.addWidget('<div><div class="grid-stack-item-content">' + 'Clock' + '</div></div>', node);
+  return false;
+};
+
+
+</script>
 </body>
 </html>

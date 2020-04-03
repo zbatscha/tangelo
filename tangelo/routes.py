@@ -7,7 +7,7 @@
 from tangelo import app, db
 from tangelo.CASClient import CASClient
 from tangelo.tangeloService import getGreetingDayTime
-from tangelo.models import User
+from tangelo.models import User, Widget, Subscription
 from flask import request, make_response, abort, redirect, url_for, flash
 from flask import render_template, session
 from flask_login import login_user, logout_user, login_required, current_user
@@ -29,8 +29,25 @@ def welcome():
 @login_required
 def dashboard():
     widget_choices = model_api.getAllWidgets()
+    clock_widget =  Widget.query.filter_by(name='Clock').first()
+    x = request.args.get('xcoord')
+    y = request.args.get('ycoord')
+    display = (request.args.get('display') == 'added')
+    if display:
+        sub = Subscription.query.filter_by(user=current_user).filter_by(widget=clock_widget).first()
+    else:
+        display = False
+        subscription_1 = Subscription(user=current_user, widget=clock_widget, grid_location={'row': x, 'col': y})
+        db.session.add(subscription_1)
+        db.session.commit()
+        sub = subscription_1
+    
+    print(sub.grid_location)
+    
+    
+    
     return make_response(render_template('dashboard.html',
-                         ampm=getGreetingDayTime(), widgets = widget_choices))
+                         ampm=getGreetingDayTime(), widgets = widget_choices, display = display))
 
 #-----------------------------------------------------------------------
 

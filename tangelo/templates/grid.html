@@ -5,30 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.min.css" />
-    <link rel="stylesheet" href="grides.css"/>
+    <link rel="stylesheet" href="../static/grides.css"/>
 <script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
 <title> Grid </title>
 </head>
 <body>
-
+<form action="dashboard" method = "get">
+{% if display: %}
+<div><a class="btn btn-default" onClick="restoreWidget()" href="#">You have widgets!</a></div>
+{%endif%}
 <div><a class="btn btn-default" onClick="addNewWidget()" href="#">Add Clock</a></div>
+<div><a class="btn btn-default" onClick="removeWidget()" href="#">Remove Clock</a></div>
+<div><a class="btn btn-default" onClick="getXcoord()" href="#">Get X coordinate</a></div>
+<div><a class="btn btn-default" onClick="getYcoord()" href="#">Get Y coordinate</a></div>
+<form action="dashboard" method = "get">
+    <input type="text" id ="xcoord" name= "xcoord">
+    <input type="text" id = "ycoord" name= "ycoord">
+    <input type="text" id = "display" name= "display">
+    <input type="submit" value="Submit">
+</form>
+
+
 <div class="grid-stack"></div>
 
 <script type="text/javascript">
+    setInterval(displayclock, 500)
+    function displayclock() {
+    
+        var now = new Date();
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        var second = now.getSeconds();
+        var month = now.getMonth();
+        var day = now.getDate();
+        var year = now.getFullYear();
+
+        if (hour > 12) {
+            hour = hour - 12
+        }
+
+        if (hour == 0) {
+            hour = 12
+        }
+
+        month = month + 1
+
+        if (hour < 10) hour = '0' + hour;
+        if (minute < 10) minute = '0' + minute;
+        if (second < 10) second = '0' + second;
+        if (month < 10) month = '0' + month;
+        if (day < 10) day = '0' + day;
+
+        year = year + ""
+        year = year.substring(2)
+
+
+        document.getElementById('time').innerHTML = hour + "&nbsp&nbsp" + minute + "&nbsp&nbsp" + second
+        document.getElementById('date').innerHTML = month + " &nbsp/&nbsp " + day + " &nbsp/&nbsp " + year
+    }
+    
   var grid = GridStack.init();
+  
+  var node;
 
   addNewWidget = function () {
-  var node =  {
+  node =  {
     x: 0,
     y: 0,
-    width: 5,
-    height: 5
+    width: 2,
+    height: 2,
+    locked: true
   };
-  grid.addWidget('<div><div class="grid-stack-item-content">' + 'Clock' + '</div></div>', node);
+  grid.addWidget('<div><div class="grid-stack-item-content">' + '<link rel="stylesheet" href="../static/clock.css"><h2 id = "time"></h2><h2 id = "date"></h2>' + '</div></div>', node);
+  document.getElementById("xcoord").value = node.x;
+  document.getElementById("ycoord").value = node.y;
+  document.getElementById("display").value = "added";
   return false;
 };
-
-
+    removeWidget = function () {
+    grid.removeAll()
+    document.getElementById("display").value = "removed";
+    return True;
+    }
+    
+    restoreWidget = function () {
+    node =  {
+    x: 0,
+    y: 0,
+    width: 2,
+    height: 2,
+    locked: true
+  };
+    grid.addWidget('<div><div class="grid-stack-item-content">' + '<link rel="stylesheet" href="../static/clock.css"><h2 id = "time"></h2><h2 id = "date"></h2>' + '</div></div>', node);
+    }
+    
 </script>
 </body>
 </html>

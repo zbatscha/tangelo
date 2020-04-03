@@ -18,7 +18,7 @@ export POSTGRES variables and SECRET_KEY key to environment and remove!
 POSTGRES_URL="127.0.0.1:5432"
 POSTGRES_DB="tangelo_test"
 POSTGRES_USER="postgres"
-POSTGRES_PW="password$"
+POSTGRES_PW="password"
 DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
                                                         user=POSTGRES_USER,
                                                         pw=POSTGRES_PW,

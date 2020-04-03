@@ -57,10 +57,11 @@ class DBTest(unittest.TestCase):
 
         # create widgets
 
-        widget_1 = Widget(name = 'Prospect', description = 'Open clubs')
+        widget_1 = Widget(name = 'Prospect Ave', description = 'Open clubs')
         widget_2 = Widget(name = 'Dhall', description = 'Today\'s Entrees')
         widget_3 = Widget(name = 'Umbrella', description = 'Yes/No')
         widget_4 = Widget(name = 'Princeton News', description = 'Life at Princeton Updates')
+        widget_5 = Widget(name = 'Clock', description = 'Date and Time', style='<link rel=\\"stylesheet\\" href=\\"../static/clock.css\\"><br><div id=\\"centerPanel\\"><h2 id=\\"time\\"></h2><br><br><h2 id = \\"date\\"></h2></div>')
 
         widget_1.admins.append(user_1)
         widget_1.admins.extend([user_2, user_3])
@@ -69,20 +70,33 @@ class DBTest(unittest.TestCase):
         db.session.add(widget_2)
         db.session.add(widget_3)
         db.session.add(widget_4)
+        db.session.add(widget_5)
 
         # create subscriptions
-        subscription_1 = Subscription(user=user_1, widget=widget_1, grid_location={'row': 2, 'col': 1})
-        subscription_2 = Subscription(user=user_1, widget=widget_2, grid_location={'row': 2, 'col': 1})
-        subscription_3 = Subscription(user=user_2, widget=widget_2, grid_location={'row': 2, 'col': 1})
-        subscription_4 = Subscription(user=user_2, widget=widget_3, grid_location={'row': 2, 'col': 1})
-        subscription_5 = Subscription(user=user_3, widget=widget_2, grid_location={'row': 2, 'col': 1})
-        subscription_6 = Subscription(user=user_3, widget=widget_4, grid_location={'row': 2, 'col': 1})
-        subscription_7 = Subscription(user=user_4, widget=widget_1, grid_location={'row': 2, 'col': 1})
-        subscription_8 = Subscription(user=user_4, widget=widget_2, grid_location={'row': 2, 'col': 1})
-        subscription_9 = Subscription(user=user_5, widget=widget_4, grid_location={'row': 2, 'col': 1})
-        subscription_10 = Subscription(user=user_5, widget=widget_3, grid_location={'row': 2, 'col': 1})
-        subscription_11 = Subscription(user=user_6, widget=widget_3, grid_location={'row': 2, 'col': 1})
-        subscription_12 = Subscription(user=user_6, widget=widget_4, grid_location={'row': 2, 'col': 1})
+        subscription_1 = Subscription(user=user_1, widget=widget_1, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_2 = Subscription(user=user_1, widget=widget_2, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_3 = Subscription(user=user_1, widget=widget_3, grid_location={'x': 0, 'y': 0, 'w': 6, 'h': 2})
+
+        subscription_4 = Subscription(user=user_2, widget=widget_1, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_5 = Subscription(user=user_2, widget=widget_2, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_6 = Subscription(user=user_2, widget=widget_3, grid_location={'x': 0, 'y': 0, 'w': 6, 'h': 2})
+
+        subscription_7 = Subscription(user=user_3, widget=widget_1, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_8 = Subscription(user=user_3, widget=widget_2, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_9 = Subscription(user=user_3, widget=widget_3, grid_location={'x': 0, 'y': 0, 'w': 6, 'h': 2})
+
+        subscription_10 = Subscription(user=user_4, widget=widget_1, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_11 = Subscription(user=user_4, widget=widget_2, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_12 = Subscription(user=user_4, widget=widget_3, grid_location={'x': 0, 'y': 0, 'w': 6, 'h': 2})
+
+        subscription_13 = Subscription(user=user_5, widget=widget_1, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_14 = Subscription(user=user_5, widget=widget_2, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_15 = Subscription(user=user_5, widget=widget_3, grid_location={'x': 0, 'y': 0, 'w': 6, 'h': 2})
+
+        subscription_16 = Subscription(user=user_6, widget=widget_1, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_17 = Subscription(user=user_6, widget=widget_2, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
+        subscription_18 = Subscription(user=user_6, widget=widget_3, grid_location={'x': 0, 'y': 0, 'w': 6, 'h': 2})
+
 
         db.session.add(subscription_1)
         db.session.add(subscription_2)
@@ -96,6 +110,12 @@ class DBTest(unittest.TestCase):
         db.session.add(subscription_10)
         db.session.add(subscription_11)
         db.session.add(subscription_12)
+        db.session.add(subscription_13)
+        db.session.add(subscription_14)
+        db.session.add(subscription_15)
+        db.session.add(subscription_16)
+        db.session.add(subscription_17)
+        db.session.add(subscription_18)
 
         post_1 = Post(content='My First Post!', author=user_1, widget=widget_1)
         post_2 = Post(content='Our Second Post!', author=user_2, widget=widget_1)
@@ -146,7 +166,7 @@ class DBTest(unittest.TestCase):
 
         # check that all widgets remain
         widgets = Widget.query.all()
-        assert len(widgets) == 4
+        assert len(widgets) == 5
 
     def test_deleteUserDB(self):
         # delete user directly from db, check if user deleted
@@ -169,19 +189,19 @@ class DBTest(unittest.TestCase):
 
         # check that all widgets remain
         widgets = Widget.query.all()
-        assert len(widgets) == 4
+        assert len(widgets) == 5
 
     def test_getWidgetAdmins(self):
-        widget_admins = Widget.query.filter_by(name='Prospect').first().admins
+        widget_admins = Widget.query.filter_by(name='Prospect Ave').first().admins
         assert len(widget_admins) == 3
 
     def test_getAdministeredWidgets(self):
         user_admin_widgets = User.query.filter_by(netid='zbatscha').first().widgets_admin
         assert len(user_admin_widgets) == 1
-        assert user_admin_widgets[0].name == 'Prospect'
+        assert user_admin_widgets[0].name == 'Prospect Ave'
 
     def test_deleteWidgetMem(self):
-        widget = Widget.query.filter_by(name='Prospect').first()
+        widget = Widget.query.filter_by(name='Prospect Ave').first()
         db.session.delete(widget)
         db.session.commit()
 
@@ -228,11 +248,11 @@ class DBTest(unittest.TestCase):
     def test_getSubscriptions(self):
         user = User.query.filter_by(netid='zbatscha').first()
         subscription = Subscription.query.filter_by(user=user).all()
-        assert len(subscription) == 2
+        assert len(subscription) == 3
 
     def test_deleteSubscription(self):
         user = User.query.filter_by(netid='zbatscha').first()
-        widget = Widget.query.filter_by(name='Prospect').first()
+        widget = Widget.query.filter_by(name='Prospect Ave').first()
         subscriptions = Subscription.query.filter_by(user_id=user.id).filter_by(widget=widget).all()
         for sub in subscriptions:
             db.session.delete(sub)
@@ -252,7 +272,7 @@ class DBTest(unittest.TestCase):
 
         # note!! removing admin does not remove posts made by that user, thats likely a good thing
 
-        widget_admins = Widget.query.filter_by(name='Prospect').first().admins
+        widget_admins = Widget.query.filter_by(name='Prospect Ave').first().admins
         assert len(widget_admins) == 2
 
     def test_getPosts(self):
@@ -260,5 +280,10 @@ class DBTest(unittest.TestCase):
         user = User.query.filter_by(netid='zbatscha').first()
         assert user.posts.first().content == 'My First Post!'
         # by widget
-        widget = Widget.query.filter_by(name='Prospect').first()
+        widget = Widget.query.filter_by(name='Prospect Ave').first()
         assert widget.posts.first().content == 'My First Post!'
+
+    def test_get_subscription(self):
+        subscription = Subscription.query.filter_by(user_id=1).filter_by(widget_id=1).first()
+        subscription.grid_location = {'row': 1, 'col': 1}
+        db.session.commit()

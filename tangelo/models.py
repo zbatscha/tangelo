@@ -38,6 +38,7 @@ class Widget(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, unique=True, nullable=False)
     description = db.Column(db.Text, nullable=False)
+    style = db.Column(db.String(), nullable=True)
     access_type = db.Column(db.String(), default='public')
     post_type = db.Column(db.String(), default='public')
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
@@ -71,7 +72,6 @@ class Subscription(db.Model):
     __tablename__ = 'subscriptions'
     id = db.Column(db.Integer, primary_key=True)
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
-    # admin = db.Column(db.Boolean, unique=False, default=False)
     grid_location = db.Column(JSONEncodedDict, nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
@@ -93,7 +93,6 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     widget_id = db.Column(db.Integer, db.ForeignKey('widgets.id', ondelete='CASCADE'))
     content = db.Column(db.String(100), nullable=False)
-    # body = db.Column(db.Text, nullable=True)
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):

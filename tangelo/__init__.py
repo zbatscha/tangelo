@@ -10,7 +10,7 @@ from flask_login import LoginManager
 
 #-----------------------------------------------------------------------
 
-app = Flask(__name__, template_folder='./templates')
+app = Flask(__name__, template_folder='./templates', static_folder="./static")
 
 """
 export POSTGRES variables and SECRET_KEY key to environment and remove!

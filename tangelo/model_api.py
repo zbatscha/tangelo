@@ -2,13 +2,11 @@ from tangelo.models import User, Widget, Post, Subscription
 from tangelo import db, app
 from flask_login import current_user
 
-def getAllWidgets():
-    widgets = Widget.query.all()
-    widgetsSend = []
-    for w in widgets:
-        if w.access_type == 'public':
-            widgetsSend.append(w)
-    return widgetsSend
+def getUserWidgets(current_user):
+    subscriptions = Subscription.query.filter_by(user_id=current_user.id).all()
+    displayed = [{'widget_id': sub.widget_id, 'grid_location': sub.grid_location if sub.grid_location else {'x': 0, 'y': 0, 'w': 2, 'h': 2}, 'content': sub.widget.style if sub.widget.style else sub.widget.name} for sub in subscriptions]
+    print(displayed)
+    return displayed
 
 def addWidget(form):
     try:
@@ -40,7 +38,7 @@ def addPost(form):
     except Exception as e:
         db.session.rollback()
         raise Exception(e)
-        
+
 def addSubscription(form):
     try:
         print("I am getting here")
@@ -52,11 +50,11 @@ def addSubscription(form):
         sub = Subscription(user=userName, widget=widget)
         db.session.add(sub)
         db.session.commit()
-        
+
     except Exception as e:
         db.session.rollback()
         raise Exception(e)
-        
+
 def removeSubscription(form):
     try:
         # check if valid widget
@@ -67,12 +65,26 @@ def removeSubscription(form):
             raise Exception('Selected subscriptions does not exist.')
         db.session.delete(subscription)
         db.session.commit()
-        
+
     except Exception as e:
         db.session.rollback()
         raise Exception(e)
-        
-        
+
+def updateSubscriptions(widgets):
+    for widget in widgets:
+        sub = Subscription.query.filter_by(user=current_user).filter_by(widget_id=widget['widget_id']).first()
+        if not sub:
+            try:
+                new_subscription = Subscription(user_id=current_user.id, widget_id=widget['widget_id'], grid_location=widget['grid_location'])
+                db.session.add(new_subscription)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+
+        else:
+            print('here')
+            sub.grid_location=widget['grid_location']
+            db.session.commit()
 
 def getValidWidgetsPost(current_user):
     all_widgets = current_user.widgets
@@ -89,6 +101,4 @@ def getValidWidgetsAdmin(current_user):
     for widget in all_widgets:
         #if widget.access_type == 'private' or widget.access_type == 'secret':
         choices.append((widget.id, widget.name))
-    print("HERE", all_widgets)
-    print(choices)
     return choices

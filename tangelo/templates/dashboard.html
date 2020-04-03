@@ -1,12 +1,4 @@
-<!DOCTYPE html>
- <html>
-   <head>
-      <title>Tangelo</title>
-   </head>
-   <body>
-      {% include 'header.html' %}
-      <br>
-      Dashboard here!
-      {% include 'grid.html' %}
-   </body>
- </html>
+{% extends 'layout.html' %}
+{% block content %}
+{% include 'grid.html' %}
+{% endblock content %}

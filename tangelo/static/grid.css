@@ -1,66 +1,9 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.grid-stack {
+  background: lightgoldenrodyellow;
 }
 
-body {
-    background-color: rgb(229, 220, 236);
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-}
-
-.app {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-    flex-flow: column;
-}
-
-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60px;
-
-}
-
-.grid {
-    display: flex;
-    flex: 1;
-    width: 100%;
-    /*overflow-x: scroll;
-    overflow-y: scroll;*/
-    margin: 0;
-    padding: 0;
-    position: relative;
-}
-
-.grid .row {
-    display: flex;
-    flex-flow: column-reverse;
-    flex: 1;
-    
-    width: 100%;
-    min-width: 50px;
-    max-width: 200px;
-    height: 100%;
-    min-height: 50px;
-    max-height: 100px;
-    
-    border-radius: 10px;
-    background-color: darkblue;
-    margin: 0px 10px;
-    padding: 8px;
-    transition: all 0.2s linear;
-}
-
-.grid .row .box {
-    background-color: darkgray;
-    border-radius: 10px;
-    padding: 15px 0px;
-    text-align: center;
-    margin: 0px 0px;
-    height: 100%;
-    min-height: 10px;
-    max-height: 100px;
+.grid-stack-item-content {
+  color: #2c3e50;
+  text-align: center;
+  background-color: #18bc9c;
 }

@@ -14,6 +14,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from tangelo.generic import generic
 from tangelo.forms import CreateWidget, CreatePost, CreateAddTeam
 from tangelo import model_api
+import json
 
 #-----------------------------------------------------------------------
 
@@ -28,26 +29,9 @@ def welcome():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    widget_choices = model_api.getAllWidgets()
-    clock_widget =  Widget.query.filter_by(name='Clock').first()
-    x = request.args.get('xcoord')
-    y = request.args.get('ycoord')
-    display = (request.args.get('display') == 'added')
-    if display:
-        sub = Subscription.query.filter_by(user=current_user).filter_by(widget=clock_widget).first()
-    else:
-        display = False
-        subscription_1 = Subscription(user=current_user, widget=clock_widget, grid_location={'row': x, 'col': y})
-        db.session.add(subscription_1)
-        db.session.commit()
-        sub = subscription_1
-    
-    print(sub.grid_location)
-    
-    
-    
-    return make_response(render_template('dashboard.html',
-                         ampm=getGreetingDayTime(), widgets = widget_choices, display = display))
+    displayed_widgets = model_api.getUserWidgets(current_user)
+
+    return make_response(render_template('dashboard.html', title='Dashboard', displayedWidgets=displayed_widgets))
 
 #-----------------------------------------------------------------------
 
@@ -75,14 +59,8 @@ def logout():
 
 @app.route('/about', methods=['GET', 'POST'])
 def about():
-    return make_response(render_template('about.html',
-                         ampm=getGreetingDayTime()))
+    return make_response(render_template('about.html', title='About'))
 
-#----------------------------------------------------------------------
-
-@app.route('/testingclock')
-def testingclock():
-    return make_response(render_template("Layout1.html"))
 #----------------------------------------------------------------------
 
 @app.route('/account', methods=['GET', 'POST'])
@@ -150,7 +128,7 @@ def addTeam():
     team_form = CreateAddTeam()
     post_form.widget_target.choices = widget_target_choices
     team_form.widget_target.choices = admin_widget_target_choices
-    
+
 
     if team_form.validate_on_submit():
         try:
@@ -167,4 +145,13 @@ def addTeam():
             print(e)
             flash(f'Error occured!', 'danger')
     return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
-        
+
+@app.route('/updateDashboard', methods=['GET','POST'])
+def updateDashboard():
+
+    if request.method == "POST":
+        widget_info = request.json.get('data')
+        model_api.updateSubscriptions(widget_info)
+        # widget_info[0]['grid_location']
+
+    return redirect(url_for('dashboard'))

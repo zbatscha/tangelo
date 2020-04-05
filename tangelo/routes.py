@@ -38,8 +38,10 @@ def dashboard():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
-    username = CASClient().authenticate()
-    user = User.query.filter_by(netid=username).first()
+    netid = CASClient().authenticate()
+    user = utils.getUser(netid)
+    if not user:
+        return redirect(url_for('welcome'))
     login_user(user)
     # redirect to requested page
     next_page = request.args.get('next')
@@ -87,9 +89,11 @@ def createWidget():
     post_form.widget_target.choices = widget_target_choices
     team_form.widget_target.choices = admin_widget_target_choices
 
+    print('here')
     if widget_form.validate_on_submit():
         try:
-            utils.addWidget(widget_form)
+            print('here')
+            utils.addWidget(current_user, widget_form)
             flash(f'Your widget has been created!', 'success')
             return redirect(url_for('account'))
         except Exception as e:
@@ -110,7 +114,7 @@ def createPost():
 
     if post_form.validate_on_submit():
         try:
-            utils.addPost(post_form)
+            utils.addPost(current_user, post_form)
             flash(f'Your post has been created!', 'success')
             return redirect(url_for('account'))
         except Exception as e:
@@ -135,10 +139,10 @@ def addTeam():
             addBool = (dict(team_form.add_remove.choices).get(team_form.add_remove.data) == 'Add')
             print(addBool)
             if addBool:
-                utils.addSubscription(team_form)
+                utils.addUserClosedWidget(team_form)
                 flash(f'{team_form.user.data} has been added to {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success')
             else:
-                utils.removeSubscription(team_form)
+                utils.removeUserClosedWidget(team_form)
                 flash(f'{team_form.user.data} has been removed from {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success' )
             return redirect(url_for('account'))
         except Exception as e:
@@ -151,7 +155,7 @@ def updateDashboard():
 
     if request.method == "POST":
         widget_info = request.json.get('data')
-        utils.updateSubscriptions(widget_info)
+        utils.updateSubscriptions(current_user, widget_info)
         # widget_info[0]['grid_location']
 
     return redirect(url_for('dashboard'))

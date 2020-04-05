@@ -1,47 +1,116 @@
-from tangelo.models import User, Widget, Post, Subscription
-from tangelo import db, app
-
 #!/usr/bin/env python
 
-#-----------------------------------------------------------------------
-# tangelo_utils.py
+"""
+utils.py
+
+Provides methods for getting and manipulating database table objects:
+User, Widget, Subscription, etc.
+"""
+
+from tangelo.models import User, Widget, Post, Subscription
+from tangelo import db, app
+import tangelo.user_utils as user_utils
+
 #-----------------------------------------------------------------------
 
 def getUser(netid):
+    """
+    User associated with provided `netid`. If netid does not exist in
+    database, creates a new User.
+
+    Parameters
+    ----------
+    netid : str
+
+    Returns
+    -------
+    User
+        User associated with `netid`.
+
+    """
     user = User.query.filter_by(netid=netid).first()
     if not user:
-        user = createUser(netid)
+        user = user_utils.createUser(netid)
     return user
 
-def createUser(netid):
-    return
-
-
-
+#-----------------------------------------------------------------------
 
 def getUserWidgets(current_user):
+    """
+    All widgets to be displayed on a users dashboard.
+
+    Parameters
+    ----------
+    current_user : User
+
+    Returns
+    -------
+    list(dict)
+        A list of widget-associated dictionaries, where keys are `widget_id`,
+        gridstack `grid_location`, displayed widget `content`.
+
+    """
     subscriptions = Subscription.query.filter_by(user_id=current_user.id).all()
-    displayed = [{'widget_id': sub.widget_id, 'grid_location': sub.grid_location if sub.grid_location else {'x': 0, 'y': 0, 'w': 2, 'h': 2}, 'content': sub.widget.style if sub.widget.style else sub.widget.name} for sub in subscriptions]
-    print(displayed)
+    displayed = [{
+        'widget_id': sub.widget_id,
+        'grid_location': sub.grid_location,
+        'content': sub.widget.style if sub.widget.style else sub.widget.name}
+        for sub in subscriptions if sub.grid_location]
+    print('Displayed on dashboard: ', displayed)
     return displayed
 
-def addWidget(form):
+#-----------------------------------------------------------------------
+
+def addWidget(current_user, form):
+    """
+    Create a new widget with current_user as admin.
+
+    Parameters
+    ----------
+    current_user : User
+    form : CreateWidget
+
+    Returns
+    -------
+    None
+
+    """
     try:
         widget = Widget(name=form.name.data,
                         description=form.description.data,
                         access_type=form.access_type.data,
                         post_type=form.post_type.data)
 
+        # place new widgets in top left corner of admins dashboard
+        default_widget_location = {'x': 0, 'y': 0, 'w': 2, 'h': 2}
+        subscription = Subscription(user=current_user, widget=widget,
+                                    grid_location=default_widget_location)
+        # current_user is the admin of the new widget
         widget.admins.append(current_user)
-        subscription = Subscription(user=current_user, widget=widget)
         db.session.add(widget)
+        db.session.add(subscription)
         db.session.commit()
 
     except Exception as e:
         db.session.rollback()
         raise Exception(e)
 
-def addPost(form):
+#-----------------------------------------------------------------------
+
+def addPost(current_user, form):
+    """
+    Create a new post with `current_user` as author.
+
+    Parameters
+    ----------
+    current_user : User
+    form : CreatePost
+
+    Returns
+    -------
+    None
+
+    """
     try:
         # check if valid widget
         widget = Widget.query.filter_by(id=form.widget_target.data).first()
@@ -56,15 +125,28 @@ def addPost(form):
         db.session.rollback()
         raise Exception(e)
 
-def addSubscription(form):
+#-----------------------------------------------------------------------
+
+def addUserClosedWidget(form):
+    """
+    Allow admins to add a user to a closed (private or secret) widget.
+
+    Parameters
+    ----------
+    form : CreateAddTeam
+
+    Returns
+    -------
+    None
+
+    """
     try:
-        print("I am getting here")
-        userName = User.query.filter_by(netid=form.user.data).first()
+        user = User.query.filter_by(netid=form.user.data).first()
         # check if valid widget
         widget = Widget.query.filter_by(id=form.widget_target.data).first()
         if not widget:
             raise Exception('Selected widget does not exist.')
-        sub = Subscription(user=userName, widget=widget)
+        sub = Subscription(user=user, widget=widget)
         db.session.add(sub)
         db.session.commit()
 
@@ -72,22 +154,37 @@ def addSubscription(form):
         db.session.rollback()
         raise Exception(e)
 
-def removeSubscription(form):
+#-----------------------------------------------------------------------
+"""
+Critical: add validation check on CreateAddTeam form.
+Admin should not be able to remove themself if they are the only admin.
+"""
+def removeUserClosedWidget(current_user, form):
+    """
+    Allow admins to remove a user from a closed (private or secret) widget.
+
+    Parameters
+    ----------
+    form : CreateAddTeam
+
+    Returns
+    -------
+    None
+
+    """
     try:
-        # check if valid widget
-        userName = User.query.filter_by(netid=form.user.data).first()
-        widget = Widget.query.filter_by(id=form.widget_target.data).first()
-        subscription = Subscription.query.filter_by(user_id=userName.id).filter_by(widget=widget).first()
-        if subscription is None:
-            raise Exception('Selected subscriptions does not exist.')
+        subscription = Subscription.query.filter_by(user_id=form.user.data).filter_by(widget_id=form.widget_target.data).first()
+        if not subscription:
+            raise Exception('Selected user not subscribed to this widget.')
         db.session.delete(subscription)
         db.session.commit()
-
     except Exception as e:
         db.session.rollback()
         raise Exception(e)
 
-def updateSubscriptions(widgets):
+#-----------------------------------------------------------------------
+
+def updateSubscriptions(current_user, widgets):
     for widget in widgets:
         sub = Subscription.query.filter_by(user=current_user).filter_by(widget_id=widget['widget_id']).first()
         if not sub:
@@ -103,6 +200,8 @@ def updateSubscriptions(widgets):
             sub.grid_location=widget['grid_location']
             db.session.commit()
 
+#-----------------------------------------------------------------------
+
 def getValidWidgetsPost(current_user):
     all_widgets = current_user.widgets
     choices = []
@@ -112,6 +211,8 @@ def getValidWidgetsPost(current_user):
     print(choices)
     return choices
 
+#-----------------------------------------------------------------------
+
 def getValidWidgetsAdmin(current_user):
     all_widgets = current_user.widgets_admin
     choices = []
@@ -119,3 +220,5 @@ def getValidWidgetsAdmin(current_user):
         #if widget.access_type == 'private' or widget.access_type == 'secret':
         choices.append((widget.id, widget.name))
     return choices
+
+#-----------------------------------------------------------------------

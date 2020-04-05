@@ -6,7 +6,9 @@
 
 import unittest
 from tangelo.models import User, Widget, Subscription, Post, AdminAssociation
+import tangelo.user_utils as user_utils
 from tangelo import app, db
+import sys
 
 #-----------------------------------------------------------------------
 
@@ -27,25 +29,25 @@ class DBTest(unittest.TestCase):
     def setUp(self):
         db.drop_all()
         db.create_all()
-        # create users
 
+        # create users
         user_1 = User(netid='zbatscha', email='zbatscha@princeton.edu',
-                      first_name='Ziv', middle_name='Haim', last_name='Batscha',
+                      first_name='Ziv', last_name='Batscha',
                       display_name='this_is_my_display_name')
         user_2 = User(netid='rmthorpe', email='rmthorpe@princeton.edu',
-                      first_name='Ryan', middle_name='', last_name='Thorpe',
+                      first_name='Ryan', last_name='Thorpe',
                       display_name='Ryyyaaannn')
         user_3 = User(netid='almejia', email='almejia@princeton.edu',
-                      first_name='Austin', middle_name='', last_name='Mejia',
+                      first_name='Austin', last_name='Mejia',
                       display_name='Auuuussstiiinnn')
         user_4 = User(netid='fawaza', email='fawaza@princeton.edu',
-                      first_name='Fawaz', middle_name='', last_name='Ahmad',
+                      first_name='Fawaz', last_name='Ahmad',
                       display_name='Fawwaaazzz')
         user_5 = User(netid='josephoe', email='josephoe@princeton.edu',
-                      first_name='Joseph', middle_name='', last_name='Eichenhofer',
+                      first_name='Joseph', last_name='Eichenhofer',
                       display_name='Joseph')
         user_6 = User(netid='rdondero', email='rdondero@cs.princeton.edu',
-                      first_name='Robert', middle_name='', last_name='Dondero',
+                      first_name='Robert', last_name='Dondero',
                       display_name='Professor Dondero')
 
         db.session.add(user_1)
@@ -127,6 +129,7 @@ class DBTest(unittest.TestCase):
     def tearDown(self):
         db.session.remove()
         # db.drop_all()
+        # db.create_all()
 
     def test_getAllUsers(self):
         users = User.query.all()
@@ -288,3 +291,9 @@ class DBTest(unittest.TestCase):
         # by widget
         widget = Widget.query.filter_by(name='Prospect Ave').first()
         assert widget.posts.first().content == 'My First Post!'
+
+    def test_createUser(self):
+        user = user_utils.createUser('cl43')
+        print(user)
+        user = user_utils.createUser('doesNotExist')
+        print(user)

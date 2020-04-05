@@ -12,6 +12,9 @@ import json
 from base64 import b64encode, b64decode
 from datetime import datetime
 import os
+from tangelo.models import User
+from tangelo import db
+from sys import stderr
 
 def generateHeaders():
     created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -45,7 +48,30 @@ def getUndergraduate(netid):
         print(err)
         return None
 
-if __name__=="__main__":
+def createUser(netid):
+    new_user = User(netid=netid)
+    undergrad_profile = getUndergraduate(netid)
+    if undergrad_profile:
+        new_user = User(netid=netid, email=undergrad_profile.get('email'),
+                        first_name=undergrad_profile.get('first_name'),
+                        last_name=undergrad_profile.get('last_name'),
+                        class_year=undergrad_profile.get('class_year'))
 
-    undergrad = getUndergraduate('cl43')
-    print(undergrad)
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        return new_user
+    except Exception as e:
+        db.session.rollback()
+        print(e, file=stderr)
+    return None
+
+if __name__=="__main__":
+    undergrad_profile = getUndergraduate(netid)
+    print(undergrad_profile)
+    print(undergrad_profile.get('net_id'), undergrad_profile.get('first_name'), undergrad_profile.get('last_name'), undergrad_profile.get('class_year'), undergrad_profile.get('email'))
+    undergrad_profile = getUndergraduate('notUndergraduate')
+    print(undergrad_profile)
+
+    user = createUser('zbatscha')
+    print(user)

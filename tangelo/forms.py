@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Length, ValidationError
 from tangelo.models import Widget, User
-from tangelo.model_api import getValidWidgetsPost
+from tangelo.utils import getValidWidgetsPost
 
 class CreateWidget(FlaskForm):
     name = StringField('Widget Name',
@@ -31,7 +31,7 @@ class CreatePost(FlaskForm):
     content = StringField('What\'s on your mind?', validators=[DataRequired()])
     widget_target = SelectField('Post to Widget', choices=[], coerce=int)
     submit = SubmitField('Submit Post')
-    
+
 class CreateAddTeam(FlaskForm):
     user = StringField('Enter a netid', validators=[DataRequired()])
     add_remove = SelectField('Add or remove user?', choices = [('add', 'Add'), ('remove', 'Remove')])
@@ -46,6 +46,3 @@ class CreateAddTeam(FlaskForm):
             raise ValidationError('User is already subscribed to this widget.')
         if widget not in username.widgets and self.add_remove.data == 'remove':
             raise ValidationError('User is not subscribed to this widget.')
-        
-            
-            

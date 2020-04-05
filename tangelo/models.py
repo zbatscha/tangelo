@@ -20,10 +20,10 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     netid = db.Column(db.String(120), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    first_name = db.Column(db.String(120), nullable=False)
+    first_name = db.Column(db.String(120), nullable=True)
     middle_name = db.Column(db.String(120))
-    last_name = db.Column(db.String(120), nullable=False)
-    display_name = db.Column(db.String(30), default='')
+    last_name = db.Column(db.String(120), nullable=True)
+    display_name = db.Column(db.String(30), nullable=True)
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
 
     widgets = db.relationship('Widget', secondary='subscriptions', passive_deletes=True)

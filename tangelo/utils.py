@@ -1,6 +1,23 @@
 from tangelo.models import User, Widget, Post, Subscription
 from tangelo import db, app
-from flask_login import current_user
+
+#!/usr/bin/env python
+
+#-----------------------------------------------------------------------
+# tangelo_utils.py
+#-----------------------------------------------------------------------
+
+def getUser(netid):
+    user = User.query.filter_by(netid=netid).first()
+    if not user:
+        user = createUser(netid)
+    return user
+
+def createUser(netid):
+    return
+
+
+
 
 def getUserWidgets(current_user):
     subscriptions = Subscription.query.filter_by(user_id=current_user.id).all()

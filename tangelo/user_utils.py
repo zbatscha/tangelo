@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-#-----------------------------------------------------------------------
-# users.py
-#-----------------------------------------------------------------------
+"""
+Provides methods to perform a request to the tigerbook API to query a Princeton
+undergrad by netid.
+"""
 
 import hashlib
 import random
@@ -10,15 +11,17 @@ import requests
 import json
 from base64 import b64encode, b64decode
 from datetime import datetime
-from os import path
+import os
 
 def generateHeaders():
     created = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
     nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(32)])
     nonce_bytes = b64encode(bytes(nonce, 'ascii')).decode()
 
-    username = 'zbatscha'
-    password = '4d8a6a21c08ee526829032f02e06884a'    # use your own from /getkey
+    username = os.environ.get('TIGERBOOK_USERNAME') # use your own netid
+    password = os.environ.get('TIGERBOOK_KEY') # use your own from /getkey
+    if not username or not password:
+        raise Exception('Missing tigerbook key and/or username')
     password_digest = (nonce + created + password).encode('ascii')
     generated_digest = b64encode(hashlib.sha256(password_digest).digest()).decode()
     headers = {
@@ -29,7 +32,7 @@ def generateHeaders():
 
 def getUndergraduate(netid):
     url = 'https://tigerbook.herokuapp.com/api/v1/undergraduates'
-    url = path.join(url, netid)
+    url = os.path.join(url, netid)
     headers = generateHeaders()
     try:
         response = requests.get(

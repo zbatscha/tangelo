@@ -13,7 +13,7 @@ from flask import render_template, session
 from flask_login import login_user, logout_user, login_required, current_user
 from tangelo.generic import generic
 from tangelo.forms import CreateWidget, CreatePost, CreateAddTeam
-from tangelo import model_api
+from tangelo import utils
 import json
 
 #-----------------------------------------------------------------------
@@ -29,7 +29,7 @@ def welcome():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    displayed_widgets = model_api.getUserWidgets(current_user)
+    displayed_widgets = utils.getUserWidgets(current_user)
 
     return make_response(render_template('dashboard.html', title='Dashboard', displayedWidgets=displayed_widgets))
 
@@ -66,8 +66,8 @@ def about():
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    widget_target_choices = model_api.getValidWidgetsPost(current_user)
-    admin_widget_target_choices = model_api.getValidWidgetsAdmin(current_user)
+    widget_target_choices = utils.getValidWidgetsPost(current_user)
+    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
     widget_form = CreateWidget()
     post_form = CreatePost()
     team_form = CreateAddTeam()
@@ -79,8 +79,8 @@ def account():
 @app.route('/createwidget', methods=['GET', 'POST'])
 @login_required
 def createWidget():
-    widget_target_choices = model_api.getValidWidgetsPost(current_user)
-    admin_widget_target_choices = model_api.getValidWidgetsAdmin(current_user)
+    widget_target_choices = utils.getValidWidgetsPost(current_user)
+    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
     widget_form = CreateWidget()
     post_form = CreatePost()
     team_form = CreateAddTeam()
@@ -89,7 +89,7 @@ def createWidget():
 
     if widget_form.validate_on_submit():
         try:
-            model_api.addWidget(widget_form)
+            utils.addWidget(widget_form)
             flash(f'Your widget has been created!', 'success')
             return redirect(url_for('account'))
         except Exception as e:
@@ -100,8 +100,8 @@ def createWidget():
 @app.route('/createpost', methods=['GET', 'POST'])
 @login_required
 def createPost():
-    widget_target_choices = model_api.getValidWidgetsPost(current_user)
-    admin_widget_target_choices = model_api.getValidWidgetsAdmin(current_user)
+    widget_target_choices = utils.getValidWidgetsPost(current_user)
+    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
     widget_form = CreateWidget()
     post_form = CreatePost()
     team_form = CreateAddTeam()
@@ -110,7 +110,7 @@ def createPost():
 
     if post_form.validate_on_submit():
         try:
-            model_api.addPost(post_form)
+            utils.addPost(post_form)
             flash(f'Your post has been created!', 'success')
             return redirect(url_for('account'))
         except Exception as e:
@@ -121,8 +121,8 @@ def createPost():
 @app.route('/addteam', methods=['GET', 'POST'])
 @login_required
 def addTeam():
-    widget_target_choices = model_api.getValidWidgetsPost(current_user)
-    admin_widget_target_choices = model_api.getValidWidgetsAdmin(current_user)
+    widget_target_choices = utils.getValidWidgetsPost(current_user)
+    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
     widget_form = CreateWidget()
     post_form = CreatePost()
     team_form = CreateAddTeam()
@@ -135,10 +135,10 @@ def addTeam():
             addBool = (dict(team_form.add_remove.choices).get(team_form.add_remove.data) == 'Add')
             print(addBool)
             if addBool:
-                model_api.addSubscription(team_form)
+                utils.addSubscription(team_form)
                 flash(f'{team_form.user.data} has been added to {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success')
             else:
-                model_api.removeSubscription(team_form)
+                utils.removeSubscription(team_form)
                 flash(f'{team_form.user.data} has been removed from {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success' )
             return redirect(url_for('account'))
         except Exception as e:
@@ -151,7 +151,7 @@ def updateDashboard():
 
     if request.method == "POST":
         widget_info = request.json.get('data')
-        model_api.updateSubscriptions(widget_info)
+        utils.updateSubscriptions(widget_info)
         # widget_info[0]['grid_location']
 
     return redirect(url_for('dashboard'))

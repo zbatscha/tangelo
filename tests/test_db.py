@@ -247,8 +247,13 @@ class DBTest(unittest.TestCase):
 
     def test_getSubscriptions(self):
         user = User.query.filter_by(netid='zbatscha').first()
-        subscription = Subscription.query.filter_by(user=user).all()
-        assert len(subscription) == 3
+        subscriptions = user.subscriptions
+        assert len(subscriptions) == 3
+
+    def test_updateSubscription(self):
+        subscription = Subscription.query.filter_by(user_id=1).filter_by(widget_id=1).first()
+        subscription.grid_location = {'x': 0, 'y': 10, 'w': 3, 'h': 2}
+        db.session.commit()
 
     def test_deleteSubscription(self):
         user = User.query.filter_by(netid='zbatscha').first()
@@ -263,6 +268,7 @@ class DBTest(unittest.TestCase):
         assert user
 
         # note!! removing subscription does not update admin association or posts made by that user
+
 
     def test_removeWidgetAdminMem(self):
         admin = AdminAssociation.query.filter_by(user_id=1).filter_by(widget_id=1).first()
@@ -282,8 +288,3 @@ class DBTest(unittest.TestCase):
         # by widget
         widget = Widget.query.filter_by(name='Prospect Ave').first()
         assert widget.posts.first().content == 'My First Post!'
-
-    def test_get_subscription(self):
-        subscription = Subscription.query.filter_by(user_id=1).filter_by(widget_id=1).first()
-        subscription.grid_location = {'row': 1, 'col': 1}
-        db.session.commit()

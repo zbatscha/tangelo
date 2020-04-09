@@ -9,7 +9,7 @@ import hashlib
 import random
 import requests
 import json
-from base64 import b64encode, b64decode
+from base64 import b64encode
 from datetime import datetime
 import os
 from tangelo.models import User

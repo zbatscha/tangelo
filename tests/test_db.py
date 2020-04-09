@@ -12,18 +12,10 @@ import sys
 
 #-----------------------------------------------------------------------
 
-POSTGRES_URL="127.0.0.1:5432"
-POSTGRES_DB="tangelo_test"
-POSTGRES_USER="postgres"
-POSTGRES_PW="password"
-TEST_SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2:// \
-    {user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER, pw=POSTGRES_PW,
-                                    url=POSTGRES_URL, db=POSTGRES_DB)
-
 class DBTest(unittest.TestCase):
 
     def create_app(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = TEST_SQLALCHEMY_DATABASE_URI
+        # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
         return app
 
     def setUp(self):

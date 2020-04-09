@@ -9,6 +9,7 @@ from tangelo.models import User, Widget, Subscription, Post, AdminAssociation
 import tangelo.user_utils as user_utils
 from tangelo import app, db
 import sys
+import os
 
 #-----------------------------------------------------------------------
 

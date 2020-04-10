@@ -96,4 +96,4 @@ class Post(db.Model):
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"Post('{self.title}', '{self.body}', '{self.create_dttm}')"
+        return f"Post('{self.content}', '{self.create_dttm}')"

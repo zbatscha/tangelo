@@ -3,13 +3,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
 <script type='text/javascript' src="../static/clock.js"></script>
-<!-- <button class="btn btn-white btn-primary" id="addwidget" type="submit">Add Widget</button> -->
-
-<div><a class="btn btn-outline-info" onClick="addNewWidget()" href="#">&nbsp;&nbsp;&nbsp;&nbsp;Add Clock&nbsp;&nbsp;&nbsp;</a></div><br>
-<!-- <div><a class="btn btn-outline-info" onClick="removeWidget()" href="#">Remove Clock</a></div><br> -->
-<div><a class="btn btn-outline-info" onClick="saveData()" href="#">Save Widgets</a></div><br>
-<!-- <div><a class="btn btn-outline-info" onClick="loadData()" href="#">Load Widgets</a></div><br> -->
-
 
 <div class="grid-stack"></div>
 <script type="text/javascript">
@@ -24,7 +17,7 @@
         minWidth: 4,
         minHeight: 2
     };
-    grid.addWidget('<div class="grid-stack-item" widget-id="5"><div class="grid-stack-item-content"><link rel="stylesheet" href="../static/clock.css"><br><div id="centerPanel"><h2 id="time"></h2><br><br><h2 id = "date"></h2></div></div></div>', node);
+    grid.addWidget('<div class="grid-stack-item" widget-id="5"><div class="grid-stack-item-content"><link rel="stylesheet" href="../static/clock.css"><br><div id="centerPanel"><h1 id="time"></h1><br><br><h1 id = "date"></h1></div></div></div>', node);
   };
 
   removeWidget = function () {
@@ -74,14 +67,12 @@
           y: displayedWidgets[i].grid_location.y,
           width: displayedWidgets[i].grid_location.w,
           height: displayedWidgets[i].grid_location.h,
-          content: displayedWidgets[i].content,
+          widget_name: displayedWidgets[i].widget_name,
+          widget_post: displayedWidgets[i].widget_post,
           id: displayedWidgets[i].widget_id
       };
       console.log(node)
-      grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}"><div class="grid-stack-item-content"><div>${node.content}</div></div></div>`, node);
+      grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}"><div class="grid-stack-item-content"><div>${node.widget_name}<br>${node.widget_post.content}</div></div></div>`, node);
     }
-
   };
-
-
 </script>

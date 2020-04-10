@@ -2,14 +2,13 @@ h1 {
     font-size: 30pt;
     line-height: 10px;
     font-weight: 100;
-    color: white;
+    color: rgb(238, 174, 36);
 }
 
 h2 {
     font-size: 20pt;
     line-height: 0px;
-    color: white;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgb(238, 174, 36);
     font-weight: 500;
 }
 

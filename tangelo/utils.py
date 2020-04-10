@@ -54,8 +54,10 @@ def getUserWidgets(current_user):
     displayed = [{
         'widget_id': sub.widget_id,
         'grid_location': sub.grid_location,
-        'content': sub.widget.style if sub.widget.style else sub.widget.name}
+        'widget_name': sub.widget.name,
+        'widget_post': getPosts(sub.widget_id)}
         for sub in subscriptions if sub.grid_location]
+    #  'content': sub.widget.style if sub.widget.style else sub.widget.name
     print('Displayed on dashboard: ', displayed)
     return displayed
 
@@ -222,3 +224,14 @@ def getValidWidgetsAdmin(current_user):
     return choices
 
 #-----------------------------------------------------------------------
+
+"""
+return the most recent post for now
+"""
+def getPosts(widget_id):
+    post = Post.query.filter_by(widget_id=widget_id).first()
+    if not post:
+        return {'content': '', 'author': ''}
+    author = User.query.get(post.author_id)
+    post = {'content': post.content, 'author': author.netid}
+    return post

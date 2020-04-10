@@ -1,6 +1,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.min.css" />
 <link rel="stylesheet" href="../static/grid.css"/>
+<link rel="stylesheet" href="../static/genericWidget.css"/>
 
+<!-- <link rel="stylesheet" href="../static/clock.css"> -->
 <script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
 <script type='text/javascript' src="../static/clock.js"></script>
 
@@ -17,7 +19,7 @@
         minWidth: 4,
         minHeight: 2
     };
-    grid.addWidget('<div class="grid-stack-item" widget-id="5"><div class="grid-stack-item-content"><link rel="stylesheet" href="../static/clock.css"><br><div id="centerPanel"><h1 id="time"></h1><br><br><h1 id = "date"></h1></div></div></div>', node);
+    // grid.addWidget('<div class="grid-stack-item" widget-id="5"><div class="grid-stack-item-content"><br><div id="centerPanelWidget"><h1 id="time"></h1><br><br><h1 id = "date"></h1></div></div></div>', node);
   };
 
   removeWidget = function () {
@@ -71,8 +73,8 @@
           widget_post: displayedWidgets[i].widget_post,
           id: displayedWidgets[i].widget_id
       };
-      console.log(node)
-      grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}"><div class="grid-stack-item-content"><div>${node.widget_name}<br>${node.widget_post.content}</div></div></div>`, node);
+      console.log(node);
+      grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}"><div class="grid-stack-item-content"><div id = "widgetWrapper"><div class = "centerPanelWidget"><h3 class = "genericTitle">${node.widget_name}</h3><hr class = "genericDivider"><div class = "GenericPost"><a class = "GenericPoster">@${node.widget_post.author}</a>${node.widget_post.content}</div></div></div></div></div>`, node);
     }
   };
 </script>

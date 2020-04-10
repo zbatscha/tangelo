@@ -11,6 +11,7 @@
     background-color: white;
     text-align: left;
     border-radius: 5px;
+    min-width: 200px;
 }
 
 .genericTitle {

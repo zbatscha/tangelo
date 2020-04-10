@@ -2,7 +2,6 @@
 <link rel="stylesheet" href="../static/grid.css"/>
 <link rel="stylesheet" href="../static/genericWidget.css"/>
 
-<!-- <link rel="stylesheet" href="../static/clock.css"> -->
 <script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
 <script type='text/javascript' src="../static/clock.js"></script>
 
@@ -10,28 +9,27 @@
 <script type="text/javascript">
   var grid = GridStack.init();
 
-  addNewWidget = function () {
-    let node =  {
+  // subscribe to this widget by widget_id, and display on dashboard
+  followWidget = function (follow_widget_id) {
+    let new_subscription = {
+      grid_location: {
         x: 0,
         y: 0,
-        width: 6,
-        height: 2,
-        minWidth: 4,
-        minHeight: 2
-    };
-     grid.addWidget('<div class="grid-stack-item" widget-id="5"><div class="grid-stack-item-content"><br><div id="centerPanelWidget"><h2 id="time"></h1><br><br><h2 id = "date"></h1></div></div></div>', node);
-  };
-  
-    addPreset = function (widgetTitle) {
-    let node =  {
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 2,
-        minWidth: 4,
-        minHeight: 2
-    };
-     grid.addWidget('<div class="grid-stack-item" widget-id="5"><div class="grid-stack-item-content">' + widgetTitle + '</div></div>', node);
+        w: 6,
+        h: 2,
+      },
+      widget_id: follow_widget_id};
+    $.ajax({
+      type : 'POST',
+      url : "{{url_for('addSubscription')}}",
+      data : JSON.stringify({"subscription": new_subscription}),
+      dataType: "json",
+      contentType: "application/json",
+      success: function (response) {
+        window.location.reload();
+           window.location();
+         },
+    });
   };
 
   removeWidget = function () {
@@ -62,8 +60,6 @@
       dataType: "json",
       contentType: "application/json",
     });
-
-    alert(JSON.stringify(widgets));
   };
 
   window.onload = function() {
@@ -73,9 +69,7 @@
     grid.removeAll()
     grid = GridStack.init();
     for (var i = 0; i < displayedWidgets.length; ++i) {
-      // $.each(displayeWidgets[i], function(key, value) {
-      // console.log(key, value);
-      // });
+
       let node =  {
           x: displayedWidgets[i].grid_location.x,
           y: displayedWidgets[i].grid_location.y,
@@ -83,10 +77,32 @@
           height: displayedWidgets[i].grid_location.h,
           widget_name: displayedWidgets[i].widget_name,
           widget_post: displayedWidgets[i].widget_post,
-          id: displayedWidgets[i].widget_id
+          id: displayedWidgets[i].widget_id,
+          widget_style: displayedWidgets[i].widget_style
       };
-      console.log(node);
-      grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}"><div class="grid-stack-item-content"><div id = "widgetWrapper"><div class = "centerPanelWidget"><h3 class = "genericTitle">${node.widget_name}</h3><hr class = "genericDivider"><div class = "GenericPost"><a class = "GenericPoster">@${node.widget_post.author}</a>${node.widget_post.content}</div></div></div></div></div>`, node);
+      if (!node.widget_style || node.widget_style.length === 0) {
+        grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
+                          <div class="grid-stack-item-content">
+                              <div class = "centerPanelWidget">
+                                <h3 class = "genericTitle">${node.widget_name}</h3>
+                                <hr class = "genericDivider">
+                                <div class = "GenericPost">
+                                    <a class = "GenericPoster">
+                                      @${node.widget_post.author}</a>
+                                    ${node.widget_post.content}
+                                </div>
+                              </div>
+                          </div>
+                        </div>`, node);
+      } else {
+        grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
+                          <div class="grid-stack-item-content">
+                              <div class = "centerPanelWidget">
+                                ${node.widget_style}
+                              </div>
+                          </div>
+                        </div>`, node);
+      }
     }
   };
 </script>

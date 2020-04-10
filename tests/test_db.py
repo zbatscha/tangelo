@@ -52,20 +52,33 @@ class DBTest(unittest.TestCase):
 
         # create widgets
 
-        widget_1 = Widget(name = 'Prospect Ave', description = 'Open clubs')
-        widget_2 = Widget(name = 'Dhall', description = 'Today\'s Entrees')
-        widget_3 = Widget(name = 'Umbrella', description = 'Yes/No')
-        widget_4 = Widget(name = 'Princeton News', description = 'Life at Princeton Updates')
-        widget_5 = Widget(name = 'Clock', description = 'Date and Time', style='<link rel=\\"stylesheet\\" href=\\"../static/clock.css\\"><br><div id=\\"centerPanel\\"><h2 id=\\"time\\"></h2><br><br><h2 id = \\"date\\"></h2></div>')
+        widget_1 = Widget(name = 'Creed Thoughts.', description = '')
+        widget_2 = Widget(name = 'Ryan\'s Isolation Song of the Day', description = '')
+        widget_3 = Widget(name = 'How styling king saves the day', description = '')
+        widget_4 = Widget(name = 'My favorite fruit of the hour, by Fawaz', description = '')
+        widget_5 = Widget(name = 'Saturday Drawful Nights', description = '8pm every friday, zoom in.')
+        widget_6 = Widget(name = 'An A+ for Tangelo?', description = 'Help us')
+        widget_7 = Widget(name = 'Prospect Ave', description = 'Open clubs')
+        widget_8 = Widget(name = 'Princeton News', description = 'Life at Princeton Updates')
+        widget_9 = Widget(name = 'Tangelo Zoom Room', description = '')
+        widget_10 = Widget(name = 'Clock', description = '', style='<h2 id=\\"time\\"></h1><br><br><h2 id = \\"date\\"></h1>')
 
         widget_1.admins.append(user_1)
-        widget_1.admins.extend([user_2, user_3])
+        widget_2.admins.append(user_2)
+        widget_3.admins.append(user_3)
+        widget_4.admins.append(user_4)
+        widget_7.admins.append(user_3)
 
         db.session.add(widget_1)
         db.session.add(widget_2)
         db.session.add(widget_3)
         db.session.add(widget_4)
         db.session.add(widget_5)
+        db.session.add(widget_6)
+        db.session.add(widget_7)
+        db.session.add(widget_8)
+        db.session.add(widget_9)
+        db.session.add(widget_10)
 
         # create subscriptions
         subscription_1 = Subscription(user=user_1, widget=widget_1, grid_location={'x': 6, 'y': 0, 'w': 6, 'h': 2})
@@ -112,10 +125,11 @@ class DBTest(unittest.TestCase):
         db.session.add(subscription_17)
         db.session.add(subscription_18)
 
-        post_1 = Post(content='My First Post!', author=user_1, widget=widget_1)
-        post_2 = Post(content='Our Second Post!', author=user_2, widget=widget_1)
+        post_1 = Post(content='THIS THURSDAY, FRIDAY, AND SATURDAY COME SEE MY DANCE SHOW!!! I\'m only in it for 1 piece but I will definitely evaluate our friendship on it :)', author=user_3, widget=widget_7)
+        post_2 = Post(content='I wanna do a cartwheel. But real casual like. Not enough to make a big deal out of it, but I know everyone saw it. One stunning, gorgeous cartwheel.', author=user_1, widget=widget_1)
 
         db.session.add(post_1)
+        db.session.add(post_2)
 
         db.session.commit()
 
@@ -162,7 +176,7 @@ class DBTest(unittest.TestCase):
 
         # check that all widgets remain
         widgets = Widget.query.all()
-        assert len(widgets) == 5
+        assert len(widgets) == 9
 
     def test_deleteUserDB(self):
         # delete user directly from db, check if user deleted
@@ -185,16 +199,16 @@ class DBTest(unittest.TestCase):
 
         # check that all widgets remain
         widgets = Widget.query.all()
-        assert len(widgets) == 5
+        assert len(widgets) == 9
 
     def test_getWidgetAdmins(self):
         widget_admins = Widget.query.filter_by(name='Prospect Ave').first().admins
-        assert len(widget_admins) == 3
+        assert len(widget_admins) == 1
 
     def test_getAdministeredWidgets(self):
         user_admin_widgets = User.query.filter_by(netid='zbatscha').first().widgets_admin
         assert len(user_admin_widgets) == 1
-        assert user_admin_widgets[0].name == 'Prospect Ave'
+        assert user_admin_widgets[0].name == 'www.creedthoughts.gov.www/creedthoughts.'
 
     def test_deleteWidgetMem(self):
         widget = Widget.query.filter_by(name='Prospect Ave').first()

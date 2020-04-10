@@ -10,6 +10,7 @@ User, Widget, Subscription, etc.
 from tangelo.models import User, Widget, Post, Subscription
 from tangelo import db, app
 import tangelo.user_utils as user_utils
+from sqlalchemy import desc
 
 #-----------------------------------------------------------------------
 
@@ -55,11 +56,38 @@ def getUserWidgets(current_user):
         'widget_id': sub.widget_id,
         'grid_location': sub.grid_location,
         'widget_name': sub.widget.name,
-        'widget_post': getPosts(sub.widget_id)}
+        'widget_post': getPost(sub.widget_id),
+        'widget_style': sub.widget.style}
         for sub in subscriptions if sub.grid_location]
     #  'content': sub.widget.style if sub.widget.style else sub.widget.name
-    print('Displayed on dashboard: ', displayed)
     return displayed
+
+#-----------------------------------------------------------------------
+
+def addSubscription(current_user, subscription):
+
+    widget = Widget.query.get(subscription['widget_id'])
+    if not widget:
+        raise Exception('This widget does not exist.')
+    if widget in current_user.widgets:
+        raise Exception('You already have this widget.')
+    try:
+        new_follow = Subscription(user=current_user, widget_id=subscription['widget_id'],
+                                    grid_location=subscription['grid_location'])
+        db.session.add(new_follow)
+        db.session.commit()
+
+    except Exception as e:
+        db.session.rollback()
+        raise Exception(e)
+
+#-----------------------------------------------------------------------
+
+
+def getAvailableFollowWidgets(current_user):
+    widgets = Widget.query.all()
+    not_subscribed = [widget for widget in widgets if current_user not in widget.users]
+    return not_subscribed
 
 #-----------------------------------------------------------------------
 
@@ -198,7 +226,6 @@ def updateSubscriptions(current_user, widgets):
                 db.session.rollback()
 
         else:
-            print('here')
             sub.grid_location=widget['grid_location']
             db.session.commit()
 
@@ -210,7 +237,6 @@ def getValidWidgetsPost(current_user):
     for widget in all_widgets:
         if widget.post_type == 'public' or current_user in widget.admins:
             choices.append((widget.id, widget.name))
-    print(choices)
     return choices
 
 #-----------------------------------------------------------------------
@@ -228,8 +254,8 @@ def getValidWidgetsAdmin(current_user):
 """
 return the most recent post for now
 """
-def getPosts(widget_id):
-    post = Post.query.filter_by(widget_id=widget_id).first()
+def getPost(widget_id):
+    post = Post.query.filter_by(widget_id=widget_id).order_by(desc(Post.create_dttm)).first()
     if not post:
         return {'content': '', 'author': ''}
     author = User.query.get(post.author_id)

@@ -31,7 +31,7 @@
         <!-- Page Content  -->
         <div id="content">
             <!-- Navigation  -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
                 <div class="container-fluid">
 
                     <button type="button" id="sidebarCollapse" class="btn btn-info">
@@ -66,6 +66,21 @@
                     </div>
                 </div>
             </nav>
+            <!-- Flash Errors  -->
+            <div class="row">
+              <div class="col-md-8">
+                <br>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category }}">
+                          {{ message }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+              </div>
+            </div>
             <!-- Dashboard  -->
             {% include 'grid.html' %}
         </div>
@@ -79,21 +94,12 @@
             <ul class="list-unstyled components">
                 <p>Search available widgets</p>
             </ul>
-            <div><a class="btn btn-outline-info" onClick="addNewWidget()" href="#">&nbsp;&nbsp;&nbsp;&nbsp;Add Clock&nbsp;&nbsp;&nbsp;</a></div><br>
             <div><a class="btn btn-outline-info" onClick="saveData()" href="#">Save Widgets</a></div><br>
-            <div><a class="btn btn-outline-info" onClick="removeWidget()" href="#">Remove Widgets</a></div><br>
-            <h2> Widgets Available </h2>
-            <div id="widgetsidebar" class="sibar">
-                <a href="#" class="closeBtn" onclick="closeSearch()">&times;</a>
-                <form class="searchBar">
-                <br>
-                <input type="text" placeholder="Search for a widget!" name="search">
-                <input type="submit" value="Search"></form>
-                <br>
-                <hr>
-                {% for wid in widgetsAvailable: %}
-                    <button id= {{wid[1]}}><div id={{wid[1]}}><a class="btn btn-outline-info" href="#">&nbsp;&nbsp;&nbsp;&nbsp;{{wid[1]}}&nbsp;&nbsp;&nbsp;</a></div></button>
-                {% endfor %}
+            <!-- <div><a class="btn btn-outline-info" onClick="removeWidget()" href="#">Remove Widgets</a></div><br> -->
+            <div id="widgetsidebar">
+              {% for wid in availableWidgets: %}
+                  <div><a class="btn btn-outline-info" id={{wid.id}} onClick="followWidget(this.id)">{{wid.name}}</a></div><br>
+              {% endfor %}
             </div>
         </nav>
     </div>
@@ -115,7 +121,7 @@
             if (this.id != id1) {
                 addPreset(this.id);
             }
-                
+
         });
         $(document).ready(function () {
             $("#sidebar").mCustomScrollbar({

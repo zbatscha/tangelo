@@ -15,6 +15,7 @@ from tangelo.generic import generic
 from tangelo.forms import CreateWidget, CreatePost, CreateAddTeam
 from tangelo import utils
 import json
+from flask import jsonify
 
 #-----------------------------------------------------------------------
 
@@ -30,8 +31,8 @@ def welcome():
 @login_required
 def dashboard():
     displayed_widgets = utils.getUserWidgets(current_user)
-    availableWidgets = utils.getValidWidgetsPost(current_user)
-    return make_response(render_template('dashboard.html', title='Dashboard', displayedWidgets=displayed_widgets, widgetsAvailable = availableWidgets))
+    availableWidgets = utils.getAvailableFollowWidgets(current_user)
+    return make_response(render_template('dashboard.html', title='Dashboard', displayedWidgets=displayed_widgets, availableWidgets=availableWidgets))
 
 #-----------------------------------------------------------------------
 
@@ -159,3 +160,16 @@ def updateDashboard():
         # widget_info[0]['grid_location']
 
     return redirect(url_for('dashboard'))
+
+@app.route('/addSubscription', methods=['GET','POST'])
+def addSubscription():
+    resp = jsonify(success=True)
+    if request.method == "POST":
+        subscription = request.json.get('subscription')
+        try:
+            utils.addSubscription(current_user, subscription)
+        except Exception as e:
+            print(e)
+            resp = jsonify(success=False)
+            flash(e.args[0], 'danger')
+    return resp

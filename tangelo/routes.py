@@ -30,8 +30,8 @@ def welcome():
 @login_required
 def dashboard():
     displayed_widgets = utils.getUserWidgets(current_user)
-
-    return make_response(render_template('dashboard.html', title='Dashboard', displayedWidgets=displayed_widgets))
+    availableWidgets = utils.getValidWidgetsPost(current_user)
+    return make_response(render_template('dashboard.html', title='Dashboard', displayedWidgets=displayed_widgets, widgetsAvailable = availableWidgets))
 
 #-----------------------------------------------------------------------
 

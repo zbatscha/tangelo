@@ -19,7 +19,19 @@
         minWidth: 4,
         minHeight: 2
     };
-    // grid.addWidget('<div class="grid-stack-item" widget-id="5"><div class="grid-stack-item-content"><br><div id="centerPanelWidget"><h1 id="time"></h1><br><br><h1 id = "date"></h1></div></div></div>', node);
+     grid.addWidget('<div class="grid-stack-item" widget-id="5"><div class="grid-stack-item-content"><br><div id="centerPanelWidget"><h2 id="time"></h1><br><br><h2 id = "date"></h1></div></div></div>', node);
+  };
+  
+    addPreset = function (widgetTitle) {
+    let node =  {
+        x: 0,
+        y: 0,
+        width: 6,
+        height: 2,
+        minWidth: 4,
+        minHeight: 2
+    };
+     grid.addWidget('<div class="grid-stack-item" widget-id="5"><div class="grid-stack-item-content">' + widgetTitle + '</div></div>', node);
   };
 
   removeWidget = function () {
@@ -39,7 +51,7 @@
               y: $this.attr('data-gs-y') * 1,
               w: $this.attr('data-gs-width') * 1,
               h: $this.attr('data-gs-height') * 1}
-            // content: $('.grid-stack-item-content', $this).html()
+            // content: $('.grid-stack-item-content', $this).html()7
         });
     });
 

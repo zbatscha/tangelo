@@ -81,6 +81,20 @@
             </ul>
             <div><a class="btn btn-outline-info" onClick="addNewWidget()" href="#">&nbsp;&nbsp;&nbsp;&nbsp;Add Clock&nbsp;&nbsp;&nbsp;</a></div><br>
             <div><a class="btn btn-outline-info" onClick="saveData()" href="#">Save Widgets</a></div><br>
+            <div><a class="btn btn-outline-info" onClick="removeWidget()" href="#">Remove Widgets</a></div><br>
+            <h2> Widgets Available </h2>
+            <div id="widgetsidebar" class="sibar">
+                <a href="#" class="closeBtn" onclick="closeSearch()">&times;</a>
+                <form class="searchBar">
+                <br>
+                <input type="text" placeholder="Search for a widget!" name="search">
+                <input type="submit" value="Search"></form>
+                <br>
+                <hr>
+                {% for wid in widgetsAvailable: %}
+                    <button id= {{wid[1]}}><div id={{wid[1]}}><a class="btn btn-outline-info" href="#">&nbsp;&nbsp;&nbsp;&nbsp;{{wid[1]}}&nbsp;&nbsp;&nbsp;</a></div></button>
+                {% endfor %}
+            </div>
         </nav>
     </div>
 
@@ -96,6 +110,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
     <script type="text/javascript">
+        $("button").click(function () {
+            var id1 = 'sidebarCollapse';
+            if (this.id != id1) {
+                addPreset(this.id);
+            }
+                
+        });
         $(document).ready(function () {
             $("#sidebar").mCustomScrollbar({
                 theme: "minimal",

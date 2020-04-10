@@ -1,11 +1,5 @@
 @import "https://fonts.googleapis.com/css?family=Lato";
 
-#widgetWrapper {
-    margin: 100px;
-    width: 30%;
-    min-width: 250px;
-    max-height: 250px;
-}
 
 .centerPanelWidget {
     -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */

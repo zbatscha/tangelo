@@ -45,7 +45,7 @@
     font-weight: bold;
     line-height: 80%;
     font-family: 'Merriweather', sans-serif;
-
+    margin-right: 5px;
 }
 
 @keyframes fadein {

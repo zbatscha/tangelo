@@ -4,6 +4,10 @@ from wtforms.validators import DataRequired, Length, ValidationError
 from tangelo.models import Widget, User
 from tangelo.utils import getValidWidgetsPost
 
+class SearchWidget(FlaskForm):
+    search_text = StringField('Search available widgets.')
+    submit = SubmitField('Search')
+
 class CreateWidget(FlaskForm):
     name = StringField('Widget Name',
                         validators=[DataRequired(message='Please provide a descriptive widget name'),

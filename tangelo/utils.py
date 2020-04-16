@@ -84,8 +84,10 @@ def addSubscription(current_user, subscription):
 #-----------------------------------------------------------------------
 
 
-def getAvailableFollowWidgets(current_user):
-    widgets = Widget.query.all()
+def getAvailableFollowWidgets(current_user, searchName):
+    widgets = Widget.query.filter(Widget.name.like('%'+searchName+'%')).all()
+    for w in widgets:
+        print(w.name)
     not_subscribed = [widget for widget in widgets if current_user not in widget.users]
     return not_subscribed
 

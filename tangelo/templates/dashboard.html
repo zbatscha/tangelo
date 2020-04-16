@@ -93,14 +93,14 @@
 
             <ul class="list-unstyled components">
                 <p>Search available widgets</p>
+                <center>
+                    <input id="searchTerms" class="form-control form-control-lg" type="text">
+                </center>
             </ul>
             <div><a class="btn btn-outline-info" onClick="saveData()" href="#">Save Widgets</a></div><br>
             <!-- <div><a class="btn btn-outline-info" onClick="removeWidget()" href="#">Remove Widgets</a></div><br> -->
-            <div id="widgetsidebar">
-              {% for wid in availableWidgets: %}
-                  <div><a class="btn btn-outline-info" id={{wid.id}} onClick="followWidget(this.id)">{{wid.name}}</a></div><br>
-              {% endfor %}
-            </div>
+            <p><strong>Search Results</strong></p>
+            <div id="widgetsidebar"></div>
         </nav>
     </div>
 
@@ -121,9 +121,10 @@
             if (this.id != id1) {
                 addPreset(this.id);
             }
-
         });
+
         $(document).ready(function () {
+            $("#searchTerms").on('input', searchText);
             $("#sidebar").mCustomScrollbar({
                 theme: "minimal",
             });
@@ -135,6 +136,31 @@
             // $('.collapse.in').toggleClass('in');
             $('a[aria-expanded=true]').attr('aria-expanded', 'false');
         });
+        
+             
+        //Adapted from PennyJQuery
+        function handleResponse(response)
+        {
+            $('#widgetsidebar').html(response);
+        }
+        
+        let request = null;
+        function searchText()
+        {
+            let text = $("#searchTerms").val();
+            text = encodeURIComponent(text);
+            let url = '/getwidgets?text=' + text
+            if (request != null)
+                request.abort();
+            request = $.ajax(
+            {
+                type: "GET",
+                url: url,
+                success: handleResponse
+            }
+         );
+       }
+    
     </script>
 </body>
 

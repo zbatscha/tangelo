@@ -31,11 +31,26 @@ def welcome():
 @login_required
 def dashboard():
     displayed_widgets = utils.getUserWidgets(current_user)
-    availableWidgets = utils.getAvailableFollowWidgets(current_user)
-    return make_response(render_template('dashboard.html', title='Dashboard', displayedWidgets=displayed_widgets, availableWidgets=availableWidgets))
+    return make_response(render_template('dashboard.html', title='Dashboard', displayedWidgets=displayed_widgets))
 
 #-----------------------------------------------------------------------
+@app.route('/getwidgets', methods=['GET'])
+@login_required
+def getWidgets():
+    text = request.args.get('text')
+    print(text)
+    availableWidgets = utils.getAvailableFollowWidgets(current_user, text)
+    html = ''
+    for a in availableWidgets:
+        print(a.name)
+    
+    for wid in availableWidgets:
+        print(wid.name)
+        html += '<div><a class="btn btn-outline-info" id='+str(wid.id)+' onClick="followWidget(this.id)">'+wid.name+'</a></div><br>'
+    response = make_response(html)
+    return response
 
+#-----------------------------------------------------------------------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 

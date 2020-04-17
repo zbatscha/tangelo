@@ -22,8 +22,6 @@ a:focus {
 }
 
 .navbar {
-    position: absolute;
-    z-index: 1000;
     padding: 15px 10px;
     background: #fff;
     border: none;

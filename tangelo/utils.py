@@ -32,6 +32,17 @@ def getUser(netid):
     user = User.query.filter_by(netid=netid).first()
     if not user:
         user = user_utils.createUser(netid)
+        try:
+            print(user)
+            welcome_widget = Subscription(user=user, widget_id=1,
+                                            grid_location={'x': 0, 'y': 0, 'width': 6, 'height': 2})
+            print(welcome_widget)
+            db.session.add(welcome_widget)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise Exception(e)
+
     return user
 
 #-----------------------------------------------------------------------
@@ -81,11 +92,33 @@ def addSubscription(current_user, subscription):
         db.session.rollback()
         raise Exception(e)
 
+def removeSubscription(current_user, widget_id):
+    try:
+        subscription = Subscription.query.filter_by(user_id=current_user.id).filter_by(widget_id=widget_id).first()
+        if not subscription:
+            raise Exception('Current user not subscribed to this widget.')
+        db.session.delete(subscription)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise Exception(f'Error removing subscription for widget {widget_id}. Rolling back.') from e
+
+def updateSubscriptionLocation(current_user, widget_id, grid_location):
+    subscription = Subscription.query.filter_by(user=current_user).filter_by(widget_id=widget_id).first()
+    if not subscription:
+        raise Exception(f'User not subscribed to widget {widget_id}. Error updating location.')
+    try:
+        subscription.grid_location = grid_location
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise Exception(f'Error updating location for widget {widget_id}. Rolling back.') from e
+
 #-----------------------------------------------------------------------
 
 
 def getAvailableFollowWidgets(current_user, searchName):
-    widgets = Widget.query.filter(Widget.name.like('%'+searchName+'%')).all()
+    widgets = Widget.query.filter(Widget.name.ilike('%'+searchName+'%')).all()
     for w in widgets:
         print(w.name)
     not_subscribed = [widget for widget in widgets if current_user not in widget.users]
@@ -114,7 +147,7 @@ def addWidget(current_user, form):
                         post_type=form.post_type.data)
 
         # place new widgets in top left corner of admins dashboard
-        default_widget_location = {'x': 0, 'y': 0, 'w': 2, 'h': 2}
+        default_widget_location = {'x': 0, 'y': 0, 'width': 6, 'height': 2}
         subscription = Subscription(user=current_user, widget=widget,
                                     grid_location=default_widget_location)
         # current_user is the admin of the new widget

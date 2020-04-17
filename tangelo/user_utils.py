@@ -63,8 +63,7 @@ def createUser(netid):
         return new_user
     except Exception as e:
         db.session.rollback()
-        print(e, file=stderr)
-    return None
+        raise Exception(f'Failed to create user with netid = {netid}') from e
 
 if __name__=="__main__":
     undergrad_profile = getUndergraduate(netid)

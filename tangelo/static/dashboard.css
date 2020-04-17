@@ -22,6 +22,8 @@ a:focus {
 }
 
 .navbar {
+    position: absolute;
+    z-index: 1000;
     padding: 15px 10px;
     background: #fff;
     border: none;
@@ -64,6 +66,7 @@ a:focus {
     background: rgb(238, 189, 82);
     color: #fff;
     transition: all 0.3s;
+    overflow: auto;
 }
 
 #sidebar.active {
@@ -76,13 +79,13 @@ a:focus {
 }
 
 #sidebar ul.components {
-    padding: 20px 0;
+    padding: 5px 0;
     border-bottom: 1px solid #fff;
 }
 
 #sidebar ul p {
     color: #fff;
-    padding: 10px;
+    padding: 5px;
 }
 
 #sidebar ul li a {
@@ -109,10 +112,13 @@ a:focus {
     width: 100%;
 }
 
+#rightSidebarCollapse,
 #sidebarCollapse {
     background: rgb(238, 189, 82);
     border-color: #fff;
 }
+
+
 
 /* ---------------------------------------------------
     MEDIAQUERIES

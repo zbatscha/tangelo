@@ -33,10 +33,8 @@ def getUser(netid):
     if not user:
         user = user_utils.createUser(netid)
         try:
-            print(user)
             welcome_widget = Subscription(user=user, widget_id=1,
                                             grid_location={'x': 0, 'y': 0, 'width': 6, 'height': 2})
-            print(welcome_widget)
             db.session.add(welcome_widget)
             db.session.commit()
         except Exception as e:
@@ -119,8 +117,6 @@ def updateSubscriptionLocation(current_user, widget_id, grid_location):
 
 def getAvailableFollowWidgets(current_user, searchName):
     widgets = Widget.query.filter(Widget.name.ilike('%'+searchName+'%')).all()
-    for w in widgets:
-        print(w.name)
     not_subscribed = [widget for widget in widgets if current_user not in widget.users]
     return not_subscribed
 

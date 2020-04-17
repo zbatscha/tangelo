@@ -41,7 +41,6 @@ def getWidgets():
     availableWidgets = utils.getAvailableFollowWidgets(current_user, text)
     html = ''
     for wid in availableWidgets:
-        print(wid.name)
         html += '<div><a class="btn btn-outline-info" style="margin-left: 15px;" id='+str(wid.id)+' onClick="followWidget(this.id)">'+wid.name+'</a></div><br>'
     response = make_response(html)
     return response
@@ -147,7 +146,6 @@ def addTeam():
     if team_form.validate_on_submit():
         try:
             addBool = (dict(team_form.add_remove.choices).get(team_form.add_remove.data) == 'Add')
-            print(addBool)
             if addBool:
                 utils.addUserClosedWidget(team_form)
                 flash(f'{team_form.user.data} has been added to {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success')
@@ -178,7 +176,6 @@ def removeSubscription():
             widgets = request.json.get('widgets')
             for w in widgets:
                 utils.removeSubscription(current_user, w['widget_id'])
-                print('Removing', w)
     except Exception as e:
         print(e)
         flash(f'Error occured!', 'danger')
@@ -192,7 +189,6 @@ def addedSubscription():
     try:
         if request.method == "POST":
             widgets = request.json.get('widgets')
-            print('Adding', widgets)
     except Exception as e:
         print(e)
         flash(f'Error occured!', 'danger')
@@ -207,7 +203,6 @@ def changeSubscription():
             widgets = request.json.get('widgets')
             for w in widgets:
                 utils.updateSubscriptionLocation(current_user, w['widget_id'], w['grid_location'])
-                print('Changing', widgets)
     except Exception as e:
         print(e)
         flash(f'Error occured!', 'danger')

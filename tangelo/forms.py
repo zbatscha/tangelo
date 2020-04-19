@@ -2,7 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Length, ValidationError
 from tangelo.models import Widget, User
-from tangelo.utils import getValidWidgetsPost
 
 class SearchWidget(FlaskForm):
     search_text = StringField('Search available widgets.')

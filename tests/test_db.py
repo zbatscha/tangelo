@@ -63,7 +63,7 @@ class DBTest(unittest.TestCase):
         # widget_8 = Widget(name = 'Princeton News', description = 'Life at Princeton Updates')
         # widget_9 = Widget(name = 'Tangelo Zoom Room', description = '')
         widget_10 = Widget(name = 'Clock', description = '', style='<link rel=\\"stylesheet\\" href=\\"../static/clock.css\\"/><script type=\\"text/javascript\\" src=\\"../static/clock.js\\"></script><div id=\\"centerPanelClock\\"><h1 id=\\"time\\"></h1><br><h1 id = \\"date\\"></h1></div>')
-        widget_11 = Widget(name = 'Weather', description = '', style='<link rel=\\"stylesheet\\" href=\\"../static/weather.css\\"/><script type=\\"text/javascript\\" src=\\"../static/weather.js\\"></script><div id=\\"centerPanelWeather\\"><div id=\\"demo\\"></div><div id=\\"temperature\\">One moment, we\'re getting some weathery goodness</div><div id=\\"sky\\"></div></div>')
+        widget_11 = Widget(name = 'Weather', description = '', style='<link rel=\\"stylesheet\\" href=\\"../static/weather.css\\"/><script type=\\"text/javascript\\" src=\\"../static/weather.js\\"></script><div id=\\"centerPanelWeather\\"><h1 id=\\"temperature\\">One moment, we\'re getting some weathery goodness</h1><h1 id=\\"sky\\"></h1></div>')
 
         # # widget_1.admins.append(user_1)
         # widget_2.admins.append(user_2)

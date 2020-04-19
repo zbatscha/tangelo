@@ -1,4 +1,16 @@
-h1 {
+#centerPanelClock {
+  -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+     -moz-animation: fadein 2s; /* Firefox < 16 */
+      -ms-animation: fadein 2s; /* Internet Explorer */
+       -o-animation: fadein 2s; /* Opera < 12.1 */
+          animation: fadein 2s;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 5px;
+}
+
+#centerPanelClock h1 {
     font-size: 25pt;
     line-height: 10px;
     font-weight: 100;
@@ -11,11 +23,4 @@ h2 {
     line-height: 0px;
     color: rgb(238, 174, 36);
     font-weight: 500;
-}
-
-#centerPanelClock {
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    border-radius: 5px;
 }

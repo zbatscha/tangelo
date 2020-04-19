@@ -1,15 +1,19 @@
 #centerPanelWeather {
-    position: absolute;
-    margin: auto;
-    top: -300px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    min-width: 500px;
-    height: 30%;
-    padding-bottom: 5%;
-    text-align: center;
-    transition: .5s ease-in-out;
-    display: inline-block;
-    background-color: #ff8f00;
+  -webkit-animation: fadein 3s; /* Safari, Chrome and Opera > 12.1 */
+     -moz-animation: fadein 3s; /* Firefox < 16 */
+      -ms-animation: fadein 3s; /* Internet Explorer */
+       -o-animation: fadein 3s; /* Opera < 12.1 */
+          animation: fadein 3s;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 5px;
+}
+
+#centerPanelWeather h1 {
+    font-size: 25pt;
+    line-height: 30px;
+    font-weight: 100;
+    padding-top: 25px;
+    color: rgb(238, 174, 36);
 }

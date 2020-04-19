@@ -11,14 +11,16 @@ from tangelo.models import User, Widget, Subscription
 from flask import request, make_response, abort, redirect, url_for, flash
 from flask import render_template, session
 from flask_login import login_user, logout_user, login_required, current_user
-from tangelo.generic import generic
-from tangelo.forms import CreateWidget, CreatePost, CreateAddTeam
+import tangelo.forms as createForm
 from tangelo import utils
 import json
 from flask import jsonify
 
 #-----------------------------------------------------------------------
 
+"""
+Landing login page. Redirect to CAS.
+"""
 @app.route('/', methods=['GET'])
 @app.route('/welcome', methods=['GET'])
 @app.route('/landing', methods=['GET'])
@@ -27,25 +29,11 @@ def welcome():
          return redirect(url_for('dashboard'))
     return make_response(render_template("tangelohome.html"))
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-@login_required
-def dashboard():
-    displayed_widgets = utils.getUserWidgets(current_user)
-    return make_response(render_template('dashboard.html', title='Dashboard', displayedWidgets=displayed_widgets))
-
 #-----------------------------------------------------------------------
-@app.route('/getwidgets', methods=['GET'])
-@login_required
-def getWidgets():
-    text = request.args.get('text')
-    availableWidgets = utils.getAvailableFollowWidgets(current_user, text)
-    html = ''
-    for wid in availableWidgets:
-        html += '<div><a class="btn btn-outline-info" style="margin-left: 15px;" id='+str(wid.id)+' onClick="followWidget(this.id)">'+wid.name+'</a></div><br>'
-    response = make_response(html)
-    return response
 
-#-----------------------------------------------------------------------
+"""
+All routes re-routed through login to ensure user is logged in.
+"""
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -70,54 +58,73 @@ def logout():
 
 #-----------------------------------------------------------------------
 
-@app.route('/about', methods=['GET', 'POST'])
-def about():
-    return make_response(render_template('about.html', title='About'))
-
-#----------------------------------------------------------------------
-
-@app.route('/account', methods=['GET', 'POST'])
+"""
+Dashboard
+"""
+@app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
-def account():
-    widget_target_choices = utils.getValidWidgetsPost(current_user)
-    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
-    widget_form = CreateWidget()
-    post_form = CreatePost()
-    team_form = CreateAddTeam()
-    post_form.widget_target.choices = widget_target_choices
-    team_form.widget_target.choices = admin_widget_target_choices
+def dashboard():
+    displayed_widgets = utils.getGridWidgets(current_user)
+    create_widget_form = createForm.CreateWidget()
+    return make_response(render_template('dashboard.html',
+                title='Dashboard', widget_form=create_widget_form,
+                displayedWidgets=displayed_widgets))
 
-    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
+#-----------------------------------------------------------------------
 
+"""
+Widgets that conform to user's search in the left follow sidebar.
+"""
+@app.route('/getSearchWidgets', methods=['GET'])
+@login_required
+def getSearchFollowWidgets():
+    text = request.args.get('text')
+    availableWidgets = utils.getAvailableFollowWidgets(current_user, text)
+    html = ''
+    for wid in availableWidgets:
+        html += '<div><a class="btn btn-outline-info" style="margin-left: 15px;" id='+str(wid.id)+' onClick="followWidget(this.id)">'+wid.name+'</a></div><br>'
+    response = make_response(html)
+    return response
+
+#-----------------------------------------------------------------------
+
+"""
+Create a new widget with current_user as admin, if form is valid.
+"""
 @app.route('/createwidget', methods=['GET', 'POST'])
 @login_required
 def createWidget():
-    widget_target_choices = utils.getValidWidgetsPost(current_user)
-    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
-    widget_form = CreateWidget()
-    post_form = CreatePost()
-    team_form = CreateAddTeam()
-    post_form.widget_target.choices = widget_target_choices
-    team_form.widget_target.choices = admin_widget_target_choices
+
+    widget_form = createForm.CreateWidget()
 
     if widget_form.validate_on_submit():
         try:
-            utils.addWidget(current_user, widget_form)
+            utils.createNewWidget(current_user, widget_form)
             flash(f'Your widget has been created!', 'success')
-            return redirect(url_for('account'))
+            return redirect(url_for('dashboard'))
         except Exception as e:
             print(e)
             flash(f'Error occured!', 'danger')
-    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
 
+    displayed_widgets = utils.getGridWidgets(current_user)
+    return make_response(render_template('dashboard.html', title='Dashboard', widget_form=widget_form, displayedWidgets=displayed_widgets))
+
+
+    return make_response(render_template('dashboard.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
+
+#-----------------------------------------------------------------------
+
+"""
+Create a new post with current_user as author, if form is valid.
+"""
 @app.route('/createpost', methods=['GET', 'POST'])
 @login_required
 def createPost():
-    widget_target_choices = utils.getValidWidgetsPost(current_user)
+    widget_target_choices = utils.getWidgetChoicesForNewPost(current_user)
     admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
-    widget_form = CreateWidget()
-    post_form = CreatePost()
-    team_form = CreateAddTeam()
+    widget_form = createForm.CreateWidget()
+    post_form = createForm.CreatePost()
+    team_form = createForm.CreateAddTeam()
     post_form.widget_target.choices = widget_target_choices
     team_form.widget_target.choices = admin_widget_target_choices
 
@@ -131,14 +138,19 @@ def createPost():
             flash(f'Error occured!', 'danger')
     return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
 
+#-----------------------------------------------------------------------
+
+"""
+Add users to a private widget.
+"""
 @app.route('/addteam', methods=['GET', 'POST'])
 @login_required
 def addTeam():
-    widget_target_choices = utils.getValidWidgetsPost(current_user)
+    widget_target_choices = utils.getWidgetChoicesForNewPost(current_user)
     admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
-    widget_form = CreateWidget()
-    post_form = CreatePost()
-    team_form = CreateAddTeam()
+    widget_form = createForm.CreateWidget()
+    post_form = createForm.CreatePost()
+    team_form = createForm.CreateAddTeam()
     post_form.widget_target.choices = widget_target_choices
     team_form.widget_target.choices = admin_widget_target_choices
 
@@ -158,16 +170,11 @@ def addTeam():
             flash(f'Error occured!', 'danger')
     return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
 
-@app.route('/updateDashboard', methods=['GET','POST'])
-def updateDashboard():
+#-----------------------------------------------------------------------
 
-    if request.method == "POST":
-        widget_info = request.json.get('data')
-        utils.updateSubscriptions(current_user, widget_info)
-        # widget_info[0]['grid_location']
-
-    return redirect(url_for('dashboard'))
-
+"""
+Remove subscription from user after widget is dragged to trash/unfollow on left sidebar.
+"""
 @app.route('/update/removed', methods=['GET','POST'])
 def removeSubscription():
     response = jsonify(success=True)
@@ -182,7 +189,11 @@ def removeSubscription():
         response = jsonify(success=False)
     return response
 
+#-----------------------------------------------------------------------
 
+"""
+currently not in use.
+"""
 @app.route('/update/added', methods=['GET','POST'])
 def addedSubscription():
     response = jsonify(success=True)
@@ -195,6 +206,11 @@ def addedSubscription():
         response = jsonify(success=False)
     return response
 
+#-----------------------------------------------------------------------
+
+"""
+Change grid_location/size of widget.
+"""
 @app.route('/update/change', methods=['GET','POST'])
 def changeSubscription():
     response = jsonify(success=True)
@@ -209,6 +225,11 @@ def changeSubscription():
         response = jsonify(success=False)
     return response
 
+#-----------------------------------------------------------------------
+
+"""
+Subscribe current_user to selected widget.
+"""
 @app.route('/addSubscription', methods=['GET','POST'])
 def addSubscription():
     response = jsonify(success=True)
@@ -221,3 +242,30 @@ def addSubscription():
             response = jsonify(success=False)
             flash(e.args[0], 'danger')
     return response
+
+#-----------------------------------------------------------------------
+
+"""
+Deprecated
+"""
+@app.route('/about', methods=['GET', 'POST'])
+def about():
+    return make_response(render_template('about.html', title='About'))
+
+#----------------------------------------------------------------------
+
+"""
+Deprecated
+"""
+@app.route('/account', methods=['GET', 'POST'])
+@login_required
+def account():
+    widget_target_choices = utils.getWidgetChoicesForNewPost(current_user)
+    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
+    widget_form = createForm.CreateWidget()
+    post_form = createForm.CreatePost()
+    team_form = createForm.CreateAddTeam()
+    post_form.widget_target.choices = widget_target_choices
+    team_form.widget_target.choices = admin_widget_target_choices
+
+    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))

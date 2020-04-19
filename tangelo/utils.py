@@ -3,7 +3,7 @@
 """
 utils.py
 
-Provides methods for getting and manipulating database table objects:
+Provides methods for getting and manipulating database objects:
 User, Widget, Subscription, etc.
 """
 
@@ -17,7 +17,7 @@ from sqlalchemy import desc
 def getUser(netid):
     """
     User associated with provided `netid`. If netid does not exist in
-    database, creates a new User.
+    database, creates a new User, and subscribed new User to `welcome` Widget.
 
     Parameters
     ----------
@@ -45,9 +45,9 @@ def getUser(netid):
 
 #-----------------------------------------------------------------------
 
-def getUserWidgets(current_user):
+def getGridWidgets(current_user):
     """
-    All widgets to be displayed on a users dashboard.
+    All widgets to be displayed on a user's dashboard.
 
     Parameters
     ----------
@@ -57,7 +57,8 @@ def getUserWidgets(current_user):
     -------
     list(dict)
         A list of widget-associated dictionaries, where keys are `widget_id`,
-        gridstack `grid_location`, displayed widget `content`.
+        gridstack `grid_location`, displayed widget `content`, the most recent
+        post `widget_post`, and unique css/js `widget_style` if any.
 
     """
     subscriptions = Subscription.query.filter_by(user_id=current_user.id).all()
@@ -68,7 +69,7 @@ def getUserWidgets(current_user):
         'widget_post': getPost(sub.widget_id),
         'widget_style': sub.widget.style}
         for sub in subscriptions if sub.grid_location]
-    #  'content': sub.widget.style if sub.widget.style else sub.widget.name
+
     return displayed
 
 #-----------------------------------------------------------------------
@@ -89,6 +90,7 @@ def addSubscription(current_user, subscription):
     except Exception as e:
         db.session.rollback()
         raise Exception(e)
+
 
 def removeSubscription(current_user, widget_id):
     try:
@@ -122,7 +124,7 @@ def getAvailableFollowWidgets(current_user, searchName):
 
 #-----------------------------------------------------------------------
 
-def addWidget(current_user, form):
+def createNewWidget(current_user, form):
     """
     Create a new widget with current_user as admin.
 
@@ -188,6 +190,7 @@ def addPost(current_user, form):
 
 #-----------------------------------------------------------------------
 
+
 def addUserClosedWidget(form):
     """
     Allow admins to add a user to a closed (private or secret) widget.
@@ -245,24 +248,22 @@ def removeUserClosedWidget(current_user, form):
 
 #-----------------------------------------------------------------------
 
-def updateSubscriptions(current_user, widgets):
-    for widget in widgets:
-        sub = Subscription.query.filter_by(user=current_user).filter_by(widget_id=widget['widget_id']).first()
-        if not sub:
-            try:
-                new_subscription = Subscription(user_id=current_user.id, widget_id=widget['widget_id'], grid_location=widget['grid_location'])
-                db.session.add(new_subscription)
-                db.session.commit()
-            except Exception as e:
-                db.session.rollback()
 
-        else:
-            sub.grid_location=widget['grid_location']
-            db.session.commit()
+def getWidgetChoicesForNewPost(current_user):
+    """
+    Return list of widgets that current user can post to.
 
-#-----------------------------------------------------------------------
+    Parameters
+    ----------
+    current_user : User
 
-def getValidWidgetsPost(current_user):
+    Returns
+    -------
+    list(tuple(int, str))
+        A list of tuples representing valid widgets, where first element of
+        tuple is the widget_id, and the second is the name of the widget.
+
+    """
     all_widgets = current_user.widgets
     choices = []
     for widget in all_widgets:
@@ -272,11 +273,25 @@ def getValidWidgetsPost(current_user):
 
 #-----------------------------------------------------------------------
 
+
 def getValidWidgetsAdmin(current_user):
+    """
+    Return list of widgets that current user is an admin of.
+
+    Parameters
+    ----------
+    current_user : User
+
+    Returns
+    -------
+    list(tuple(int, str))
+        A list of tuples representing administered widgets, where first element of
+        tuple is the widget_id, and the second is the name of the widget.
+
+    """
     all_widgets = current_user.widgets_admin
     choices = []
     for widget in all_widgets:
-        #if widget.access_type == 'private' or widget.access_type == 'secret':
         choices.append((widget.id, widget.name))
     return choices
 
@@ -286,6 +301,19 @@ def getValidWidgetsAdmin(current_user):
 return the most recent post for now
 """
 def getPost(widget_id):
+    """
+    Return the most recent post for Widget with primary_key of `widget_id`.
+
+    Parameters
+    ----------
+    widget_id : int
+
+    Returns
+    -------
+    dict(str:str)
+        Dictionary containing an `author` key and `content` key.
+
+    """
     post = Post.query.filter_by(widget_id=widget_id).order_by(desc(Post.create_dttm)).first()
     if not post:
         return {'content': '', 'author': ''}

@@ -1,0 +1,63 @@
+<!-- Create a widget form -->
+<div class="">
+  <form action="{{ url_for('createWidget') }}" method="post">
+      {{ widget_form.hidden_tag() }} <!-- hidden_tag method adds csrf token, protects against attacks -->
+      <fieldset class="form-group">
+          <div class="form-group">
+              {{ widget_form.name.label(class="form-control-label") }}
+              {% if widget_form.name.errors %}
+                  {{ widget_form.name(class="form-control is-invalid") }}
+                  <div class="invalid-feedback">
+                      {% for error in widget_form.name.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                  </div>
+              {% else %}
+                  {{ widget_form.name(class="form-control") }}
+              {% endif %}
+          </div>
+          <div class="form-group">
+              {{ widget_form.description.label(class="form-control-label") }}
+              {% if widget_form.description.errors %}
+                  {{ widget_form.description(class="form-control is-invalid") }}
+                  <div class="invalid-feedback">
+                      {% for error in widget_form.description.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                  </div>
+              {% else %}
+                  {{ widget_form.description(class="form-control") }}
+              {% endif %}
+          </div>
+          <div class="form-group">
+              {{ widget_form.access_type.label(class="form-control-label") }}
+              {% if widget_form.access_type.errors %}
+                  {{ widget_form.access_type(class="form-control is-invalid") }}
+                  <div class="invalid-feedback">
+                      {% for error in widget_form.access_type.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                  </div>
+              {% else %}
+                  {{ widget_form.access_type(class="form-control") }}
+              {% endif %}
+          </div>
+          <div class="form-group">
+              {{ widget_form.post_type.label(class="form-control-label") }}
+              {% if widget_form.post_type.errors %}
+                  {{ widget_form.post_type(class="form-control is-invalid") }}
+                  <div class="invalid-feedback">
+                      {% for error in widget_form.post_type.errors %}
+                          <span>{{ error }}</span>
+                      {% endfor %}
+                  </div>
+              {% else %}
+                  {{ widget_form.post_type(class="form-control") }}
+              {% endif %}
+          </div>
+      </fieldset>
+      <div class="form-group">
+          {{ widget_form.submit(class="btn btn-outline-info")}}
+      </div>
+  </form>
+</div>

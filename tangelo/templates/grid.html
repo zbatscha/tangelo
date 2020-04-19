@@ -16,6 +16,7 @@
     removable: '#trash',
     removeTimeout: 100
   });
+  // don't perform any dashboard widget updates until all widgets are loaded
   let dashboardPopulated = false;
 
   // load dashboard
@@ -36,8 +37,9 @@
           id: displayedWidgets[i].widget_id,
           widget_style: displayedWidgets[i].widget_style
       };
-      if (!node.widget_style || node.widget_style.length === 0) {
-        if (!node.widget_post.content || node.widget_post.content === 0) {
+      if (!node.widget_style || node.widget_style.trim().length === 0) {
+        // generic widget with empty post
+        if (!node.widget_post.content || node.widget_post.content.trim().length === 0) {
           grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
                             <div class="grid-stack-item-content">
                               <div class = "centerPanelWidget">
@@ -47,6 +49,7 @@
                             </div>
                           </div>`, node);
         } else {
+          // generic widget with non-empty post
           grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
                             <div class="grid-stack-item-content">
                               <div class = "centerPanelWidget">
@@ -62,11 +65,10 @@
                           </div>`, node);
         }
       } else {
+        // our unique non-generic widgets
         grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
                           <div class="grid-stack-item-content">
-                            <div class = "centerPanelWidget">
-                              ${node.widget_style}
-                            </div>
+                            ${node.widget_style}
                           </div>
                         </div>`, node);
       }
@@ -103,6 +105,7 @@
     });
   };
 
+  // update widget grid_location for each widget that has been removed, added, changed
   function updateGrid(e, items) {
     if (dashboardPopulated) {
       let widgets = []
@@ -123,7 +126,7 @@
         dataType: "json",
         contentType: "application/json",
         success: function (response) {
-          searchText();
+          searchFollowWidgets();
         },
       });
     }

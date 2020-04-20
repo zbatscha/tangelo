@@ -7,6 +7,7 @@
 import unittest
 from tangelo.models import User, Widget, Subscription, Post, AdminAssociation
 import tangelo.user_utils as user_utils
+from news_collector import news_object
 from tangelo import app, db
 import sys
 import os
@@ -65,6 +66,10 @@ class DBTest(unittest.TestCase):
         widget_10 = Widget(name = 'Clock', description = '', style='<link rel=\\"stylesheet\\" href=\\"../static/clock.css\\"/><script type=\\"text/javascript\\" src=\\"../static/clock.js\\"></script><div id=\\"centerPanelClock\\"><h1 id=\\"time\\"></h1><br><h1 id = \\"date\\"></h1></div>')
         widget_11 = Widget(name = 'Weather', description = '', style='<link rel=\\"stylesheet\\" href=\\"../static/weather.css\\"/><script type=\\"text/javascript\\" src=\\"../static/weather.js\\"></script><div id=\\"centerPanelWeather\\"><h1 id=\\"temperature\\">One moment, we\'re getting some weathery goodness</h1><h1 id=\\"sky\\"></h1></div>')
 
+        news = news_object()
+        title = news.titles()[0]
+        content = news.content()[0]
+        widget_12 = Widget(name = 'News', description = "Display Princeton's Twitter Feed", style="<p>"+title+"</p>")
         # # widget_1.admins.append(user_1)
         # widget_2.admins.append(user_2)
         # widget_3.admins.append(user_3)
@@ -82,6 +87,7 @@ class DBTest(unittest.TestCase):
         # db.session.add(widget_9)
         db.session.add(widget_10)
         db.session.add(widget_11)
+        db.session.add(widget_12)
 
         # # create subscriptions
         # # subscription_1 = Subscription(user=user_1, widget=widget_1, grid_location={'x': 6, 'y': 0, 'width': 6, 'height': 2})

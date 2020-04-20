@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+{% for wid in availableWidgets %}
+<div>
+    <img src ="static/i-icon.png" id = "i-icon-{{ wid.id }}" style="position: relative; height: 18px; width: 18px; float: right; margin: 24px 25px -55px 0px;"/>
+    <a class="btn btn-outline-info div-{{ wid.id }}" style="margin: 15px; margin-bottom: 0px; width: 90%; transition:all .3s ease;" id='{{ wid.id }}' onClick="followWidget(this.id)"> 
+        <span id = "title-{{ wid.id }}">{{ wid.name }}</span>
+        <p id = "span-{{ wid.id }}" style="margin-bottom: 0px;">{{ wid.description }}.</p>
+    </a>
+    <style>
+        .div-{{ wid.id }} {
+            text-align: center;
+            overflow: hidden;
+            max-height: 38px;
+        }
+
+        #i-icon-{{ wid.id }}:hover + .div-{{ wid.id }} {
+            max-height: 200px;
+            background-color: #17a2b8;
+        }
+
+    </style>
+</div>
+{% endfor %}

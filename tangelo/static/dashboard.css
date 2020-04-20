@@ -191,6 +191,10 @@ li > .sub-bar {
     align-items: center;
 }
 
+.i-icon-1:hover {
+    
+}
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 300px;

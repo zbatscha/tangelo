@@ -81,8 +81,10 @@ def getSearchFollowWidgets():
     text = request.args.get('text')
     availableWidgets = utils.getAvailableFollowWidgets(current_user, text)
     html = ''
-    for wid in availableWidgets:
-        html += '<div><a class="btn btn-outline-info" style="margin-left: 15px;" id='+str(wid.id)+' onClick="followWidget(this.id)">'+wid.name+'</a></div><br>'
+
+    html = render_template("availableWidgets.html", availableWidgets = availableWidgets)
+    # for wid in availableWidgets:
+    #     html += '<div><a class="btn btn-outline-info" style="margin: 15px; margin-bottom: 0px; width: 90%;" id='+str(wid.id)+' onClick="followWidget(this.id)">'+wid.name+'<img src ="static/i-icon.png" class = "i-icon-1" style="height: 18px; width: 18px; float: right; margin: 3px 0px 3px 0px;"/></a></div>'
     response = make_response(html)
     return response
 

@@ -35,13 +35,16 @@
           widget_name: displayedWidgets[i].widget_name,
           widget_post: displayedWidgets[i].widget_post,
           id: displayedWidgets[i].widget_id,
-          widget_style: displayedWidgets[i].widget_style
+          widget_style: displayedWidgets[i].widget_style,
+          admin: displayedWidgets[i].widget_admin
       };
       if (!node.widget_style || node.widget_style.trim().length === 0) {
         // generic widget with empty post
         if (!node.widget_post.content || node.widget_post.content.trim().length === 0) {
+          let widgAdd = 
           grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
                             <div class="grid-stack-item-content">
+                              <a href="#" onClick ="updateButton()" class="updateButton">	&#9998;</a>
                               <div class = "centerPanelWidget">
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">
@@ -52,6 +55,7 @@
           // generic widget with non-empty post
           grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
                             <div class="grid-stack-item-content">
+                              <a href="#" onClick ="updateButton()" class="updateButton">	&#9998;</a>
                               <div class = "centerPanelWidget">
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">
@@ -132,5 +136,18 @@
     }
   };
 
+
+  function updateButton() {
+  document.querySelector(".postPopup").style.display = "flex";
+  document.querySelector(".postPopup").style.opacity = "100%";
+  document.querySelector(".postPopup").style.zIndex = 1004;
+  }
+  function closeUpdate() {
+    document.querySelector(".postPopup").style.display = "none";
+    document.querySelector(".postPopup").style.opacity = "0";
+  }
+  function submitPost() {
+    closeUpdate();
+  }
   grid.on('added removed change', updateGrid);
 </script>

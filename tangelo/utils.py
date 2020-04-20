@@ -67,10 +67,17 @@ def getGridWidgets(current_user):
         'grid_location': sub.grid_location,
         'widget_name': sub.widget.name,
         'widget_post': getPost(sub.widget_id),
-        'widget_style': sub.widget.style}
+        'widget_style': sub.widget.style,
+        'widget_admin': isAdmin(current_user, sub.widget_id)}
         for sub in subscriptions if sub.grid_location]
 
     return displayed
+
+#-----------------------------------------------------------------------
+
+def isAdmin(current_user, widget_id):
+    widget = Widget.query.get(widget_id).first()
+    return (current_user in widget.admins)
 
 #-----------------------------------------------------------------------
 

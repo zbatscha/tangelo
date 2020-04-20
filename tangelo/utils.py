@@ -76,7 +76,7 @@ def getGridWidgets(current_user):
 #-----------------------------------------------------------------------
 
 def isAdmin(current_user, widget_id):
-    widget = Widget.query.get(widget_id).first()
+    widget = Widget.query.get(widget_id)
     return (current_user in widget.admins)
 
 #-----------------------------------------------------------------------

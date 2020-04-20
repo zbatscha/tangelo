@@ -68,8 +68,9 @@ class DBTest(unittest.TestCase):
 
         news = news_object()
         title = news.titles()[0]
-        content = news.content()[0]
-        widget_12 = Widget(name = 'News', description = "Display Princeton's Twitter Feed", style="<p>"+title+"</p>")
+        author = news.source()[0]
+        url = news.urls()[0]
+        widget_12 = Widget(name = 'News', description = "Headlines for the Day", style='<link rel=\\"stylesheet\\" href=\\"../static/genericWidget.css\\"/><div class=\\"centerPanelWidget\\"><h3 class = \\"genericTitle\\"><center>News</center></h3><hr class = \\"genericDivider\\"><div class = \\"GenericPost\\"><a class = \\"GenericPoster\\">@'+author+'</a>'+title+'</div><a href='+url+'>Click here for more information</a></div>')
         # # widget_1.admins.append(user_1)
         # widget_2.admins.append(user_2)
         # widget_3.admins.append(user_3)

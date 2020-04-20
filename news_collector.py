@@ -5,11 +5,18 @@ class news_object:
     response = ''
     data = ''
     def __init__(self):
-        self.url = ('http://newsapi.org/v2/top-headlines?'
-            'country=us&'
-            'apiKey=02f90cf35f2b4176a559db2847011096')
-        self.response = requests.get(self.url)
-        self.data = self.response.json()
+        
+        try:
+            self.url = ('http://newsapi.org/v2/top-headlines?'
+                'country=us&'
+                'apiKey=02f90cf35f2b4176a559db2847011096')
+            self.response = requests.get(self.url)
+            self.response.raise_for_status()
+            self.data = self.response.json()
+
+        except requests.exceptions.HTTPError as err:
+            print(err)
+            return None
 
     #Return the total number of articles in JSON
     def num_of_articles(self):
@@ -28,7 +35,14 @@ class news_object:
         for a in self.data['articles']:
             content.append(a['content'])
         return content
-    
+
+    #Collect array of sources
+    def source(self):
+        sources = []
+        for a in self.data['articles']:
+            sources.append(a['source']['name'])
+        return sources
+
     #Collect array of urls
     def urls(self):
         url = []

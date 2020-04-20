@@ -22,6 +22,8 @@
     <!-- Our Custom Grid CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='grid.css') }}">
 
+    <link rel="stylesheet" href="../static/updateButton.css"/>
+
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
@@ -29,7 +31,9 @@
 
 <body>
   <div id="wrapper">
+    
       <!-- Left Sidebar -->
+
       <div id="left-sidebar-wrapper">
         <div class="sidebar-header">
           <h3>Follow your favorites!</h3>
@@ -100,6 +104,14 @@
 
       <!-- Page Content -->
       <div id="page-content-wrapper">
+        <div class="postPopup">
+          <div class="postPopupContent">
+            <h3> Making a new post for (insert widget here)</insert></h2>
+            <textarea placeholder="Text for new post" name="newPost" class="popupInputText"></textarea>
+            <a href="#" onClick="submitPost()" class="makePost">Make new post!</a>
+            <img src="../static/close.png" class="closePopup" onClick="closeUpdate()">
+          </div>
+        </div>
         <div class="container-fluid">
           <div class="row">
             <div class="col-lg-12">
@@ -169,6 +181,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
   <!-- jQuery Custom Scroller CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
 
   <!-- Menu Toggle Script -->
   <script>

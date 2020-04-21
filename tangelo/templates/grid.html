@@ -8,8 +8,9 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
-
-<div class="grid-stack"></div>
+<div id="mainGridContainer" style="transition: border .3s ease-in-out; border: thick dashed #fafafa">
+  <div class="grid-stack" ></div>
+</div>
 
 <script type="text/javascript">
   var grid = GridStack.init({
@@ -137,6 +138,25 @@
   };
 
 
+  function dragstart(event) {
+    jQuery.event.props.push('dataTransfer');
+    event.dataTransfer.setData('text/html', null); //cannot be empty string
+    var grid = document.getElementById("mainGridContainer");
+    grid.style.border = "thick dashed orange";
+  }
+
+  function allowDrop(event) {
+  event.preventDefault();
+  console.log("closer");
+  }
+  function dragend(event) {
+    event.preventDefault();  
+    console.log("hi");
+    var grid = document.getElementById("mainGridContainer");
+    grid.style.border = "none";
+  }
+
+
   function updateButton() {
   document.querySelector(".postPopup").style.display = "flex";
   document.querySelector(".postPopup").style.opacity = "100%";
@@ -149,5 +169,26 @@
   function submitPost() {
     closeUpdate();
   }
+
+  grid.on('dragstart', function(event, ui) {
+    var grid = document.getElementById("mainGridContainer");
+    grid.style.border = "thick dashed orange";
+  });
+
+  grid.on('dragstop', function(event, ui) {
+    var grid = document.getElementById("mainGridContainer");
+    grid.style.border = "thick dashed #fafafa";
+  });
+
+  grid.on('resizestart', function(event, ui) {
+    var grid = document.getElementById("mainGridContainer");
+    grid.style.border = "thick dashed orange";
+  });
+
+  grid.on('gsresizestop', function(event, element) {
+    var grid = document.getElementById("mainGridContainer");
+    grid.style.border = "thick dashed #fafafa";
+});
+
   grid.on('added removed change', updateGrid);
 </script>

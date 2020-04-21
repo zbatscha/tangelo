@@ -1,5 +1,9 @@
 .grid-stack {
-  background: lightgoldenrodyellow;
+  background: #fafafa;
+}
+
+#mainGridContainer {
+  padding: 10px;
 }
 
 .grid-stack-item-content {
@@ -7,4 +11,5 @@
   text-align: center;
   background-color: #ffffff;
   border-radius: 10px;
+  box-shadow: 0px 0px 2px 2px #eee;
 }

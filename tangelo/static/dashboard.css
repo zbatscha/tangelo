@@ -52,10 +52,10 @@ body {
     position: fixed;
     z-index: 1000;
     overflow-y: auto;
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    transition: all 0.3s ease;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
 }
 
 #right-sidebar-wrapper {
@@ -211,7 +211,7 @@ li > .sub-bar {
 }
 
 .i-icon-1:hover {
-    
+
 }
 
 @media(min-width:768px) {
@@ -231,7 +231,7 @@ li > .sub-bar {
     #left-sidebar-wrapper {
         width: 300px;
         box-shadow: 0px 1px 2px 2px #ccc;
-
+        overflow-x: hidden;
     }
 
     #right-sidebar-wrapper {

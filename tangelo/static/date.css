@@ -1,4 +1,4 @@
-#centerPanelClock {
+#centerPanelDate {
   -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
      -moz-animation: fadein 2s; /* Firefox < 16 */
       -ms-animation: fadein 2s; /* Internet Explorer */
@@ -9,7 +9,7 @@
     border-radius: 5px;
 }
 
-#centerPanelClock h1 {
+#centerPanelDate h1 {
     font-size: 25pt;
     line-height: 10px;
     font-weight: 100;

@@ -48,7 +48,7 @@ class Widget(db.Model):
     posts = db.relationship('Post', backref='widget', lazy='dynamic', passive_deletes=True)
 
     def __repr__(self):
-        return f"Widget('{self.name}', '{self.description}')"
+        return f"Widget('{self.name}', '{self.id}')"
 
 class AdminAssociation(db.Model):
     __tablename__ = 'administrators'

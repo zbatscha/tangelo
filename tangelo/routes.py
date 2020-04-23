@@ -4,7 +4,7 @@
 # routes.py
 #-----------------------------------------------------------------------
 
-from tangelo import app, db
+from tangelo import app, db, log
 from tangelo.CASClient import CASClient
 from tangelo.tangeloService import getGreetingDayTime
 from tangelo.models import User, Widget, Subscription
@@ -16,10 +16,12 @@ from tangelo import utils
 import json
 from flask import jsonify
 
+error_msg_global = "hmmm, something\'s not right."
+
 #-----------------------------------------------------------------------
 
 """
-Landing login page. Redirect to CAS.
+Landing page. If user logged in, redirect them to their ashboard.
 """
 @app.route('/', methods=['GET'])
 @app.route('/welcome', methods=['GET'])
@@ -32,7 +34,7 @@ def welcome():
 #-----------------------------------------------------------------------
 
 """
-All routes re-routed through login to ensure user is logged in.
+Log in user with Princeton CAS.
 """
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -41,13 +43,16 @@ def login():
     user = utils.getUser(netid)
     if not user:
         return redirect(url_for('welcome'))
+    # login and redirect to requested page
     login_user(user)
-    # redirect to requested page
     next_page = request.args.get('next')
     return redirect(next_page) if next_page else redirect(url_for('dashboard'))
 
 #-----------------------------------------------------------------------
 
+"""
+Log out User current_user.
+"""
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
 
@@ -59,7 +64,7 @@ def logout():
 #-----------------------------------------------------------------------
 
 """
-Dashboard
+Tangelo Dashboard
 """
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
@@ -73,47 +78,118 @@ def dashboard():
 #-----------------------------------------------------------------------
 
 """
-Widgets that conform to user's search in the left follow sidebar.
+Populate widgets that conform to user's search in the left follow sidebar.
 """
 @app.route('/getSearchWidgets', methods=['GET'])
 @login_required
 def getSearchFollowWidgets():
     text = request.args.get('text')
     availableWidgets = utils.getAvailableFollowWidgets(current_user, text)
-    html = ''
-
-    html = render_template("availableWidgets.html", availableWidgets = availableWidgets)
-    # for wid in availableWidgets:
-    #     html += '<div><a class="btn btn-outline-info" style="margin: 15px; margin-bottom: 0px; width: 90%;" id='+str(wid.id)+' onClick="followWidget(this.id)">'+wid.name+'<img src ="static/i-icon.png" class = "i-icon-1" style="height: 18px; width: 18px; float: right; margin: 3px 0px 3px 0px;"/></a></div>'
-    response = make_response(html)
-    return response
+    return make_response(render_template("availableWidgets.html",
+        availableWidgets = availableWidgets))
 
 #-----------------------------------------------------------------------
 
 """
 Create a new widget with current_user as admin, if form is valid.
 """
-@app.route('/createwidget', methods=['GET', 'POST'])
+@app.route('/createwidget', methods=['POST'])
 @login_required
 def createWidget():
-
-    widget_form = createForm.CreateWidget()
-
-    if widget_form.validate_on_submit():
+    create_widget_form = createForm.CreateWidget()
+    displayed_widgets = utils.getGridWidgets(current_user)
+    if create_widget_form.validate_on_submit():
         try:
-            utils.createNewWidget(current_user, widget_form)
+            utils.createNewWidget(current_user, create_widget_form)
             flash(f'Your widget has been created!', 'success')
             return redirect(url_for('dashboard'))
         except Exception as e:
-            print(e)
-            flash(f'Error occured!', 'danger')
+            flash(e, 'danger')
 
-    displayed_widgets = utils.getGridWidgets(current_user)
-    return make_response(render_template('dashboard.html', title='Dashboard', widget_form=widget_form, displayedWidgets=displayed_widgets))
+    flash('Still need to fix form validation without page reload', 'danger')
+    return make_response(render_template('dashboard.html', title='Dashboard',
+        widget_form=create_widget_form, displayedWidgets=displayed_widgets))
+
+#-----------------------------------------------------------------------
+
+"""
+Remove subscription from user after widget is dragged to trash/unfollow on left sidebar.
+"""
+@app.route('/update/removed', methods=['GET','POST'])
+def removeSubscription():
+    response = jsonify(success=True)
+    try:
+        if request.method == "POST":
+            widgets = request.json.get('widgets')
+            for w in widgets:
+                utils.removeSubscription(current_user, w['widget_id'])
+    except Exception as e:
+        flash(e, 'danger')
+        response = jsonify(success=False)
+    return response
+
+#-----------------------------------------------------------------------
+
+"""
+currently not in use.
+"""
+@app.route('/update/added', methods=['GET','POST'])
+def addedSubscription():
+    response = jsonify(success=True)
+    try:
+        if request.method == "POST":
+            widgets = request.json.get('widgets')
+    except Exception as e:
+        print(e)
+        flash(f'Error occured!', 'danger')
+        response = jsonify(success=False)
+    return response
+
+#-----------------------------------------------------------------------
+
+"""
+Change grid_location/size of widget.
+"""
+@app.route('/update/change', methods=['GET','POST'])
+def changeSubscription():
+    response = jsonify(success=True)
+    try:
+        if request.method == "POST":
+            widgets = request.json.get('widgets')
+            for w in widgets:
+                utils.updateSubscriptionLocation(current_user, w['widget_id'], w['grid_location'])
+    except Exception as e:
+        # don't flash errors on changes
+        response = jsonify(success=False)
+    return response
+
+#-----------------------------------------------------------------------
+
+"""
+Subscribe current_user to selected widget.
+"""
+@app.route('/addSubscription', methods=['GET','POST'])
+def addSubscription():
+    response = jsonify(success=True)
+    if request.method == "POST":
+        subscription = request.json.get('subscription')
+        try:
+            utils.addSubscription(current_user, subscription.get('widget_id'))
+        except Exception as e:
+            flash(e, 'danger')
+            response = jsonify(success=False)
+    return response
+
+#-----------------------------------------------------------------------
 
 
-    return make_response(render_template('dashboard.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
 
+
+
+
+"""
+Not currently in use...
+"""
 #-----------------------------------------------------------------------
 
 """
@@ -171,79 +247,6 @@ def addTeam():
             print(e)
             flash(f'Error occured!', 'danger')
     return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
-
-#-----------------------------------------------------------------------
-
-"""
-Remove subscription from user after widget is dragged to trash/unfollow on left sidebar.
-"""
-@app.route('/update/removed', methods=['GET','POST'])
-def removeSubscription():
-    response = jsonify(success=True)
-    try:
-        if request.method == "POST":
-            widgets = request.json.get('widgets')
-            for w in widgets:
-                utils.removeSubscription(current_user, w['widget_id'])
-    except Exception as e:
-        print(e)
-        flash(f'Error occured!', 'danger')
-        response = jsonify(success=False)
-    return response
-
-#-----------------------------------------------------------------------
-
-"""
-currently not in use.
-"""
-@app.route('/update/added', methods=['GET','POST'])
-def addedSubscription():
-    response = jsonify(success=True)
-    try:
-        if request.method == "POST":
-            widgets = request.json.get('widgets')
-    except Exception as e:
-        print(e)
-        flash(f'Error occured!', 'danger')
-        response = jsonify(success=False)
-    return response
-
-#-----------------------------------------------------------------------
-
-"""
-Change grid_location/size of widget.
-"""
-@app.route('/update/change', methods=['GET','POST'])
-def changeSubscription():
-    response = jsonify(success=True)
-    try:
-        if request.method == "POST":
-            widgets = request.json.get('widgets')
-            for w in widgets:
-                utils.updateSubscriptionLocation(current_user, w['widget_id'], w['grid_location'])
-    except Exception as e:
-        print(e)
-        flash(f'Error occured!', 'danger')
-        response = jsonify(success=False)
-    return response
-
-#-----------------------------------------------------------------------
-
-"""
-Subscribe current_user to selected widget.
-"""
-@app.route('/addSubscription', methods=['GET','POST'])
-def addSubscription():
-    response = jsonify(success=True)
-    if request.method == "POST":
-        subscription = request.json.get('subscription')
-        try:
-            utils.addSubscription(current_user, subscription)
-        except Exception as e:
-            print(e)
-            response = jsonify(success=False)
-            flash(e.args[0], 'danger')
-    return response
 
 #-----------------------------------------------------------------------
 

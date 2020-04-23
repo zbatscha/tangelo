@@ -42,10 +42,10 @@
       if (!node.widget_style || node.widget_style.trim().length === 0) {
         // generic widget with empty post
         if (!node.widget_post.content || node.widget_post.content.trim().length === 0) {
-          let widgAdd = 
+          let widgAdd =
           grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
                             <div class="grid-stack-item-content">
-                              <a href="#" onClick ="updateButton()" class="updateButton">	&#9998;</a>
+                              <a href="#" onClick ="updateButton(this)" class="updateButton">	&#9998;</a>
                               <div class = "centerPanelWidget">
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">
@@ -56,7 +56,7 @@
           // generic widget with non-empty post
           grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
                             <div class="grid-stack-item-content">
-                              <a href="#" onClick ="updateButton()" class="updateButton">	&#9998;</a>
+                              <a href="#" onClick ="updateButton(this)" class="updateButton">	&#9998;</a>
                               <div class = "centerPanelWidget">
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">
@@ -150,7 +150,7 @@
   console.log("closer");
   }
   function dragend(event) {
-    event.preventDefault();  
+    event.preventDefault();
     console.log("hi");
     var grid = document.getElementById("mainGridContainer");
     grid.style.border = "none";
@@ -159,11 +159,11 @@
   var bkgdcolor;
 
 
-  function updateButton() {
+  function updateButton(widget_target) {
     document.querySelector(".postPopup").style.display = "flex";
     document.querySelector(".postPopup").style.opacity = "100%";
     document.querySelector(".postPopup").style.zIndex = 1004;
-    
+
     document.getElementsByClassName("navbar")[0].style.zIndex = 1002;
 
     var w = $(window).width();
@@ -181,6 +181,7 @@
         zIndex     : 1003
      }
    }).appendTo('body');
+   alert(widget_target.parentNode.parentNode.getAttribute("widget-id"));
  // Click overlay to remove
   }
   function closeUpdate() {

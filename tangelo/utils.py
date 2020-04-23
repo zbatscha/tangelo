@@ -3,21 +3,25 @@
 """
 utils.py
 
-Provides methods for getting and manipulating database objects:
-User, Widget, Subscription, etc.
+Provides methods for accessing and manipulating tables:
+User, Widget, Subscription, AdminAssociation, Post.
 """
 
+#-----------------------------------------------------------------------
+
+from tangelo import db, app, log
 from tangelo.models import User, Widget, Post, Subscription
-from tangelo import db, app
 import tangelo.user_utils as user_utils
 from sqlalchemy import desc
+
+error_msg_global = "hmmm, something\'s not right."
 
 #-----------------------------------------------------------------------
 
 def getUser(netid):
     """
     User associated with provided `netid`. If netid does not exist in
-    database, creates a new User, and subscribed new User to `welcome` Widget.
+    database, creates a new User, and subscribes new User to `welcome` Widget.
 
     Parameters
     ----------
@@ -31,15 +35,14 @@ def getUser(netid):
     """
     user = User.query.filter_by(netid=netid).first()
     if not user:
+        log.info(f'User with netid = \"{netid}\" does not exist. Creating User...')
         user = user_utils.createUser(netid)
-        try:
-            welcome_widget = Subscription(user=user, widget_id=1,
-                                            grid_location={'x': 0, 'y': 0, 'width': 6, 'height': 2})
-            db.session.add(welcome_widget)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            raise Exception(e)
+        if user:
+            log.info(f'Subscribing {user} to Welcome widget...')
+            try:
+                addSubscription(user, 1)
+            except:
+                log.critical(f'Failed to subscribe new user {user} to Welcome widget.', exc_info=True)
 
     return user
 
@@ -76,56 +79,164 @@ def getGridWidgets(current_user):
 #-----------------------------------------------------------------------
 
 def isAdmin(current_user, widget_id):
+    """
+    Checks if current_user is an administrator if widget with primary_key = widget_id.
+
+    Parameters
+    ----------
+    current_user : User
+    widget_id : int
+
+    Returns
+    -------
+    bool
+        True if current_user is an admin. False otherwise.
+
+    """
     widget = Widget.query.get(widget_id)
     return (current_user in widget.admins)
 
 #-----------------------------------------------------------------------
 
-def addSubscription(current_user, subscription):
+def addSubscription(current_user, widget_id, grid_location={'x': 0, 'y': 0, 'width': 6, 'height': 2}):
+    """
+    Subscribe User current_user to widget with primary_key = widget_id.
+    Set initial grid_location.
 
-    widget = Widget.query.get(subscription['widget_id'])
-    if not widget:
-        raise Exception('This widget does not exist.')
-    if widget in current_user.widgets:
-        raise Exception('You already have this widget.')
+    Parameters
+    ----------
+    current_user : User
+    widget_id : int
+    grid_location : dict
+
+    Returns
+    -------
+    None
+
+    """
+    # validate widget_id
     try:
-        new_follow = Subscription(user=current_user, widget_id=subscription['widget_id'],
-                                    grid_location=subscription['grid_location'])
-        db.session.add(new_follow)
+        widget_id = int(widget_id)
+    except:
+        log.critical(f'{current_user} attempted to subscribe with non-int widget_id.')
+        raise Exception(f'{error_msg_global}')
+
+    widget = Widget.query.get(widget_id)
+    if not widget:
+        log.error(f'{current_user} attempted to subscribe to non-existing widget with id = \"{widget_id}\".')
+        raise Exception(f'{error_msg_global}')
+    if widget in current_user.widgets:
+        log.info(f'{current_user} attempted to re-subscribe to existing {widget}.')
+        raise Exception(f'{error_msg_global} You are already subscribed to {widget.name}.')
+
+    try:
+        new_subscription = Subscription(user=current_user, widget_id=widget_id,
+                                    grid_location=grid_location)
+        db.session.add(new_subscription)
         db.session.commit()
+        log.info(f'{current_user} subscribed to {widget}.')
 
     except Exception as e:
         db.session.rollback()
-        raise Exception(e)
+        log.warning(f'Failed to subscribe {current_user} to {widget}.', exc_info=True)
+        raise Exception(error_msg_global)
 
+#-----------------------------------------------------------------------
 
 def removeSubscription(current_user, widget_id):
+    """
+    Unsubscribe User current_user to widget with primary_key = widget_id.
+
+    Parameters
+    ----------
+    current_user : User
+    widget_id : int
+
+    Returns
+    -------
+    None
+
+    """
+    subscription = None
+    widget = None
     try:
-        subscription = Subscription.query.filter_by(user_id=current_user.id).filter_by(widget_id=widget_id).first()
+        widget_id = int(widget_id)
+        widget = Widget.query.get(widget_id)
+
+        if not widget:
+            log.error(f'Failed to remove subscription for {current_user}. widget_id = {widget_id} does not exist.')
+            raise Exception(error_msg_global)
+
+        subscription = Subscription.query.filter_by(user=current_user, widget=widget).first()
         if not subscription:
-            raise Exception('Current user not subscribed to this widget.')
+            log.error(f'{current_user} tried unsubscribing from non-existing subscription of {widget}')
+            raise Exception(error_msg_global)
+
         db.session.delete(subscription)
         db.session.commit()
+        log.info(f'{current_user} unsubscribed from {widget}')
     except Exception as e:
         db.session.rollback()
-        raise Exception(f'Error removing subscription for widget {widget_id}. Rolling back.') from e
+        log.error(f'Error removing subscription for widget {widget_id}. Rolling back.')
+        raise Exception(error_msg_global + f'\"{widget.name}\" cannot be removed.')
+
+#-----------------------------------------------------------------------
 
 def updateSubscriptionLocation(current_user, widget_id, grid_location):
-    subscription = Subscription.query.filter_by(user=current_user).filter_by(widget_id=widget_id).first()
-    if not subscription:
-        raise Exception(f'User not subscribed to widget {widget_id}. Error updating location.')
+    """
+    Update widget grid_location.
+
+    Parameters
+    ----------
+    current_user : User
+    widget_id : int
+    grid_location : dict
+
+    Returns
+    -------
+    None
+
+    """
+    subscription = None
+    widget = None
     try:
+        widget_id = int(widget_id)
+        widget = Widget.query.get(widget_id)
+
+        if not widget:
+            log.error(f'Failed to update subscription for {current_user}. widget_id = {widget_id} does not exist.')
+            return
+
+        subscription = Subscription.query.filter_by(user=current_user, widget=widget).first()
+        if not subscription:
+            log.error(f'Error updating location: {current_user} not subscribed to {widget}.')
+            return
+
         subscription.grid_location = grid_location
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        raise Exception(f'Error updating location for widget {widget_id}. Rolling back.') from e
+        log.error(f'Error updating location for {subscription}. Rolling back.', exc_info=True)
 
 #-----------------------------------------------------------------------
 
+def getAvailableFollowWidgets(current_user, widgetSearchText):
+    """
+    Return all widgets that conform to widgetSearchText that current_user is
+    not currently subscribed to.
 
-def getAvailableFollowWidgets(current_user, searchName):
-    widgets = Widget.query.filter(Widget.name.ilike('%'+searchName+'%')).all()
+    Parameters
+    ----------
+    current_user : User
+    widgetSearchText : str
+
+    Returns
+    -------
+    list(Widget)
+        List of Widget objects that are available for current_user to follow.
+
+    """
+    widgets = Widget.query.filter(Widget.name.ilike('%'+widgetSearchText+'%')).all()
     not_subscribed = [widget for widget in widgets if current_user not in widget.users]
     return not_subscribed
 
@@ -146,6 +257,7 @@ def createNewWidget(current_user, form):
 
     """
     try:
+        log.info(f'{current_user} creating new widget...')
         widget = Widget(name=form.name.data,
                         description=form.description.data,
                         access_type=form.access_type.data,
@@ -160,10 +272,35 @@ def createNewWidget(current_user, form):
         db.session.add(widget)
         db.session.add(subscription)
         db.session.commit()
-
+        log.info(f'Success: {current_user} created a new widget: {widget}.')
     except Exception as e:
         db.session.rollback()
-        raise Exception(e)
+        log.error(f'Failed to create a widget for admin {current_user}.',
+            exc_info=True)
+        raise Exception(f'{error_msg_global} Could not create \"{form.name.data}\" :( ')
+
+#-----------------------------------------------------------------------
+
+def getPost(widget_id):
+    """
+    Return the most recent post for Widget with primary_key of `widget_id`.
+
+    Parameters
+    ----------
+    widget_id : int
+
+    Returns
+    -------
+    dict
+        Dictionary containing an `author` key and `content` key.
+
+    """
+    post = Post.query.filter_by(widget_id=widget_id).order_by(desc(Post.create_dttm)).first()
+    if not post:
+        return {'content': '', 'author': ''}
+    author = User.query.get(post.author_id)
+    post = {'content': post.content, 'author': author.netid}
+    return post
 
 #-----------------------------------------------------------------------
 
@@ -195,6 +332,20 @@ def addPost(current_user, form):
         db.session.rollback()
         raise Exception(e)
 
+#-----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+"""
+Methods not yet in use....
+"""
 #-----------------------------------------------------------------------
 
 
@@ -301,29 +452,3 @@ def getValidWidgetsAdmin(current_user):
     for widget in all_widgets:
         choices.append((widget.id, widget.name))
     return choices
-
-#-----------------------------------------------------------------------
-
-"""
-return the most recent post for now
-"""
-def getPost(widget_id):
-    """
-    Return the most recent post for Widget with primary_key of `widget_id`.
-
-    Parameters
-    ----------
-    widget_id : int
-
-    Returns
-    -------
-    dict(str:str)
-        Dictionary containing an `author` key and `content` key.
-
-    """
-    post = Post.query.filter_by(widget_id=widget_id).order_by(desc(Post.create_dttm)).first()
-    if not post:
-        return {'content': '', 'author': ''}
-    author = User.query.get(post.author_id)
-    post = {'content': post.content, 'author': author.netid}
-    return post

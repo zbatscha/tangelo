@@ -6,7 +6,7 @@
 
 from tangelo import db, login_manager
 from flask_login import UserMixin
-from tangelo.models_service import JSONEncodedDict
+from tangelo.models_service import JSONEncodedDict, JSONEncodedString
 from datetime import datetime
 
 #-----------------------------------------------------------------------

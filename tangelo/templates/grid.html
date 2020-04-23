@@ -9,7 +9,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
 <div id="mainGridContainer" style="transition: border .3s ease-in-out; border: 2px dashed #fafafa">
-  <div class="grid-stack" ></div>
+  <div class="container" id=step1>
+    <div class="grid-stack"></div>
+  </div>
 </div>
 
 <script type="text/javascript">
@@ -23,7 +25,19 @@
   // load dashboard
   window.onload = function() {
 
-    let displayedWidgets = JSON.parse('{{ displayedWidgets | tojson | safe}}');
+    prepareJson = function (s) {
+      s = s.replace(/\\n/g, "\\n")
+               .replace(/\\'/g, "\\'")
+               .replace(/\\"/g, '\\"')
+               .replace(/\\&/g, "\\&")
+               .replace(/\\r/g, "\\r")
+               .replace(/\\t/g, "\\t")
+               .replace(/\\b/g, "\\b")
+               .replace(/\\f/g, "\\f");
+      return s;
+    };
+
+    let displayedWidgets = JSON.parse('{{ displayedWidgets | tojson | safe }}');
     grid.removeAll()
     grid = GridStack.init();
     for (var i = 0; i < displayedWidgets.length; ++i) {
@@ -212,7 +226,8 @@
   grid.on('gsresizestop', function(event, element) {
     var grid = document.getElementById("mainGridContainer");
     grid.style.border = "2px dashed #fafafa";
-});
+  });
 
   grid.on('added removed change', updateGrid);
+
 </script>

@@ -20,6 +20,9 @@
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
+    <!-- Add IntroJs styles -->
+    <link href="{{ url_for('static', filename='introjs.css') }}" rel="stylesheet">
+
     <!-- Our Custom Dashboard CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <!-- Our Custom Grid CSS -->
@@ -186,6 +189,9 @@
   <!-- jQuery Custom Scroller CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
+  <!-- IntroJs -->
+   <script type="text/javascript" src="{{ url_for('static', filename='intro.js') }}"></script>
+   <script type="text/javascript" src="{{ url_for('static', filename='tangelo_intro.js') }}"></script>
 
   <!-- Menu Toggle Script -->
   <script>
@@ -196,6 +202,7 @@
       });
       // populate follow widget on load
       searchFollowWidgets();
+
     });
 
     $("#left-menu-toggle").click(function(e) {

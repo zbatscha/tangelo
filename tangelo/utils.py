@@ -40,7 +40,7 @@ def getUser(netid):
         if user:
             log.info(f'Subscribing {user} to Welcome widget...')
             try:
-                addSubscription(user, 1)
+                addSubscription(user, 1, grid_location={'x': 2, 'y': 0, 'width': 8, 'height': 3})
             except:
                 log.critical(f'Failed to subscribe new user {user} to Welcome widget.', exc_info=True)
 

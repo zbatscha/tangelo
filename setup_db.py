@@ -24,7 +24,7 @@ with app.app_context():
                              </div> \
                           </div>', description = 'Tangelo Demo!')
     widget_2 = Widget(name = '🕒', description = '', style='<link rel=\\"stylesheet\\" href=\\"../static/clock.css\\"/><script type=\\"text/javascript\\" src=\\"../static/clock.js\\"></script><div id=\\"centerPanelClock\\"><h1 id=\\"time\\"></h1></div>')
-    widget_3 = Widget(name = '📅', description = '', style='<link rel=\\"stylesheet\\" href=\\"../static/date.css\\"/><script type=\\"text/javascript\\" src=\\"../static/clock.js\\"></script><div id=\\"centerPanelDate\\"><h1 id = \\"date\\"></h1></div>')
+    widget_3 = Widget(name = '📅', description = '', style='<link rel=\\"stylesheet\\" href=\\"../static/date.css\\"/><script type=\\"text/javascript\\" src=\\"../static/date.js\\"></script><div id=\\"centerPanelDate\\"><h1 id = \\"date\\"></h1></div>')
     widget_4 = Widget(name = '🌦️', description = '', style='<link rel=\\"stylesheet\\" href=\\"../static/weather.css\\"/><script type=\\"text/javascript\\" src=\\"../static/weather.js\\"></script><div id=\\"centerPanelWeather\\"><h1 id=\\"temperature\\">One moment, we\'re getting some weathery goodness</h1><h1 id=\\"sky\\"></h1></div>')
 
     news = news_object()

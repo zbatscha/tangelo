@@ -5,22 +5,24 @@
 }
 
 .closePopup {
-    transform: scale(0.05);
+    transform: scale(0.08);
+    transition: all .3s ease-in-out;
     position: absolute;
-    top: -258px;
-    right: -258px;
+    top: -108px;
+    right: -108px;
     cursor: pointer;
     border-radius:50%;
     background: white;
-    box-shadow: inset 8px 8px 10px 10px black ;
 }
 
 .closePopup:hover {
-    transition: box-shadow 2s;
-    box-shadow: 0px 0px 50px 50px #fff6af;
+    background-color: #fefefe;
+    -webkit-transform : rotate(90deg) scale(0.08); /* Chrome, Opera 15+, Safari 3.1+ */
+    -ms-transform     : rotate(90deg) scale(0.08); /* IE 9 */
+    transform         : rotate(90deg) scale(0.08); /* Firefox 16+, IE 10+, Opera */
 }
 .closePopup:active {
-	top: -256px;
+	top: -108px;
 }
 
 
@@ -46,35 +48,30 @@
     background: white;
     position: relative; 
     padding: 10px;
-    border-radius: 20px;
-    border-color: orange;
-    border-style: outset;
+    border-radius: 10px;
     border-width: 5px;
-    box-shadow: 5px 0px 10px 0px rgb(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0, 0.5);
     display: block;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
 }
 
 .makePost {
-	box-shadow:inset 0px 1px 0px 0px #fff6af;
-	background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
-	background-color:#ffec64;
+	background-color:white;
 	border-radius:6px;
-	border:1px solid #ffaa22;
+	border:1px solid #FF8F00;
 	display:inline-block;
 	cursor:pointer;
-	color:#333333;
-	font-family:Trebuchet MS;
+	color:#FF8F00;
 	font-size:15px;
 	font-weight:bold;
 	padding:6px 24px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #ffee66;
+    transition: .3s ease-in-out;
 }
 .makePost:hover {
-	background:linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
-	background-color:#ffab23;
+    background-color:#FF8F00;
+    text-decoration: none !important;
+    color: white;
 }
 .makePost:active {
 	position:relative;

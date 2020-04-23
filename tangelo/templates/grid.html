@@ -8,7 +8,7 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
-<div id="mainGridContainer" style="transition: border .3s ease-in-out; border: thick dashed #fafafa">
+<div id="mainGridContainer" style="transition: border .3s ease-in-out; border: 2px dashed #fafafa">
   <div class="grid-stack" ></div>
 </div>
 
@@ -142,7 +142,7 @@
     jQuery.event.props.push('dataTransfer');
     event.dataTransfer.setData('text/html', null); //cannot be empty string
     var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "thick dashed orange";
+    grid.style.border = "medium dashed orange";
   }
 
   function allowDrop(event) {
@@ -156,15 +156,38 @@
     grid.style.border = "none";
   }
 
+  var bkgdcolor;
+
 
   function updateButton() {
-  document.querySelector(".postPopup").style.display = "flex";
-  document.querySelector(".postPopup").style.opacity = "100%";
-  document.querySelector(".postPopup").style.zIndex = 1004;
+    document.querySelector(".postPopup").style.display = "flex";
+    document.querySelector(".postPopup").style.opacity = "100%";
+    document.querySelector(".postPopup").style.zIndex = 1004;
+    
+    document.getElementsByClassName("navbar")[0].style.zIndex = 1002;
+
+    var w = $(window).width();
+    var h = $(window).height();
+    var $overlay = $('<div/>', {
+      'id': 'overlay',
+      css: {
+        position   : 'absolute',
+        height     : h + 'px',
+        width      : w + 'px',
+        left       : 0,
+        top        : 0,
+        background : '#000',
+        opacity    : 0.3,
+        zIndex     : 1003
+     }
+   }).appendTo('body');
+ // Click overlay to remove
   }
   function closeUpdate() {
     document.querySelector(".postPopup").style.display = "none";
     document.querySelector(".postPopup").style.opacity = "0";
+    document.getElementById("overlay").remove();
+    document.getElementsByClassName("navbar")[0].style.zIndex = 1020;
   }
   function submitPost() {
     closeUpdate();
@@ -172,22 +195,22 @@
 
   grid.on('dragstart', function(event, ui) {
     var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "thick dashed orange";
+    grid.style.border = "2px dashed orange";
   });
 
   grid.on('dragstop', function(event, ui) {
     var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "thick dashed #fafafa";
+    grid.style.border = "2px dashed #fafafa";
   });
 
   grid.on('resizestart', function(event, ui) {
     var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "thick dashed orange";
+    grid.style.border = "2px dashed orange";
   });
 
   grid.on('gsresizestop', function(event, element) {
     var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "thick dashed #fafafa";
+    grid.style.border = "2px dashed #fafafa";
 });
 
   grid.on('added removed change', updateGrid);

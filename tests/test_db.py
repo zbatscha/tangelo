@@ -7,7 +7,8 @@
 import unittest
 from tangelo.models import User, Widget, Subscription, Post, AdminAssociation
 import tangelo.user_utils as user_utils
-from news_collector import news_object
+from news_collector import news_object 
+from tangelo.WHO_RSS import covid_data
 from tangelo import app, db
 import sys
 import os
@@ -71,6 +72,11 @@ class DBTest(unittest.TestCase):
         author = news.source()[0]
         url = news.urls()[0]
         widget_12 = Widget(name = 'News', description = "Headlines for the Day", style='<link rel=\\"stylesheet\\" href=\\"../static/genericWidget.css\\"/><div class=\\"centerPanelWidget\\"><h3 class = \\"genericTitle\\"><center>News</center></h3><hr class = \\"genericDivider\\"><div class = \\"GenericPost\\"><a class = \\"GenericPoster\\">@'+author+'</a>'+title+'</div><a href='+url+'>Click here for more information</a></div>')
+
+        us_data = covid_data("US")
+        outputString = us_data.number_day_decreasing_confirmed()
+        widget_13 = Widget(name = 'Covid-19 Case Number Update', description="Tracks the number of new COVID-19 Cases Everyday", style='<link rel=\\"stylesheet\\" href=\\"../static/genericWidget.css\\"/><div class=\\"centerPanelWidget\\"><h3 class = \\"genericTitle\\"><center>Covid-19 Case Number Update</center></h3><hr class = \\"genericDivider\\"><div class = \\"GenericPost\\"><a class = \\"GenericPoster\\">@Johns Hopkins CSSE</a>'+outputString+'</div>')
+        db.session.add(widget_13)
         # # widget_1.admins.append(user_1)
         # widget_2.admins.append(user_2)
         # widget_3.admins.append(user_3)

@@ -15,6 +15,7 @@ import tangelo.forms as createForm
 from tangelo import utils
 import json
 from flask import jsonify
+from tangelo.weather import getWeather
 
 error_msg_global = "hmmm, something\'s not right."
 
@@ -195,6 +196,22 @@ def addSubscription():
             flash(e, 'danger')
             response = jsonify(success=False)
     return response
+
+@app.route('/updateWeather', methods=['GET', 'POST'])
+def updateWeather():
+    weather_info = None
+    if request.method == "POST":
+        try:
+            coordinates = request.json.get('coordinates')
+            log.critical(coordinates)
+            if not coordinates:
+                raise Exception('Error')
+            weather_info = getWeather(coordinates.get('lat'), coordinates.get('long'))
+            print(weather_info)
+        except Exception as e:
+            print('failed')
+            return jsonify(success=False)
+    return jsonify(weather_info)
 
 #-----------------------------------------------------------------------
 

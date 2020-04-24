@@ -56,10 +56,9 @@
       if (!node.widget_style || node.widget_style.trim().length === 0) {
         // generic widget with empty post
         if (!node.widget_post.content || node.widget_post.content.trim().length === 0) {
-          let widgAdd =
-          grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
+            grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
                             <div class="grid-stack-item-content">
-                              <a href="#" onClick ="updateButton(this)" class="updateButton">	&#9998;</a>
+                              ${node.admin ? `<a href="#" onClick ="updateButton(this)" class="updateButton">	&#9998;</a>` : ''}
                               <div class = "centerPanelWidget">
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">
@@ -70,7 +69,7 @@
           // generic widget with non-empty post
           grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
                             <div class="grid-stack-item-content">
-                              <a href="#" onClick ="updateButton(this)" class="updateButton">	&#9998;</a>
+                              ${node.admin ? `<a href="#" onClick ="updateButton(this)" class="updateButton">	&#9998;</a>` : ''}
                               <div class = "centerPanelWidget">
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">

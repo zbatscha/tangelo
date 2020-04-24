@@ -231,7 +231,7 @@
       let url = '/getSearchWidgets?text=' + text
       if (request != null)
         request.abort();
-      request = $.ajax({
+        request = $.ajax({
         type: "GET",
         url: url,
         success: handleWidgetSearchResponse

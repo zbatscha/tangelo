@@ -2,7 +2,7 @@
 
 {% for wid in availableWidgets %}
 <div>
-    <img src ="static/i-icon.png" id = "i-icon-{{ wid.id }}" style="position: relative; height: 18px; width: 18px; float: right; margin: 24px 25px -55px 0px;"/>
+    <img src ="static/i-icon.png" id = "i-icon-{{ wid.id }}" onClick="followWidget({{ wid.id }})" style="position: relative; height: 18px; width: 18px; float: right; margin: 24px 25px -55px 0px;"/>
     <a class="btn btn-outline-info div-{{ wid.id }}" style="margin: 15px; margin-bottom: 0px; width: 90%; transition:all .3s ease;" id='{{ wid.id }}' onClick="followWidget(this.id)">
         <span id = "title-{{ wid.id }}">{{ wid.name }}</span>
         <p id = "span-{{ wid.id }}" style="margin-bottom: 0px;">{{ wid.description }}</p>
@@ -17,6 +17,10 @@
 
         .div-{{ wid.id }}:hover {
             color: white !important;
+        }
+
+        #i-icon-{{ wid.id }}:hover {
+            cursor: pointer;
         }
 
         #i-icon-{{ wid.id }}:hover + .div-{{ wid.id }} {

@@ -210,6 +210,10 @@ li > .sub-bar {
     margin: 10px;
 }
 
+#widget-follow-list {
+    max-height: 300px;
+}
+
 .i-icon-1:hover {
 
 }

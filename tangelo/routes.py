@@ -187,11 +187,9 @@ def updateWeather():
     if request.method == "POST":
         try:
             coordinates = request.json.get('coordinates')
-            log.critical(coordinates)
             if not coordinates:
                 raise Exception('Error')
             weather_info = getWeather(coordinates.get('lat'), coordinates.get('long'))
-            print(weather_info)
         except Exception as e:
             print('failed')
             return jsonify(success=False)

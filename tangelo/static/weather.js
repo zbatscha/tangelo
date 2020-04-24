@@ -17,7 +17,7 @@ function showPosition(position) {
     };
     $.ajax({
       type : 'POST',
-      url : {{ url_for('updateWeather') }},
+      url : "{{ url_for('updateWeather') }}",
       data : JSON.stringify({"coordinates": coordinates}),
       dataType: "json",
       contentType: "application/json",
@@ -25,8 +25,6 @@ function showPosition(position) {
           alert(response);
           document.getElementById('temperature').innerHTML = response.temperature;
           document.getElementById('sky').innerHTML = response.description;
-          console.log(response.weather[0].description);
-         },
-      },
+       },
     });
 };

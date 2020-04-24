@@ -27,7 +27,7 @@ function showPosition(position) {
             temp += " °F"
             document.getElementById('temperature').innerHTML = temp;
             document.getElementById('sky').innerHTML = response.weather[0].description;
-            console.log(data.weather[0].description);
+            console.log(response.weather[0].description);
            },
       });
 }

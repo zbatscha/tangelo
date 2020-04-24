@@ -111,7 +111,23 @@ def createWidget():
         widget_form=create_widget_form, displayedWidgets=displayed_widgets))
 
 #-----------------------------------------------------------------------
+"""
+Add a post to a widget
+"""
+@app.route('/postUpdate', methods=['GET', 'POST'])
+def createPost():
+    post = request.args.get('post')
+    id = request.args.get('id')
+    try:
+        utils.addPost(current_user, id, post)
+        flash(f'Your post has been created!', 'success')
+        return redirect(url_for('dashboard'))
+    except Exception as e:
+        print(e)
+        flash(f'Error occured!', 'danger')
 
+
+#-----------------------------------------------------------------------
 """
 Remove subscription from user after widget is dragged to trash/unfollow on left sidebar.
 """
@@ -184,9 +200,6 @@ def addSubscription():
 
 
 
-
-
-
 """
 Not currently in use...
 """
@@ -194,7 +207,7 @@ Not currently in use...
 
 """
 Create a new post with current_user as author, if form is valid.
-"""
+
 @app.route('/createpost', methods=['GET', 'POST'])
 @login_required
 def createPost():
@@ -215,7 +228,7 @@ def createPost():
             print(e)
             flash(f'Error occured!', 'danger')
     return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
-
+"""
 #-----------------------------------------------------------------------
 
 """

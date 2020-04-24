@@ -304,7 +304,7 @@ def getPost(widget_id):
 
 #-----------------------------------------------------------------------
 
-def addPost(current_user, form):
+def addPost(current_user, widget_id, post):
     """
     Create a new post with `current_user` as author.
 
@@ -320,10 +320,10 @@ def addPost(current_user, form):
     """
     try:
         # check if valid widget
-        widget = Widget.query.filter_by(id=form.widget_target.data).first()
+        widget = Widget.query.filter_by(id=widget_id).first()
         if not widget:
             raise Exception('Selected widget does not exist.')
-        post = Post(content=form.content.data,
+        post = Post(content=post,
                     author=current_user,
                     widget=widget)
         db.session.add(post)

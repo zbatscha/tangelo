@@ -114,7 +114,7 @@
         <div class="postPopup">
           <div class="postPopupContent">
             <h2 style="margin-top: 5px; margin-bottom: 25px;"> New post</insert></h2>
-            <textarea placeholder="Share it with the world" name="newPost" class="popupInputText"></textarea>
+            <textarea placeholder="Share it with the world" name="newPost" class="popupInputText" id="postText"></textarea>
             <a href="#" onClick="submitPost()" class="makePost">Make new post!</a>
             <img src="../static/close2.png" class="closePopup" onClick="closeUpdate()">
           </div>
@@ -217,8 +217,67 @@
     });
 
     // populate follow sidebar with available widgets
-    function handleWidgetSearchResponse(response)
+    function handlePostUpdateResponse(response)
     {
+      location.reload();
+    }
+
+    // Submit Post
+    let widget_name = '';
+    function updateButton(widget_target) {
+    document.querySelector(".postPopup").style.display = "flex";
+    document.querySelector(".postPopup").style.opacity = "100%";
+    document.querySelector(".postPopup").style.zIndex = 1004;
+
+    document.getElementsByClassName("navbar")[0].style.zIndex = 1002;
+
+    var w = $(window).width();
+    var h = $(window).height();
+    var $overlay = $('<div/>', {
+      'id': 'overlay',
+      css: {
+        position   : 'absolute',
+        height     : h + 'px',
+        width      : w + 'px',
+        left       : 0,
+        top        : 0,
+        background : '#000',
+        opacity    : 0.3,
+        zIndex     : 1003
+     }
+   }).appendTo('body');
+   //alert(widget_target.parentNode.parentNode.getAttribute("widget-id"));
+   widget_name = widget_target.parentNode.parentNode.getAttribute("widget-id")
+ // Click overlay to remove
+  }
+  function closeUpdate() {
+    document.querySelector(".postPopup").style.display = "none";
+    document.querySelector(".postPopup").style.opacity = "0";
+    document.getElementById("overlay").remove();
+    document.getElementsByClassName("navbar")[0].style.zIndex = 1020;
+    document.getElementById("postText").value = ""
+  }
+
+
+  function submitPost() {
+    console.log(widget_name);
+    let request = null;
+    
+    let post = $("#postText").val();
+    post = encodeURIComponent(post);
+    let url = '/postUpdate?post=' + post + '&id=' + widget_name;
+    if (request != null)
+        request.abort();
+      request = $.ajax({
+        type: "GET",
+        url: url,
+        success: handlePostUpdateResponse
+      });
+      closeUpdate();
+  }
+
+      // populate follow sidebar with available widgets
+    function handleWidgetSearchResponse(response) {
       $('#widget-follow-list').html(response);
     }
 

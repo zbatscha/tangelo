@@ -23,10 +23,10 @@ function showPosition(position) {
         dataType: "json",
         contentType: "application/json",
         success: function (response) {
-            var temp = ((data.main.temp - 273.15) * 9/5 + 32).toFixed(1)
+            var temp = ((response.main.temp - 273.15) * 9/5 + 32).toFixed(1)
             temp += " °F"
             document.getElementById('temperature').innerHTML = temp;
-            document.getElementById('sky').innerHTML = data.weather[0].description;
+            document.getElementById('sky').innerHTML = response.weather[0].description;
             console.log(data.weather[0].description);
            },
       });

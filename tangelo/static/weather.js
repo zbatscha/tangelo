@@ -3,7 +3,6 @@ var long
 var lat
 
 if (navigator.geolocation) {
-    alert('here');
     navigator.geolocation.getCurrentPosition(showPosition);
 } else {
     x.innerHTML = "Geolocation is not supported by this browser.";

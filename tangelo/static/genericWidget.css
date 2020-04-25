@@ -36,7 +36,7 @@
 }
 
 .GenericPost > .GenericPostContent {
-  white-space: pre-line;
+  white-space: pre-wrap;
 }
 
 .GenericPoster {

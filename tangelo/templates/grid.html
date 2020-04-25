@@ -80,9 +80,7 @@
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">
                                 <div class = "GenericPost">
-                                    <a class = "GenericPoster">
-                                      @${node.widget_post.author}</a>
-                                    <div class = "GenericPostContent">${node.widget_post.content}</div>
+                                    <div class = "GenericPostContent"><a class = "GenericPoster">@${node.widget_post.author}</a>${node.widget_post.content}</div>
                                 </div>
                               </div>
                             </div>

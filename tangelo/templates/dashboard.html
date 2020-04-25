@@ -203,12 +203,11 @@
       // populate follow widget on load
       searchFollowWidgets();
 
-      $("#create_widget_submit").click(function(event) {
+      $(document).on('click', "#create_widget_submit", function(event) {
+
             let csrf_token = "{{ csrf_token }}";
             let url = "{{ url_for('createWidget') }}";
-            alert('here');
             event.preventDefault();
-            alert('here!');
             $.ajax({
                 type: "POST",
                 url: url,
@@ -293,9 +292,9 @@
         zIndex     : 1003
      }
    }).appendTo('body');
-   //alert(widget_target.parentNode.parentNode.getAttribute("widget-id"));
    widget_name = widget_target.parentNode.parentNode.getAttribute("widget-id")
- // Click overlay to remove
+
+  // Click overlay to remove
   }
   function closeUpdate() {
     document.querySelector(".postPopup").style.display = "none";

@@ -203,6 +203,31 @@
       // populate follow widget on load
       searchFollowWidgets();
 
+      $("#create_widget_submit").click(function(event) {
+            let csrf_token = "{{ csrf_token }}";
+            let url = "{{ url_for('createWidget') }}";
+            alert('here');
+            event.preventDefault();
+            alert('here!');
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: 'json',
+                beforeSend: function(xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrf_token)
+                    }
+                },
+                data: $('#create-widget-form').serialize(),
+                success: function (response) {
+                    window.location.reload();
+                    window.location();
+                },
+                error: function (response) {
+                    $('#create-widget').html(response.responseText);
+                }
+            });
+        });
     });
 
     $("#left-menu-toggle").click(function(e) {
@@ -228,8 +253,6 @@
       let arrow = document.getElementById(arrowId)
       var st = window.getComputedStyle(arrow, null);
       var rotation = st.getPropertyValue("transform")
-
-      console.log(rotation[17]);
 
       if(rotation[17] == "-")
       {
@@ -284,9 +307,8 @@
 
 
   function submitPost() {
-    console.log(widget_name);
     let request = null;
-    
+
     let post = $("#postText").val();
     post = encodeURIComponent(post);
     let url = '/postUpdate?post=' + post + '&id=' + widget_name;

@@ -9,10 +9,10 @@ class SearchWidget(FlaskForm):
 
 class CreateWidget(FlaskForm):
     name = StringField('Widget Name',
-                        validators=[DataRequired(message='Please provide a descriptive widget name'),
-                        Length(min=2, max=30, message='Widget name must be 2-30 characters.')])
+                        validators=[DataRequired(message='Make it memorable!'),
+                        Length(min=1, max=20, message='Widget name must be 1-20 characters.')])
     description = StringField('Description',
-                        validators=[DataRequired(), Length(max=200, message='Description limited to 200 characters :(')])
+                        validators=[DataRequired(message='What will you share with the world?'), Length(max=50, message='Description limited to 50 characters :(')])
     access_type = SelectField('New Member Accessibility', choices=[('public', 'Public'),
                                         ('private', 'Private'),
                                         ('secret', 'Secret')],
@@ -20,13 +20,13 @@ class CreateWidget(FlaskForm):
     post_type = SelectField('Who can post?', choices=[('public', 'Everyone'),
                                         ('admin', 'Only Me')],
                                         validators=[DataRequired()])
-    submit = SubmitField('Create My Widget')
+    create_widget_submit = SubmitField('Create My Widget')
 
     def validate_name(self, name):
+
         widget = Widget.query.filter_by(name=name.data).first()
         if widget:
-            raise ValidationError('That widget name is taken. \
-                                    Please choose a different one.')
+            raise ValidationError(f'\"{name.data}\" is taken. Please choose another.')
 
 class CreatePost(FlaskForm):
     # title = StringField('Post Title',

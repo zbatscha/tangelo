@@ -275,7 +275,7 @@ def createNewWidget(current_user, form):
         log.info(f'Success: {current_user} created a new widget: {widget}.')
     except Exception as e:
         db.session.rollback()
-        log.error(f'Failed to create a widget for admin {current_user}.',
+        log.error(f'Failed to create a widget = \"{form.name.data}\" for admin {current_user}.',
             exc_info=True)
         raise Exception(f'{error_msg_global} Could not create \"{form.name.data}\" :( ')
 

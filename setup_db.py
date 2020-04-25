@@ -51,12 +51,8 @@ with app.app_context():
     widget_6.admins.append(user_1)
     widget_7.admins.append(user_1)
 
-    widget_8 = Widget(name = 'Test Widget', description = 'This is my first Test!')
-    db.session.add(widget_8)
-    test_post = Post(content='This is a very very long. test This is a very very long. test This is a very very long. test test** > & + = \r \n hello.', author=user_1, widget=widget_8)
 
     db.session.add(user_1)
-    db.session.add(test_post)
 
     db.session.commit()
 

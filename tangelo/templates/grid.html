@@ -42,7 +42,6 @@
 
 
     let displayed = JSON.parse(JSON.stringify({{ displayedWidgets | tojson }}));
-    console.log(displayed);
 
     grid.removeAll()
     grid = GridStack.init();
@@ -164,11 +163,9 @@
 
   function allowDrop(event) {
   event.preventDefault();
-  console.log("closer");
   }
   function dragend(event) {
     event.preventDefault();
-    console.log("hi");
     var grid = document.getElementById("mainGridContainer");
     grid.style.border = "none";
   }

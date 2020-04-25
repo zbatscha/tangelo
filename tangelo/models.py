@@ -36,9 +36,9 @@ class User(db.Model, UserMixin):
 class Widget(db.Model):
     __tablename__ = 'widgets'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text, unique=True, nullable=False)
-    alias_name = db.Column(db.Text, default="")
-    description = db.Column(db.Text, nullable=False)
+    name = db.Column(db.String(), unique=True, nullable=False)
+    alias_name = db.Column(db.String(), default="")
+    description = db.Column(db.String(), nullable=False)
     type = db.Column(db.String(), default='generic')
 
     style = db.Column(db.String(), nullable=True)

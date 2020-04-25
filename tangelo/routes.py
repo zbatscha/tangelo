@@ -97,19 +97,18 @@ Create a new widget with current_user as admin, if form is valid.
 @app.route('/createwidget', methods=['POST'])
 @login_required
 def createWidget():
+    print('here')
     create_widget_form = createForm.CreateWidget()
-    displayed_widgets = utils.getGridWidgets(current_user)
     if create_widget_form.validate_on_submit():
+        print('here!')
         try:
             utils.createNewWidget(current_user, create_widget_form)
             flash(f'Your widget has been created!', 'success')
-            return redirect(url_for('dashboard'))
+            return jsonify(success=True)
         except Exception as e:
             flash(e, 'danger')
-
-    flash('Still need to fix form validation without page reload', 'danger')
-    return make_response(render_template('dashboard.html', title='Dashboard',
-        widget_form=create_widget_form, displayedWidgets=displayed_widgets))
+            return jsonify(success=True)
+    return make_response(render_template('createWidget.html', widget_form=create_widget_form)), 409
 
 #-----------------------------------------------------------------------
 """

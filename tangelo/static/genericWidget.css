@@ -35,6 +35,10 @@
     font-size: 14px;
 }
 
+.GenericPost > .GenericPostContent {
+  white-space: pre-line;
+}
+
 .GenericPoster {
     background-color: #ff8f00;
     color: white;

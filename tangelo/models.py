@@ -37,7 +37,10 @@ class Widget(db.Model):
     __tablename__ = 'widgets'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, unique=True, nullable=False)
+    alias_name = db.Column(db.Text, default="")
     description = db.Column(db.Text, nullable=False)
+    type = db.Column(db.String(), default='generic')
+
     style = db.Column(db.String(), nullable=True)
     access_type = db.Column(db.String(), default='public')
     post_type = db.Column(db.String(), default='private')
@@ -46,6 +49,7 @@ class Widget(db.Model):
     admins = db.relationship('User', secondary='administrators', passive_deletes=True)
     users = db.relationship('User', secondary='subscriptions', passive_deletes=True)
     posts = db.relationship('Post', backref='widget', lazy='dynamic', passive_deletes=True)
+    custom_posts = db.relationship('CustomPost', backref='custom_widget', lazy='dynamic', passive_deletes=True)
 
     def __repr__(self):
         return f"Widget('{self.name}', '{self.id}')"
@@ -97,3 +101,17 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.content}', '{self.create_dttm}')"
+
+class CustomPost(db.Model):
+    __tablename__ = 'custom_posts'
+    id = db.Column(db.Integer, primary_key=True)
+    widget_id = db.Column(db.Integer, db.ForeignKey('widgets.id', ondelete='CASCADE'))
+    custom_author = db.Column(db.String(), nullable=True)
+    # title = db.Column(db.String(), nullable=True)
+    content = db.Column(db.String(), nullable=True)
+    create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
+
+    widget = db.relationship(Widget, backref=db.backref("customposts", cascade="all, delete-orphan"))
+
+    def __repr__(self):
+        return f"CustomPost('{self.widget.name}', '{self.id}')"

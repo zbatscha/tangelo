@@ -10,7 +10,7 @@ User, Widget, Subscription, AdminAssociation, Post.
 #-----------------------------------------------------------------------
 
 from tangelo import db, app, log
-from tangelo.models import User, Widget, Post, Subscription
+from tangelo.models import User, Widget, Post, Subscription, CustomPost
 import tangelo.user_utils as user_utils
 from sqlalchemy import desc
 
@@ -295,12 +295,23 @@ def getPost(widget_id):
         Dictionary containing an `author` key and `content` key.
 
     """
-    post = Post.query.filter_by(widget_id=widget_id).order_by(desc(Post.create_dttm)).first()
-    if not post:
-        return {'content': '', 'author': ''}
-    author = User.query.get(post.author_id)
-    post = {'content': post.content, 'author': author.netid}
-    return post
+    widget = Widget.query.get(widget_id)
+    if widget.type == 'generic':
+        post = Post.query.filter_by(widget_id=widget_id).order_by(desc(Post.create_dttm)).first()
+        if not post:
+            return {'content': '', 'author': ''}
+        generic_post = {'content': post.content, 'author': post.author.netid}
+        return generic_post
+    else:
+        # Need to update this method to return multiple posts
+        post = CustomPost.query.filter_by(widget_id=widget_id).order_by(desc(CustomPost.create_dttm)).first()
+        if not post:
+            return {'content': '', 'author': ''}
+        custom_post = {'content': post.content, 'author': post.custom_author}
+        return custom_post
+
+
+
 
 #-----------------------------------------------------------------------
 

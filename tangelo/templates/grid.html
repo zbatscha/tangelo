@@ -25,33 +25,39 @@
   // load dashboard
   window.onload = function() {
 
-    prepareJson = function (s) {
-      s = s.replace(/\\n/g, "\\n")
-               .replace(/\\'/g, "\\'")
-               .replace(/\\"/g, '\\"')
-               .replace(/\\&/g, "\\&")
-               .replace(/\\r/g, "\\r")
-               .replace(/\\t/g, "\\t")
-               .replace(/\\b/g, "\\b")
-               .replace(/\\f/g, "\\f");
-      return s;
-    };
+    // preserve newlines, etc - use valid JSON
+    function escape (key, val) {
+      if (typeof(val) != "string") return val;
+      return val
+        .replace(/[\"]/g, '\\"')
+        .replace(/[\\]/g, '\\\\')
+        .replace(/[\/]/g, '\\/')
+        .replace(/[\b]/g, '\\b')
+        .replace(/[\f]/g, '\\f')
+        .replace(/[\n]/g, '\\n')
+        .replace(/[\r]/g, '\\r')
+        .replace(/[\t]/g, '\\t')
+      ;
+    }
 
-    let displayedWidgets = JSON.parse('{{ displayedWidgets | tojson | safe }}');
+
+    let displayed = JSON.parse(JSON.stringify({{ displayedWidgets | tojson }}));
+    console.log(displayed);
+
     grid.removeAll()
     grid = GridStack.init();
-    for (var i = 0; i < displayedWidgets.length; ++i) {
+    for (var i = 0; i < displayed.length; ++i) {
 
       let node =  {
-          x: displayedWidgets[i].grid_location.x,
-          y: displayedWidgets[i].grid_location.y,
-          width: displayedWidgets[i].grid_location.width,
-          height: displayedWidgets[i].grid_location.height,
-          widget_name: displayedWidgets[i].widget_name,
-          widget_post: displayedWidgets[i].widget_post,
-          id: displayedWidgets[i].widget_id,
-          widget_style: displayedWidgets[i].widget_style,
-          admin: displayedWidgets[i].widget_admin
+          x: displayed[i].grid_location.x,
+          y: displayed[i].grid_location.y,
+          width: displayed[i].grid_location.width,
+          height: displayed[i].grid_location.height,
+          widget_name: displayed[i].widget_name,
+          widget_post: displayed[i].widget_post,
+          id: displayed[i].widget_id,
+          widget_style: displayed[i].widget_style,
+          admin: displayed[i].widget_admin
       };
       if (!node.widget_style || node.widget_style.trim().length === 0) {
         // generic widget with empty post
@@ -76,7 +82,7 @@
                                 <div class = "GenericPost">
                                     <a class = "GenericPoster">
                                       @${node.widget_post.author}</a>
-                                    ${node.widget_post.content}
+                                    <div class = "GenericPostContent">${node.widget_post.content}</div>
                                 </div>
                               </div>
                             </div>
@@ -171,9 +177,6 @@
 
   var bkgdcolor;
 
-<<<<<<< HEAD
-=======
-
   function updateButton(widget_target) {
     document.querySelector(".postPopup").style.display = "flex";
     document.querySelector(".postPopup").style.opacity = "100%";
@@ -209,7 +212,6 @@
     closeUpdate();
   }
 
->>>>>>> 71ce32dcd20c837e25201f828c20331851110aaf
   grid.on('dragstart', function(event, ui) {
     var grid = document.getElementById("mainGridContainer");
     grid.style.border = "2px dashed orange";

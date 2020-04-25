@@ -15,7 +15,7 @@ import tangelo.forms as createForm
 from tangelo import utils
 import json
 from flask import jsonify
-from tangelo.weather import getWeather
+from tangelo.weather_api import getWeather
 
 error_msg_global = "hmmm, something\'s not right."
 
@@ -209,7 +209,7 @@ def updateWeather():
         except Exception as e:
             print('failed')
             return jsonify(success=False)
-    return jsonify(weather_info)
+    return weather_info
 
 #-----------------------------------------------------------------------
 

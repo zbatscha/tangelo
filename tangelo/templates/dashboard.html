@@ -78,14 +78,14 @@
           </div>
           <li>
             <!-- Create Widget Form -->
-            <a data-toggle="collapse" href="#create-widget" aria-expanded="false">Create Your Own! <span class="fas fa-caret-down fa-lg"></span></a>
+            <a data-toggle="collapse" href="#create-widget" aria-expanded="false" onclick="rotateArrow('createArrow')">Create A Widget  <i class ="menu-arrow" id="createArrow"></i></a>
             <div class="collapse sub-bar" id="create-widget">
               {% include 'createWidget.html' %}
             </div>
           </li>
           <li>
             <!-- My Subscriptions -->
-            <a data-toggle="collapse" href="#my-subscriptions" aria-expanded="false">My Subscriptions <span class="fas fa-caret-down fa-lg"></span></a>
+            <a data-toggle="collapse" href="#my-subscriptions" aria-expanded="false" onclick="rotateArrow('subscriptionsArrow')">My Subscriptions  <i class ="menu-arrow" id ="subscriptionsArrow"></i></a>
             <div class="collapse sub-bar" id="my-subscriptions">
               {% for widget in current_user.widgets %}
                 <a href="#">{{ widget.name }}</a>
@@ -95,7 +95,7 @@
           </li>
           <li>
             <!-- My Administered Widgets -->
-            <a data-toggle="collapse" href="#admin-widgets" aria-expanded="false">Admin <span class="fas fa-caret-down fa-lg"></span></a>
+            <a data-toggle="collapse" href="#admin-widgets" aria-expanded="false" onclick="rotateArrow('adminArrow')">Admin  <i class ="menu-arrow" id="adminArrow"></i></a>
             <div class="collapse sub-bar" id="admin-widgets">
               {% for widget in current_user.widgets_admin %}
               <a href="#">{{ widget.name }}</a>
@@ -220,6 +220,30 @@
     function handlePostUpdateResponse(response)
     {
       location.reload();
+    }
+
+    // rotates right menu arrow
+    function rotateArrow(arrowId)
+    {
+      let arrow = document.getElementById(arrowId)
+      var st = window.getComputedStyle(arrow, null);
+      var rotation = st.getPropertyValue("transform")
+
+      console.log(rotation[17]);
+
+      if(rotation[17] == "-")
+      {
+        arrow.style.transform = "rotate(45deg)";
+        arrow.style.top = "-2px";
+        arrow.style.left = "2px";
+        arrow.style.position = "relative";
+      }
+      else
+      {
+        arrow.style.transform = "rotate(-45deg)";
+        arrow.style.left = "0px";
+        arrow.style.top = "0px";
+      }
     }
 
     // Submit Post

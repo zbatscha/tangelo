@@ -15,6 +15,7 @@ import tangelo.user_utils as user_utils
 from sqlalchemy import desc
 
 error_msg_global = "hmmm, something\'s not right."
+default_widget_location = {'x': 0, 'y': 0, 'width': 6, 'height': 2, 'minWidth': 4, 'minHeight': 1}
 
 #-----------------------------------------------------------------------
 
@@ -40,7 +41,7 @@ def getUser(netid):
         if user:
             log.info(f'Subscribing {user} to Welcome widget...')
             try:
-                addSubscription(user, 1, grid_location={'x': 2, 'y': 0, 'width': 8, 'height': 3})
+                addSubscription(user, 1, grid_location={'x': 2, 'y': 0, 'width': 8, 'height': 3, 'minWidth': 8, 'minHeight': 3})
             except:
                 log.critical(f'Failed to subscribe new user {user} to Welcome widget.', exc_info=True)
 
@@ -98,7 +99,7 @@ def isAdmin(current_user, widget_id):
 
 #-----------------------------------------------------------------------
 
-def addSubscription(current_user, widget_id, grid_location={'x': 0, 'y': 0, 'width': 6, 'height': 2}):
+def addSubscription(current_user, widget_id, grid_location=default_widget_location):
     """
     Subscribe User current_user to widget with primary_key = widget_id.
     Set initial grid_location.
@@ -264,7 +265,6 @@ def createNewWidget(current_user, form):
                         post_type=form.post_type.data)
 
         # place new widgets in top left corner of admins dashboard
-        default_widget_location = {'x': 0, 'y': 0, 'width': 6, 'height': 2}
         subscription = Subscription(user=current_user, widget=widget,
                                     grid_location=default_widget_location)
         # current_user is the admin of the new widget

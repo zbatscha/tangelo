@@ -198,6 +198,7 @@ def addSubscription():
 
 @app.route('/updateWeather', methods=['GET', 'POST'])
 def updateWeather():
+    print('----------------------')
     weather_info = None
     if request.method == "POST":
         try:
@@ -206,9 +207,11 @@ def updateWeather():
                 raise Exception('Error')
             weather_info = getWeather(coordinates.get('lat'), coordinates.get('long'))
         except Exception as e:
-            print('failed')
-            return jsonify(success=False)
-    return weather_info
+            pass
+    if weather_info:
+        weather_info['success'] = True
+        return json.dumps(weather_info)
+    return json.dumps({'success': False})
 
 #-----------------------------------------------------------------------
 

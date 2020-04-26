@@ -123,6 +123,10 @@ body {
   /* line-height: 60px; */
 }
 
+.left-sidebar-nav {
+    width: 300px;
+}
+
 .sidebar-nav {
     position: absolute;
     top: 0;

@@ -44,14 +44,15 @@
     let displayed = JSON.parse(JSON.stringify({{ displayedWidgets | tojson }}));
 
     grid.removeAll()
-    grid = GridStack.init();
     for (var i = 0; i < displayed.length; ++i) {
 
       let node =  {
-          x: displayed[i].grid_location.x,
+          x: Math.round(displayed[i].grid_location.x),
           y: displayed[i].grid_location.y,
           width: displayed[i].grid_location.width,
           height: displayed[i].grid_location.height,
+          minWidth: displayed[i].grid_location.minWidth,
+          minHeight: displayed[i].grid_location.minHeight,
           widget_name: displayed[i].widget_name,
           widget_post: displayed[i].widget_post,
           id: displayed[i].widget_id,
@@ -94,6 +95,9 @@
                         </div>`, node);
       }
     }
+
+    var grid_height = document.querySelector(".grid-stack").getAttribute("data-gs-current-column");
+    var grid_width = document.querySelector(".grid-stack").getAttribute("data-gs-current-row");
 
     // bring all widgets to front, so each appears above sidebar and navbar when dragged
     for (const element of document.querySelectorAll(".grid-stack-item")) {

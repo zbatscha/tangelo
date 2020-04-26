@@ -1,0 +1,194 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.min.css" />
+<link rel="stylesheet" href="../static/genericWidget.css"/>
+<link rel="stylesheet" href="../static/grid.css"/>
+
+<!-- Icons -->
+<script type="module" src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule="" src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons/ionicons.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
+<div id="mainGridContainer" style="transition: border .3s ease-in-out; border: 2px dashed #fafafa">
+  <div class="container" id=step1>
+    <div class="grid-stack"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  let options = {
+      resizable: {
+        handles: 'se, sw'
+      },
+      float : true
+  };
+  let welcomeGrid = GridStack.init(options);
+
+  // load dashboard
+  window.onload = function() {
+      // welcome login widget
+      let brandNode =  {
+          x: 2,
+          y: 0,
+          width: 8,
+          height: 4,
+          minWidth: 6,
+          minHeight: 4,
+      };
+      welcomeGrid.addWidget(`<div class="grid-stack-item" widget-id="1" widget-name="login">
+                                <div class="grid-stack-item-content">
+                                    <div class="container" id="tangelo-brand">
+                                        <div class="row align-items-center justify-content-center">
+                                            <div class="col">
+                                                <h1>Tangelo</h1>
+                                            </div>
+                                        </div>
+                                        <div class="row align-items-center justify-content-center">
+                                            <div class="col">
+                                                <h2>Start your day.</h2>
+                                            </div>
+                                        </div>
+                                        <div class="row align-items-center justify-content-center">
+                                            <div class="col">
+                                              <a href="login"><button id = "loginContainer">
+                                                  <h2>Login!</h2>
+                                              </button></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                               </div>
+                            </div>`, brandNode);
+
+        let aboutNode =  {
+            x: 0,
+            y: 4,
+            width: 6,
+            height: 4,
+            minWidth: 6,
+            minHeight: 4,
+        };
+        welcomeGrid.addWidget(`<div class="grid-stack-item" widget-id="2" widget-name="about">
+                                  <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
+                                      <div class="container" id="info-box">
+                                          <div class="row align-items-center justify-content-center">
+                                              <div class="col">
+                                                  <h1>About</h1>
+                                              </div>
+                                          </div>
+                                          <div class="row align-items-center justify-content-center">
+                                              <div class="col">
+                                                  <hr>
+                                                  <p>Everyone, including Princeton students, lead busy lives. Getting the day started is the vital first step everyone needs to take. Still, with so many things to be updated on–campus events, weather, recent news, birthdays, etc.–it can devolve to a dizzying series of jumps between a dozen apps. This is especially true for Princetonians: with such a unique campus culture, most “daily” apps can feel like they’re shoehorned into our lives and only encompass a fraction of our priorities.
+
+                                                    Enter ~Tangelo~, the daily app designed for Princeton students. Inspired by the simplicity of bullet journals, our modular interface allows users to custom-build their perfect morning experience. Our widgets offer the ideal balance of utility and delight, with sleek interfaces and robust functionality for the everyday experience. Have a live calendar of important academic updates or browse the Daily Prince headlines from a single dashboard interface. With widgets ranging from the uber-practical time/date clock to a talking birthday present that updates you on your friends’ birthdays, we have something for every kind of person.
+
+                                                    Make life simple. Get Tangelo.</p>
+                                              </div>
+                                          </div>
+                                      </div>
+                                 </div>
+                              </div>`, aboutNode);
+        let teamNode =  {
+            x: 6,
+            y: 4,
+            width: 6,
+            height: 4,
+            minWidth: 6,
+            minHeight: 4,
+        };
+        welcomeGrid.addWidget(`<div class="grid-stack-item" widget-id="3" widget-name="team">
+                                  <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
+                                      <div class="container" id="info-box">
+                                          <div class="row align-items-center justify-content-center">
+                                              <div class="col">
+                                                  <h1>Meet the Team</h1>
+                                              </div>
+                                          </div>
+                                          <div class="row align-items-center justify-content-center">
+                                              <div class="col">
+                                                  <hr>
+                                              </div>
+                                          </div>
+                                      </div>
+                                 </div>
+                              </div>`, teamNode);
+        let demoNode =  {
+            x: 0,
+            y: 8,
+            width: 6,
+            height: 4,
+            minWidth: 6,
+            minHeight: 4,
+        };
+        welcomeGrid.addWidget(`<div class="grid-stack-item" widget-id="3" widget-name="team">
+                                  <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
+                                      <div class="container" id="info-box">
+                                          <div class="row align-items-center justify-content-center">
+                                              <div class="col">
+                                                  <h1>Demo</h1>
+                                              </div>
+                                          </div>
+                                          <div class="row align-items-center justify-content-center">
+                                              <div class="col">
+                                                  <hr>
+                                              </div>
+                                          </div>
+                                      </div>
+                                 </div>
+                              </div>`, demoNode);
+
+        let socialNode =  {
+            x: 8,
+            y: 8,
+            width: 4,
+            height: 1,
+            minWidth: 2,
+            minHeight: 1,
+        };
+        welcomeGrid.addWidget(`<div class="grid-stack-item" widget-id="4" widget-name="social">
+                                  <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
+                                    <a href="https://github.com/zbatscha/tangelo" target="_blank" class="btn stretched-link" id="githubButton"><h1>Github</h1></a>
+                                 </div>
+                              </div>`, socialNode);
+
+  }
+  function dragstart(event) {
+    jQuery.event.props.push('dataTransfer');
+    event.dataTransfer.setData('text/html', null); //cannot be empty string
+    let grid = document.getElementById("mainGridContainer");
+    grid.style.border = "medium dashed orange";
+  }
+
+  function allowDrop(event) {
+    event.preventDefault();
+  }
+
+  function dragend(event) {
+    event.preventDefault();
+    let grid = document.getElementById("mainGridContainer");
+    grid.style.border = "none";
+  }
+
+  let bkgdcolor;
+
+  welcomeGrid.on('dragstart', function(event, ui) {
+    let grid = document.getElementById("mainGridContainer");
+    grid.style.border = "2px dashed orange";
+  });
+
+  welcomeGrid.on('dragstop', function(event, ui) {
+    let grid = document.getElementById("mainGridContainer");
+    grid.style.border = "2px dashed #fafafa";
+  });
+
+  welcomeGrid.on('resizestart', function(event, ui) {
+    let grid = document.getElementById("mainGridContainer");
+    grid.style.border = "2px dashed orange";
+  });
+
+  welcomeGrid.on('gsresizestop', function(event, element) {
+    let grid = document.getElementById("mainGridContainer");
+    grid.style.border = "2px dashed #fafafa";
+  });
+
+
+</script>

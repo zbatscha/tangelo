@@ -17,7 +17,8 @@
 <script type="text/javascript">
   var grid = GridStack.init({
     removable: '#trash',
-    removeTimeout: 100
+    removeTimeout: 100,
+    float : true,
   });
   // don't perform any dashboard widget updates until all widgets are loaded
   let dashboardPopulated = false;
@@ -47,7 +48,7 @@
     for (var i = 0; i < displayed.length; ++i) {
 
       let node =  {
-          x: Math.round(displayed[i].grid_location.x),
+          x: displayed[i].grid_location.x,
           y: displayed[i].grid_location.y,
           width: displayed[i].grid_location.width,
           height: displayed[i].grid_location.height,

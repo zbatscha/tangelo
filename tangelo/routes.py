@@ -32,7 +32,7 @@ Landing page. If user logged in, redirect them to their ashboard.
 def welcome():
     if current_user.is_authenticated:
          return redirect(url_for('dashboard'))
-    return make_response(render_template("tangelohome.html"))
+    return make_response(render_template("welcome.html"))
 
 #-----------------------------------------------------------------------
 
@@ -85,7 +85,7 @@ def dashboard():
 
             birthday_tuple = utils.getBirthday(current_user)
             if day is None or month is None or year is None:
-                
+
                 if birthday_tuple[0] is False:
                     wid['widget_style'] = '<h1> What is your birthday?</h1><br><input type=text id="month" placeholder="mm" size="10" maxlength="2">/<input type=text id="day" placeholder="dd" size="10" maxlength="2">/<input type=text id="year" placeholder="yyyy" size="10" maxlength="4"><br><br><button onclick="birthday()">Submit</button><script> function birthday(){ let day = $("#day").val(); let month = $("#month").val(); let year = $("#year").val(); console.log(year); day = encodeURIComponent(day); month = encodeURIComponent(month); year = encodeURIComponent(year); let url = "/dashboard?day="+day+"&month="+month+"&year="+year; if (request != null){request.abort();}; console.log("Sending request"); request=$.ajax({type: "GET", url: url, success: handleBirthday}); } function handleBirthday(){console.log("Hello"); location.reload();} </script>'
                 else:
@@ -112,7 +112,7 @@ def dashboard():
                     if birthday_date < now:
                         age += 1
                         daysDiff = 365 - daysDiff
-                    wid['widget_style'] = '<h1> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h1>'           
+                    wid['widget_style'] = '<h1> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h1>'
 
     create_widget_form = createForm.CreateWidget()
     return make_response(render_template('dashboard.html',

@@ -113,7 +113,7 @@
       <div id="page-content-wrapper">
         <div class="postPopup">
           <div class="postPopupContent">
-            <h2 style="margin-top: 5px; margin-bottom: 25px;"> New post</insert></h2>
+            <h2 id="popupTop" style="margin-top: 5px; margin-bottom: 25px;"></insert></h2>
             <textarea placeholder="Share it with the world" name="newPost" class="popupInputText" id="postText"></textarea>
             <a href="#" onClick="submitPost()" class="makePost">Make new post!</a>
             <img src="../static/close2.png" class="closePopup" onClick="closeUpdate()">
@@ -269,7 +269,7 @@
     }
 
     // Submit Post
-    let widget_name = '';
+    let widget_id = '';
     function updateButton(widget_target) {
     document.querySelector(".postPopup").style.display = "flex";
     document.querySelector(".postPopup").style.opacity = "100%";
@@ -292,8 +292,11 @@
         zIndex     : 1003
      }
    }).appendTo('body');
-   widget_name = widget_target.parentNode.parentNode.getAttribute("widget-id")
-
+   widget_id = widget_target.parentNode.parentNode.getAttribute("widget-id");
+   widget_name = widget_target.parentNode.parentNode.getAttribute("widget-name");
+   document.getElementById("popupTop").textContent = "New Post for \'".concat(widget_name, "\'");
+   console.log(widget_name);
+   
   // Click overlay to remove
   }
   function closeUpdate() {
@@ -310,7 +313,7 @@
 
     let post = $("#postText").val();
     post = encodeURIComponent(post);
-    let url = '/postUpdate?post=' + post + '&id=' + widget_name;
+    let url = '/postUpdate?post=' + post + '&id=' + widget_id;
     if (request != null)
         request.abort();
       request = $.ajax({

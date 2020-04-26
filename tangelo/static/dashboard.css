@@ -220,6 +220,7 @@ li > .sub-bar {
     height: 40vh;
     overflow-y: overlay;
     overflow-x: hidden;
+    transition: .3s;
 }
 
 .menu-arrow {

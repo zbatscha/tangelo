@@ -94,7 +94,7 @@ def dashboard():
                     birthday_date = temp_date.replace(year=now.year)
                     age = abs(now.year - temp_date.year)
                     daysDiff = abs((birthday_date - now).days)
-                    if temp_date < now:
+                    if birthday_date < now:
                         age += 1
                         daysDiff = 365 - daysDiff
                     wid['widget_style'] = '<h1> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h1>'
@@ -109,7 +109,7 @@ def dashboard():
                     birthday_date = temp_date.replace(year=now.year)
                     age = abs(now.year - temp_date.year)
                     daysDiff = abs((birthday_date - now).days)
-                    if temp_date < now:
+                    if birthday_date < now:
                         age += 1
                         daysDiff = 365 - daysDiff
                     wid['widget_style'] = '<h1> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h1>'           

@@ -201,7 +201,10 @@
     $(document).ready(function () {
       $("#searchWidgets").on('input', searchFollowWidgets);
       $("#left-sidebar-wrapper").mCustomScrollbar({
-        theme: "minimal",
+          theme: "minimal",
+          advanced: {
+            updateOnContentResize: true
+          },
       });
       // populate follow widget on load
       searchFollowWidgets();

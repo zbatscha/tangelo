@@ -1,0 +1,85 @@
+body {
+    margin: 0px;
+    font-family: 'Lato', sans-serif;
+}
+
+#tangelo-brand h1 {
+    font-size: 80pt;
+    font-weight: 900;
+    color: black;
+}
+
+#tangelo-brand h2 {
+    font-size: 30pt;
+    color: black;
+}
+
+#tangelo-brand button {
+    width: 150px;
+    margin: 30px;
+    margin-top: 10px;
+    font-size: 4px;
+    border-radius: 10px;
+}
+
+#tangelo-brand button h2 {
+    font-size: 30pt;
+    color: white;
+}
+
+#info-box {
+    padding: 20px;
+}
+
+#info-box h1 {
+    font-size: 30pt;
+    color: #ff8f00;
+}
+
+#info-box p {
+    font-size: 18pt;
+    padding: 20px;
+    white-space: pre-line
+}
+
+#loginContainer {
+    color: white;
+    background-color: #ff8f00;
+    border-color: #ff8f00;
+    -webkit-transition: .5s ease-in-out; /* Safari */
+    transition: .5s ease-in-out;
+}
+
+#loginContainer:hover {
+    color: #E5E5E5;
+    background-color: #E58919;
+    border-color: #E58919;
+    -webkit-transition: .5s ease-in-out; /* Safari */
+    transition: .5s ease-in-out;
+    cursor: pointer;
+}
+
+#githubButton
+{
+    color: white;
+    background-color: #ff8f00;
+    border-color: #ff8f00;
+    -webkit-transition: .5s ease-in-out; /* Safari */
+    transition: .5s ease-in-out;
+    width: 100%;
+    height: 100%;
+    display: block
+}
+
+#githubButton:hover {
+    color: #E5E5E5;
+    background-color: #E58919;
+    border-color: #E58919;
+    -webkit-transition: .5s ease-in-out; /* Safari */
+    transition: .5s ease-in-out;
+    cursor: pointer;
+}
+
+#githubButton h1 {
+    font-size: 20pt;
+}

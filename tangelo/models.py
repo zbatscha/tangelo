@@ -20,13 +20,13 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     netid = db.Column(db.String(120), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=True)
-    first_name = db.Column(db.String(120), nullable=True)
-    last_name = db.Column(db.String(120), nullable=True)
+    first_name = db.Column(db.String(120), nullable=True, default="")
+    last_name = db.Column(db.String(120), nullable=True, default="")
     class_year = db.Column(db.Integer(), nullable=True)
     display_name = db.Column(db.String(30), nullable=True)
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
     birthday_date = db.Column(db.Date, nullable=True)
-    
+
 
     widgets = db.relationship('Widget', secondary='subscriptions', passive_deletes=True)
     widgets_admin = db.relationship('Widget', secondary='administrators', passive_deletes=True)

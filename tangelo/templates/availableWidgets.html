@@ -2,7 +2,7 @@
 
 {% for wid in availableWidgets %}
 <div>
-    <img src ="static/i-icon.png" id = "i-icon-{{ wid.id }}" onClick="followWidget({{ wid.id }})" style="position: relative; height: 18px; width: 18px; float: right; margin: 24px 25px -55px 0px;"/>
+    <img src ="static/i-icon.png" id = "i-icon-{{ wid.id }}" onClick="followWidget({{ wid.id }})" onmouseover="disableScroll({{ wid.id }})" onmouseout="enableScroll()" style="position: relative; height: 18px; width: 18px; float: right; margin: 24px 25px -55px 0px;"/>
     <a class="btn btn-outline-info div-{{ wid.id }}" style="margin: 15px; margin-bottom: 0px; width: 90%; transition:all .3s ease;" id='{{ wid.id }}' onClick="followWidget(this.id)">
         <span id = "title-{{ wid.id }}">{{ wid.name }}</span>
         <p id = "span-{{ wid.id }}" style="margin-bottom: 0px;">{{ wid.description }}</p>
@@ -27,8 +27,140 @@
             max-height: 200px;
             background-color: #17a2b8;
             color: white !important;
+            z-index: 3000;
+        }
+
+        .addAndRemove {
+            height: calc(40vh + 50px)!important;
+            max-height: 450px !important;
+        }
+
+        .addAndRemoveDiv {
+            position: absolute;
+            top: 70vh;
+        }
+
+        .addAndRemoveIcon {
+            position: absolute !important;
+        }
+
+        .addAndRemoveSecret {
+            height: 30px !important; 
+        }
+
+        .bitchBar {
+            /* height: 0px !important;
+            max-height: unset !important;
+            display: unset !important; */
         }
 
     </style>
+    <script>
+        function addClass(elements, myClass) {
+
+            // if there are no elements, we're done
+            if (!elements) { return; }
+
+            // if we have a selector, get the chosen elements
+            if (typeof(elements) === 'string') {
+            elements = document.querySelectorAll(elements);
+            }
+
+            // if we have a single DOM element, make it an array to simplify behavior
+            else if (elements.tagName) { elements=[elements]; }
+
+            // add class to all chosen elements
+            for (var i=0; i<elements.length; i++) {
+
+            // if class is not already found
+            if ( (' '+elements[i].className+' ').indexOf(' '+myClass+' ') < 0 ) {
+
+                // add class
+                elements[i].className += ' ' + myClass;
+               }
+            }
+        }
+
+
+        // left: 37, up: 38, right: 39, down: 40,
+        // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
+        var keys = {37: 1, 38: 1, 39: 1, 40: 1};
+
+        function preventDefault(e) {
+        e.preventDefault();
+        }
+
+        function preventDefaultForScrollKeys(e) {
+        if (keys[e.keyCode]) {
+            preventDefault(e);
+            return false;
+        }
+        }
+
+        // modern Chrome requires { passive: false } when adding event
+        var supportsPassive = false;
+        try {
+        window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
+            get: function () { supportsPassive = true; } 
+        }));
+        } catch(e) {}
+
+        var wheelOpt = supportsPassive ? { passive: false } : false;
+        var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
+
+        // call this to Disable
+        function disableScroll(id) {
+            window.addEventListener('DOMMouseScroll', preventDefault, false); // older FF
+            window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
+            window.addEventListener('touchmove', preventDefault, wheelOpt); // mobile
+            window.addEventListener('keydown', preventDefaultForScrollKeys, false);
+
+            var obj = document.getElementById("widget-follow-list");
+            var arry = document.getElementsByClassName("btn-outline-info");
+            var lastId = arry[arry.length - 2].id;
+
+            if( obj.scrollTop === (obj.scrollHeight - obj.offsetHeight)) {
+                if (obj.clientHeight < obj.scrollHeight && id == lastId) {
+                    addClass(document.getElementById("widget-follow-list"), "addAndRemove");
+                    addClass(document.getElementById("secretdiv"), "addAndRemoveSecret");
+                    // addClass(document.getElementById(id), "addAndRemoveDiv");
+                    // addClass(document.getElementById("i-icon-" + id), "addAndRemoveIcon");
+                }
+            }
+        }
+
+        // call this to Enable
+        function enableScroll() {
+            window.removeEventListener('DOMMouseScroll', preventDefault, false);
+            window.removeEventListener(wheelEvent, preventDefault, wheelOpt); 
+            window.removeEventListener('touchmove', preventDefault, wheelOpt);
+            window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
+            document.getElementById("widget-follow-list").classList.remove("addAndRemove");
+            document.getElementById("secretdiv").classList.remove("addAndRemoveSecret");
+            // document.getElementById(id).classList.remove("addAndRemoveDiv");
+
+        }
+
+        function stopScroll(id) {
+            var obj = document.getElementById("widget-follow-list");
+            var arry = document.getElementsByClassName("btn-outline-info");
+            var lastId = arry[arry.length - 2].id;
+
+            if( obj.scrollTop === (obj.scrollHeight - obj.offsetHeight)) {
+                if (obj.clientHeight < obj.scrollHeight && id == lastId) {
+                    addClass(document.getElementById("widget-follow-list"), "addAndRemove");
+                    addClass(document.getElementById("secretdiv"), "addAndRemoveSecret");
+                }
+            }
+        }
+
+        function startScroll() {
+            document.getElementById("widget-follow-list").classList.remove("addAndRemove");
+            document.getElementById("secretdiv").classList.remove("addAndRemoveSecret");
+            console.log("yeee")
+            // addClass(document.getElementById("mCSB_1_dragger_vertical"), "bitchBar");
+        }
+    </script>
 </div>
 {% endfor %}
+<div style="height: 1px;" id="secretdiv"></div>

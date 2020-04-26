@@ -114,11 +114,7 @@ def dashboard():
                     if birthday_date < now:
                         age += 1
                         daysDiff = 365 - daysDiff
-<<<<<<< HEAD
                     wid['widget_style'] = '<h2> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h2><hr><h3>You have been alive for ' + str(daysAlive) +' days!</h3>'           
-=======
-                    wid['widget_style'] = '<h1> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h1>'
->>>>>>> 1de225e37ef03f09b1d119e2874ef23057bb5848
 
     create_widget_form = createForm.CreateWidget()
     return make_response(render_template('dashboard.html',

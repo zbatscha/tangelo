@@ -34,6 +34,8 @@ with app.app_context():
     outputString = us_data.number_day_decreasing_confirmed()
     widget_6 = Widget(name = 'Covid-19 Cases', description='Keep up to date with the latest numbers on new COVID-19 Cases.', style='<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Covid-19 Cases Update</center></h3><hr class = \"genericDivider\"><div class = \"GenericPost\"><a class = \"GenericPoster\">@Johns Hopkins CSSE</a>'+outputString+'</div>', type = 'custom')
     widget_7 = Widget(name = 'Daily Poem', description = 'A daily poem for you sourced from Poetry Foundation.', type = 'custom', alias_name = 'poems')
+    
+    widget_9 = Widget(name = 'Birthday', description = 'Tracks how many days until your birthday')
 
     db.session.add(widget_1)
     db.session.add(widget_2)
@@ -42,6 +44,7 @@ with app.app_context():
     db.session.add(widget_5)
     db.session.add(widget_6)
     db.session.add(widget_7)
+    db.session.add(widget_9)
 
     widget_1.admins.append(user_1)
     widget_2.admins.append(user_1)

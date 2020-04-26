@@ -25,6 +25,8 @@ class User(db.Model, UserMixin):
     class_year = db.Column(db.Integer(), nullable=True)
     display_name = db.Column(db.String(30), nullable=True)
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
+    birthday_date = db.Column(db.Date, nullable=True)
+    
 
     widgets = db.relationship('Widget', secondary='subscriptions', passive_deletes=True)
     widgets_admin = db.relationship('Widget', secondary='administrators', passive_deletes=True)

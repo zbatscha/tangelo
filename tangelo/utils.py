@@ -13,8 +13,10 @@ from tangelo import db, app, log
 from tangelo.models import User, Widget, Post, Subscription, CustomPost
 import tangelo.user_utils as user_utils
 from sqlalchemy import desc
+from datetime import datetime 
 
 error_msg_global = "hmmm, something\'s not right."
+default_widget_location = {'x': 0, 'y': 0, 'width': 6, 'height': 2, 'minWidth': 4, 'minHeight': 1}
 
 #-----------------------------------------------------------------------
 
@@ -40,7 +42,7 @@ def getUser(netid):
         if user:
             log.info(f'Subscribing {user} to Welcome widget...')
             try:
-                addSubscription(user, 1, grid_location={'x': 2, 'y': 0, 'width': 8, 'height': 3})
+                addSubscription(user, 1, grid_location={'x': 2, 'y': 0, 'width': 8, 'height': 3, 'minWidth': 8, 'minHeight': 3})
             except:
                 log.critical(f'Failed to subscribe new user {user} to Welcome widget.', exc_info=True)
 
@@ -97,8 +99,58 @@ def isAdmin(current_user, widget_id):
     return (current_user in widget.admins)
 
 #-----------------------------------------------------------------------
+def updateBirthday(current_user, birthday):
+    """
+    Set the current user's birthday to month/day/year
 
-def addSubscription(current_user, widget_id, grid_location={'x': 0, 'y': 0, 'width': 6, 'height': 2}):
+    Parameters 
+    ----------
+    current_user : User
+    day : int
+    month : int
+    year : int
+
+    Fields are validated in frontend
+
+    Returns
+    -------
+    None
+
+    """
+    try:
+        current_user.birthday_date = birthday
+        db.session.commit()
+    except Exception as e:
+        print(e)
+        db.session.rollback()
+
+#-----------------------------------------------------------------------
+def getBirthday(current_user):
+    """
+    Get the birthday of the current user
+
+    Parameters
+    ----------
+    current_user : User
+
+    Returns
+    ----------
+    Tuple
+    (boolean, month, day, year)
+
+    Note: if boolean false, birthday has not yet been set
+
+    """
+    birthday = current_user.birthday_date
+    if birthday is not None:
+        return (True, birthday)
+    else:
+        return (False, None)
+
+
+#-----------------------------------------------------------------------
+
+def addSubscription(current_user, widget_id, grid_location=default_widget_location):
     """
     Subscribe User current_user to widget with primary_key = widget_id.
     Set initial grid_location.
@@ -264,7 +316,6 @@ def createNewWidget(current_user, form):
                         post_type=form.post_type.data)
 
         # place new widgets in top left corner of admins dashboard
-        default_widget_location = {'x': 0, 'y': 0, 'width': 6, 'height': 2}
         subscription = Subscription(user=current_user, widget=widget,
                                     grid_location=default_widget_location)
         # current_user is the admin of the new widget

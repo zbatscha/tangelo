@@ -16,6 +16,8 @@ from tangelo import utils
 import json
 from flask import jsonify
 from tangelo.weather_api import getWeather
+import datetime
+from datetime import date, datetime
 
 error_msg_global = "hmmm, something\'s not right."
 
@@ -71,6 +73,41 @@ Tangelo Dashboard
 @login_required
 def dashboard():
     displayed_widgets = utils.getGridWidgets(current_user)
+
+    for wid in displayed_widgets:
+        if wid['widget_name'] == 'Birthday':
+            day = request.args.get('day')
+            month = request.args.get('month')
+            year = request.args.get('year')
+            print("year: " + str(year))
+            print("month: " + str(month))
+            print("day: " + str(day))
+
+            birthday_tuple = utils.getBirthday(current_user)
+            if day is None or month is None or year is None:
+                
+                if birthday_tuple[0] is False:
+                    wid['widget_style'] = '<h1> What is your birthday?</h1><br><input type=text id="month" placeholder="Month" size="10">/<input type=text id="day" placeholder="Day" size="10">/<input type=text id="year" placeholder="Year" size="10"><br><br><button onclick="birthday()">Submit</button><script> function birthday(){ let day = $("#day").val(); let month = $("#month").val(); let year = $("#year").val(); console.log(year); day = encodeURIComponent(day); month = encodeURIComponent(month); year = encodeURIComponent(year); let url = "/dashboard?day="+day+"&month="+month+"&year="+year; if (request != null){request.abort();}; console.log("Sending request"); request=$.ajax({type: "GET", url: url, success: handleBirthday}); } function handleBirthday(){console.log("Hello"); location.reload();} </script>'
+                else:
+                    now = datetime.now().date()
+                    temp_date = birthday_tuple[1]
+                    birthday_date = temp_date.replace(year=now.year)
+                    daysDiff = (birthday_date - now).days
+                    wid['widget_style'] = '<h1> There are ' + str(abs(daysDiff)) + ' days until your birthday!</h1>'
+
+            else:
+                if birthday_tuple[0] is False:
+                    birthday = date(int(year), int(month), int(day))
+                    utils.updateBirthday(current_user, birthday)
+                else:
+                    now = datetime.now().date()
+                    temp_date = birthday_tuple[1]
+                    birthday_date = temp_date.replace(year=now.year)
+                    birthday_date.replace(year=now.year)
+                    daysDiff = (birthday_date - now).days
+                    wid['widget_style'] = '<h1> There are ' + str(abs(daysDiff)) + ' days until your birthday!</h1>'
+            
+
     create_widget_form = createForm.CreateWidget()
     return make_response(render_template('dashboard.html',
                 title='Dashboard', widget_form=create_widget_form,
@@ -198,6 +235,7 @@ def addSubscription():
 
 @app.route('/updateWeather', methods=['GET', 'POST'])
 def updateWeather():
+    print('----------------------')
     weather_info = None
     if request.method == "POST":
         try:
@@ -206,9 +244,11 @@ def updateWeather():
                 raise Exception('Error')
             weather_info = getWeather(coordinates.get('lat'), coordinates.get('long'))
         except Exception as e:
-            print('failed')
-            return jsonify(success=False)
-    return weather_info
+            pass
+    if weather_info:
+        weather_info['success'] = True
+        return json.dumps(weather_info)
+    return json.dumps({'success': False})
 
 #-----------------------------------------------------------------------
 

@@ -87,13 +87,14 @@ def dashboard():
             if day is None or month is None or year is None:
                 
                 if birthday_tuple[0] is False:
-                    wid['widget_style'] = '<h1> What is your birthday?</h1><br><input type=text id="month" placeholder="Month" size="10">/<input type=text id="day" placeholder="Day" size="10">/<input type=text id="year" placeholder="Year" size="10"><br><br><button onclick="birthday()">Submit</button><script> function birthday(){ let day = $("#day").val(); let month = $("#month").val(); let year = $("#year").val(); console.log(year); day = encodeURIComponent(day); month = encodeURIComponent(month); year = encodeURIComponent(year); let url = "/dashboard?day="+day+"&month="+month+"&year="+year; if (request != null){request.abort();}; console.log("Sending request"); request=$.ajax({type: "GET", url: url, success: handleBirthday}); } function handleBirthday(){console.log("Hello"); location.reload();} </script>'
+                    wid['widget_style'] = '<h1> What is your birthday?</h1><br><input type=text id="month" placeholder="mm" size="10">/<input type=text id="day" placeholder="dd" size="10">/<input type=text id="year" placeholder="yyyy" size="10"><br><br><button onclick="birthday()">Submit</button><script> function birthday(){ let day = $("#day").val(); let month = $("#month").val(); let year = $("#year").val(); console.log(year); day = encodeURIComponent(day); month = encodeURIComponent(month); year = encodeURIComponent(year); let url = "/dashboard?day="+day+"&month="+month+"&year="+year; if (request != null){request.abort();}; console.log("Sending request"); request=$.ajax({type: "GET", url: url, success: handleBirthday}); } function handleBirthday(){console.log("Hello"); location.reload();} </script>'
                 else:
                     now = datetime.now().date()
                     temp_date = birthday_tuple[1]
                     birthday_date = temp_date.replace(year=now.year)
+                    age = str(abs(now.year - temp_date.year))
                     daysDiff = (birthday_date - now).days
-                    wid['widget_style'] = '<h1> There are ' + str(abs(daysDiff)) + ' days until your birthday!</h1>'
+                    wid['widget_style'] = '<h1> There are ' + str(abs(daysDiff)) + ' days until you turn ' + age + '!</h1>'
 
             else:
                 if birthday_tuple[0] is False:
@@ -103,10 +104,10 @@ def dashboard():
                     now = datetime.now().date()
                     temp_date = birthday_tuple[1]
                     birthday_date = temp_date.replace(year=now.year)
+                    age = str(abs(now.year - temp_date.year))
                     birthday_date.replace(year=now.year)
                     daysDiff = (birthday_date - now).days
-                    wid['widget_style'] = '<h1> There are ' + str(abs(daysDiff)) + ' days until your birthday!</h1>'
-            
+                    wid['widget_style'] = '<h1> There are ' + str(abs(daysDiff)) + ' days until you turn ' + age + '!</h1>'            
 
     create_widget_form = createForm.CreateWidget()
     return make_response(render_template('dashboard.html',

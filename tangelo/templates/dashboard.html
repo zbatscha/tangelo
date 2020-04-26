@@ -115,7 +115,7 @@
       <div id="page-content-wrapper">
         <div class="postPopup">
           <div class="postPopupContent">
-            <h2 style="margin-top: 5px; margin-bottom: 25px;"> New post</insert></h2>
+            <h2 id="popupTop" style="margin-top: 5px; margin-bottom: 25px;"></insert></h2>
             <textarea placeholder="Share it with the world" name="newPost" class="popupInputText" id="postText"></textarea>
             <a href="#" onClick="submitPost()" class="makePost">Make new post!</a>
             <img src="../static/close2.png" class="closePopup" onClick="closeUpdate()">
@@ -129,15 +129,9 @@
               <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
                 <div class="container-fluid">
 
-                  <!-- Navbar Collapse Button -->
-                  <button class="btn d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="fas fa-align-justify"></i>
-                  </button>
-                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
                     <!-- Follow Button Left Sidebar Collapse -->
                     <button class="btn btn-info" id="left-menu-toggle">
-                      <span><i class="fas fa-chevron-left"></i> Widgets</span>
+                      <i class="fas fa-chevron-left"></i><span class="d-none d-lg-block"> Widgets</span>
                     </button>
 
                     <!-- Tangelo Logo -->
@@ -147,10 +141,9 @@
 
                     <!-- Admin @netid Right Sidebar Collapse -->
                     <button class="btn btn-info" id="right-menu-toggle">
-                      <span>Settings <i class="fa fa-chevron-right"></i></span>
+                      <span class="d-none d-lg-block">Settings </span><i class="fa fa-chevron-right"></i>
                     </button>
 
-                  </div>
               </div>
             </nav>
 
@@ -197,6 +190,14 @@
 
   <!-- Menu Toggle Script -->
   <script>
+
+    function handleBirthday(response)
+    {
+      console.log("Hello")
+    }
+
+
+
     $(document).ready(function () {
       $("#searchWidgets").on('input', searchFollowWidgets);
       $("#left-sidebar-wrapper").mCustomScrollbar({
@@ -271,7 +272,7 @@
     }
 
     // Submit Post
-    let widget_name = '';
+    let widget_id = '';
     function updateButton(widget_target) {
     document.querySelector(".postPopup").style.display = "flex";
     document.querySelector(".postPopup").style.opacity = "100%";
@@ -294,7 +295,10 @@
         zIndex     : 1003
      }
    }).appendTo('body');
-   widget_name = widget_target.parentNode.parentNode.getAttribute("widget-id")
+   widget_id = widget_target.parentNode.parentNode.getAttribute("widget-id");
+   widget_name = widget_target.parentNode.parentNode.getAttribute("widget-name");
+   document.getElementById("popupTop").textContent = "New Post for \'".concat(widget_name, "\'");
+   console.log(widget_name);
 
   // Click overlay to remove
   }
@@ -312,7 +316,7 @@
 
     let post = $("#postText").val();
     post = encodeURIComponent(post);
-    let url = '/postUpdate?post=' + post + '&id=' + widget_name;
+    let url = '/postUpdate?post=' + post + '&id=' + widget_id;
     if (request != null)
         request.abort();
       request = $.ajax({

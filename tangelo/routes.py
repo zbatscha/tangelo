@@ -94,10 +94,11 @@ def dashboard():
                     birthday_date = temp_date.replace(year=now.year)
                     age = abs(now.year - temp_date.year)
                     daysDiff = abs((birthday_date - now).days)
+                    daysAlive = abs((temp_date - now).days)
                     if birthday_date < now:
                         age += 1
                         daysDiff = 365 - daysDiff
-                    wid['widget_style'] = '<h1> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h1>'
+                    wid['widget_style'] = '<h2> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h2><hr><h3>You have been alive for ' + str(daysAlive) +' days!</h3>'
 
             else:
                 if birthday_tuple[0] is False:
@@ -109,10 +110,11 @@ def dashboard():
                     birthday_date = temp_date.replace(year=now.year)
                     age = abs(now.year - temp_date.year)
                     daysDiff = abs((birthday_date - now).days)
+                    daysAlive = abs((temp_date - now).days)
                     if birthday_date < now:
                         age += 1
                         daysDiff = 365 - daysDiff
-                    wid['widget_style'] = '<h1> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h1>'           
+                    wid['widget_style'] = '<h2> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h2><hr><h3>You have been alive for ' + str(daysAlive) +' days!</h3>'           
 
     create_widget_form = createForm.CreateWidget()
     return make_response(render_template('dashboard.html',

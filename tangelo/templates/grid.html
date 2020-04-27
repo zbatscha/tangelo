@@ -63,9 +63,9 @@
       if (!node.widget_style || node.widget_style.trim().length === 0) {
         // generic widget with empty post
         if (!node.widget_post.content || node.widget_post.content.trim().length === 0) {
-            grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}">
+            grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="${node.widget_post.content}">
                             <div class="grid-stack-item-content">
-                              ${node.admin ? `<a href="#" onClick ="updateButton(this)" class="updateButton">	&#9998;</a>` : ''}
+                              ${node.admin ? `<img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)">` : ''}
                               <div class = "centerPanelWidget">
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">
@@ -74,9 +74,9 @@
                           </div>`, node);
         } else {
           // generic widget with non-empty post
-          grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
+          grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="${node.widget_post.content}">
                             <div class="grid-stack-item-content">
-                              ${node.admin ? `<a href="#" onClick ="updateButton(this)" class="updateButton">	&#9998;</a>` : ''}
+                              ${node.admin ? `<img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)">` : ''}
                               <div class = "centerPanelWidget">
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">
@@ -89,7 +89,7 @@
         }
       } else {
         // our unique non-generic widgets
-        grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}">
+        grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="${node.widget_post.content}">
                           <div class="grid-stack-item-content">
                             ${node.widget_style}
                           </div>

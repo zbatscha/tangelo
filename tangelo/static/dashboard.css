@@ -237,7 +237,7 @@ li > .sub-bar {
 
 }
 
-@media(min-width:768px) {
+/* @media(min-width:768px) { */
     #wrapper {
         padding-left: 300px;
         padding-right: 300px;
@@ -286,5 +286,5 @@ li > .sub-bar {
     #wrapper.right-toggled #page-content-wrapper {
         position: relative;
         margin-left: 0;
-    }
+    /* } */
 }

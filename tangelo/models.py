@@ -42,6 +42,8 @@ class Widget(db.Model):
     alias_name = db.Column(db.String(), default="")
     description = db.Column(db.String(), nullable=False)
     type = db.Column(db.String(), default='generic')
+    active = db.Column(db.Boolean, default=False)
+    post_limit = db.Column(db.Integer, default=1)
 
     style = db.Column(db.String(), nullable=True)
     access_type = db.Column(db.String(), default='public')
@@ -98,7 +100,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     widget_id = db.Column(db.Integer, db.ForeignKey('widgets.id', ondelete='CASCADE'))
-    content = db.Column(db.String(150), nullable=False)
+    content = db.Column(db.String(220), nullable=False)
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):

@@ -62,27 +62,28 @@
       };
       if (!node.widget_style || node.widget_style.trim().length === 0) {
         // generic widget with empty post
-        if (!node.widget_post.content || node.widget_post.content.trim().length === 0) {
-            grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="${node.widget_post.content}">
-                            <div class="grid-stack-item-content">
-                              ${node.admin ? `<img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)">` : ''}
-                              <div class = "centerPanelWidget">
-                                <h3 class = "genericTitle">${node.widget_name}</h3>
-                                <hr class = "genericDivider">
-                              </div>
+        if (!node.widget_post.length) {
+          grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="">
+                          <div class="grid-stack-item-content">
+                            ${node.admin ? `<img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)">` : ''}
+                            <div class = "centerPanelWidget">
+                              <h3 class = "genericTitle">${node.widget_name}</h3>
+                              <hr class = "genericDivider">
                             </div>
-                          </div>`, node);
+                          </div>
+                        </div>`, node);
         } else {
           // generic widget with non-empty post
-          grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="${node.widget_post.content}">
-                            <div class="grid-stack-item-content">
+          grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="${node.widget_post[0].content}">
+                            <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
                               ${node.admin ? `<img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)">` : ''}
                               <div class = "centerPanelWidget">
                                 <h3 class = "genericTitle">${node.widget_name}</h3>
                                 <hr class = "genericDivider">
-                                <div class = "GenericPost">
-                                    <div class = "GenericPostContent"><a class = "GenericPoster">@${node.widget_post.author}</a>${node.widget_post.content}</div>
-                                </div>
+                                ${node.widget_post.map(post =>
+                                    `<div class = "GenericPost">
+                                        <div class = "GenericPostContent"><a class = "GenericPoster">@${post.author}</a>${post.content}</div>
+                                     </div>`).join('')}
                               </div>
                             </div>
                           </div>`, node);
@@ -90,7 +91,7 @@
       } else {
         // our unique non-generic widgets
         grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="${node.widget_post.content}">
-                          <div class="grid-stack-item-content">
+                          <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
                             ${node.widget_style}
                           </div>
                         </div>`, node);
@@ -154,6 +155,11 @@
         success: function (response) {
           searchFollowWidgets();
         },
+        error: function (response) {
+          console.log(response);
+          window.location.reload(false);
+        }
+
       });
     }
   };

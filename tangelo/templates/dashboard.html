@@ -58,7 +58,7 @@
 
           <!-- Unfollow Widget Drag/Drop Here -->
           <div id="widget-follow-list"></div>
-          <div id="trash" style="padding: 15px; margin-bottom: 15px; height: 100px;" class="text-center">
+          <div id="trash" style="padding-top: 50px; margin-bottom: 15px; height: 150px;" class="text-center">
             <div>
               <ion-icon name="trash" style="font-size: 400%"></ion-icon>
             </div>
@@ -117,8 +117,8 @@
           <div class="postPopupContent">
             <h3 class="popupHeader" id="popupTop" style="margin-top: 5px; margin-bottom: 25px;"></insert></h2>
             <img src="../static/backspace-solid.svg" title="Clear post" class="clearPost" onClick="clearPost()">
-            <textarea name="newPost" class="popupInputText" id="postText"></textarea>
-            <a href="#" onClick="submitPost()" class="makePost">Make new post!</a>
+            <textarea name="newPost" class="popupInputText" id="postText" maxlength="200"></textarea>
+            <a href="#" onClick="submitPost()" class="makePost">Save</a>
             <img src="../static/close2.png" class="closePopup" onClick="closeUpdate()">
           </div>
         </div>
@@ -150,7 +150,7 @@
 
             <!-- Flash Errors/Messages Below Navbar -->
             <div class="row">
-              <div class="displayed_errors col-md-8">
+              <div class="displayed_errors col-md-12">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                   {% if messages %}
                     {% for category, message in messages %}
@@ -259,7 +259,7 @@
       document.getElementById("postText").placeholder = "Share it with the world";
     }
 
-    
+
 
     // rotates right menu arrow
     function rotateArrow(arrowId)
@@ -316,7 +316,7 @@
    widget_post = widget_target.parentNode.parentNode.getAttribute("wicontent");
    let postLen = widget_post.length;
    // replace texts with widget info
-   document.getElementById("popupTop").textContent = "New Post for \'".concat(widget_name, "\'");
+   document.getElementById("popupTop").textContent = "Update " + widget_name;
    if (postLen < 1) {
     document.getElementById("postText").placeholder = "Share it with the world";
    }

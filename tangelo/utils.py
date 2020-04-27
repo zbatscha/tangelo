@@ -355,7 +355,7 @@ def getPost(widget_id):
 
     if widget.type == 'generic':
         post = Post.query.filter_by(widget_id=widget_id).order_by(desc(Post.create_dttm)).first()
-        generic_post = [{'content': post.content, 'author': post.author.netid}]
+        generic_post = [{'content': post.content, 'author': post.author.netid, 'url': ''}]
         return generic_post
     else:
         # Need to update this method to return multiple posts
@@ -366,7 +366,7 @@ def getPost(widget_id):
         posts = posts[:post_count]
         displayed_custom_posts = [None] * post_count
         for i, post in enumerate(posts):
-            displayed_custom_posts[i] = {'content': post.content, 'author': post.custom_author}
+            displayed_custom_posts[i] = {'content': post.content, 'author': post.custom_author, 'url': post.url}
         return displayed_custom_posts
 
 

@@ -23,6 +23,12 @@ error_msg_global = "hmmm, something\'s not right."
 
 #-----------------------------------------------------------------------
 
+@app.after_request
+def add_header(response):
+    response.cache_control.private = True
+    response.cache_control.public = False
+    return response
+
 """
 Landing page. If user logged in, redirect them to their ashboard.
 """
@@ -47,6 +53,7 @@ def login():
     if not user:
         return redirect(url_for('welcome'))
     # login and redirect to requested page
+    user.authenticated = True
     login_user(user)
     next_page = request.args.get('next')
     return redirect(next_page) if next_page else redirect(url_for('dashboard'))
@@ -57,11 +64,13 @@ def login():
 Log out User current_user.
 """
 @app.route('/logout', methods=['GET', 'POST'])
+@login_required
 def logout():
-
+    user = current_user
+    user.authenticated = False
+    logout_user()
     casClient = CASClient()
     casClient.authenticate()
-    logout_user()
     casClient.logout()
 
 #-----------------------------------------------------------------------
@@ -79,14 +88,11 @@ def dashboard():
             day = request.args.get('day')
             month = request.args.get('month')
             year = request.args.get('year')
-            print("year: " + str(year))
-            print("month: " + str(month))
-            print("day: " + str(day))
 
             birthday_tuple = utils.getBirthday(current_user)
             if day is None or month is None or year is None:
 
-                if birthday_tuple[0] is False:                    
+                if birthday_tuple[0] is False:
                     wid['widget_style'] = '<h1> What is your birthday?</h1><br><input type=text id="month" placeholder="mm" size="10" maxlength="2">/<input type=text id="day" placeholder="dd" size="10" maxlength="2">/<input type=text id="year" placeholder="yyyy" size="10" maxlength="4"><br><br><button onclick="birthday()">Submit</button><script> function birthday(){ let day = $("#day").val(); let month = $("#month").val(); let year = $("#year").val(); console.log(year); day = encodeURIComponent(day); month = encodeURIComponent(month); year = encodeURIComponent(year); let url = "/dashboard?day="+day+"&month="+month+"&year="+year; if (request != null){request.abort();}; console.log("Sending request"); request=$.ajax({type: "GET", url: url, success: handleBirthday}); } function handleBirthday(){console.log("Hello"); location.reload();} </script>'
                 else:
                     now = datetime.now().date()
@@ -158,6 +164,7 @@ def createWidget():
 Add a post to a widget
 """
 @app.route('/postUpdate', methods=['GET', 'POST'])
+@login_required
 def createPost():
     post = request.args.get('post')
     id = request.args.get('id')
@@ -175,6 +182,7 @@ def createPost():
 Remove subscription from user after widget is dragged to trash/unfollow on left sidebar.
 """
 @app.route('/update/removed', methods=['GET','POST'])
+@login_required
 def removeSubscription():
     response = jsonify(success=True)
     try:
@@ -193,6 +201,7 @@ def removeSubscription():
 currently not in use.
 """
 @app.route('/update/added', methods=['GET','POST'])
+@login_required
 def addedSubscription():
     response = jsonify(success=True)
     try:
@@ -210,6 +219,7 @@ def addedSubscription():
 Change grid_location/size of widget.
 """
 @app.route('/update/change', methods=['GET','POST'])
+@login_required
 def changeSubscription():
     response = jsonify(success=True)
     try:
@@ -228,6 +238,7 @@ def changeSubscription():
 Subscribe current_user to selected widget.
 """
 @app.route('/addSubscription', methods=['GET','POST'])
+@login_required
 def addSubscription():
     response = jsonify(success=True)
     if request.method == "POST":
@@ -240,21 +251,19 @@ def addSubscription():
     return response
 
 @app.route('/updateWeather', methods=['GET', 'POST'])
+@login_required
 def updateWeather():
-    print('----------------------')
     weather_info = None
-    if request.method == "POST":
-        try:
-            coordinates = request.json.get('coordinates')
-            if not coordinates:
-                raise Exception('Error')
-            weather_info = getWeather(coordinates.get('lat'), coordinates.get('long'))
-        except Exception as e:
-            pass
+    try:
+        coordinates = request.json.get('coordinates')
+        if not coordinates:
+            raise Exception('Error')
+        weather_info = getWeather(coordinates.get('lat'), coordinates.get('long'))
+    except Exception as e:
+        pass
     if weather_info:
-        weather_info['success'] = True
-        return json.dumps(weather_info)
-    return json.dumps({'success': False})
+        return json.dumps(weather_info), 200
+    return jsonify(success=False), 500
 
 #-----------------------------------------------------------------------
 

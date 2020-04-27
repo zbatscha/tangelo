@@ -27,22 +27,19 @@ body {
 
 h1 {
     font-size: 80pt;
-    line-height: 10px;
     font-weight: 900;
     color: white;
 }
 
 h2 {
     font-size: 30pt;
-    line-height: 0px;
     color: white;
 }
 
 button {
     font-family: 'Lato', sans-serif;
     width: 150px;
-    margin: 30px;
-    margin-top: 5px;
+    margin-top: 20px;
     font-size: 18px;
     border-radius: 10px;
 }

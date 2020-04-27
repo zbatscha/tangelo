@@ -76,7 +76,7 @@
       <div id="right-sidebar-wrapper">
         <ul class="sidebar-nav">
           <div class="sidebar-header">
-            <h3>{{ current_user.first_name }} {{ current_user.last_name }}</h3>
+            <h3>{{ current_user.netid }} </h3>
           </div>
           <li>
             <!-- Create Widget Form -->
@@ -132,7 +132,7 @@
 
                     <!-- Follow Button Left Sidebar Collapse -->
                     <button class="btn btn-info" id="left-menu-toggle">
-                      <i class="fas fa-chevron-left"></i><span class="d-none d-lg-block">&nbsp;&nbsp;Widgets</span>
+                      <i class="fas fa-chevron-left"></i><span class="d-none d-lg-block">&nbsp;&nbsp;Follow</span>
                     </button>
 
                     <!-- Tangelo Logo -->
@@ -142,7 +142,7 @@
 
                     <!-- Admin @netid Right Sidebar Collapse -->
                     <button class="btn btn-info" id="right-menu-toggle">
-                      <span class="d-none d-lg-block">Settings&nbsp;&nbsp;</span><i class="fa fa-chevron-right"></i>
+                      <span class="d-none d-lg-block">Manage&nbsp;&nbsp;</span><i class="fa fa-chevron-right"></i>
                     </button>
 
               </div>
@@ -310,7 +310,6 @@
      // access the id, name, and content of the widget to use for front end stuff
      widget_id = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-id");
      widget_name = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-name");
-     alert(widget_name);
      if (widget_name.length > 9) {
        widget_name = widget_name.substring(0, 9).concat("..");
      }

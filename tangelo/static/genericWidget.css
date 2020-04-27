@@ -15,6 +15,7 @@
 }
 
 .genericTitle {
+    text-align: center;
     padding: 5px;
     font-weight: bold;
     margin-top: 5px;
@@ -36,7 +37,8 @@
 }
 
 .GenericPost > .GenericPostContent {
-  white-space: pre-wrap;
+  white-space: pre-line;
+  hyphens: auto;
 }
 
 .GenericPoster {

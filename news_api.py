@@ -2,6 +2,7 @@
 import requests
 from tangelo.models import CustomPost, Widget, User
 from tangelo import app, db, log
+import re
 
 error_msg_global = "hmmm, something\'s not right."
 MAX_POSTS = 10
@@ -26,12 +27,14 @@ def updateNews():
         if not article:
             continue
         title = article.get('title')
-        content = article.get('content')
+        title = re.sub(r'-\s*[^-]+$', '', title).strip()
         source = article.get('source')
         if source:
             source = source.get('name')
+            # source = re.sub(r'\.com.*$', '', source).strip()
+
         url = article.get('url')
-        new_articles.append({'title': title, 'content': content, 'source': source})
+        new_articles.append({'title': title, 'source': source, 'url': url})
 
 
     with app.app_context():
@@ -47,7 +50,7 @@ def updateNews():
         try:
             db.session.query(CustomPost).filter(CustomPost.widget_id==news_widget.id).delete()
             for a in new_articles:
-                article_post = CustomPost(content=a['title'], custom_author=a['source'], widget=news_widget)
+                article_post = CustomPost(content=a['title'], custom_author=a['source'], url=a['url'], widget=news_widget)
                 db.session.add(article_post)
             news_widget.active = True
             db.session.commit()

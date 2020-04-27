@@ -1,4 +1,3 @@
-
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition);
 } else {
@@ -7,7 +6,6 @@ if (navigator.geolocation) {
 }
 
 function showPosition(position) {
-
     let coordinates = {
           lat: position.coords.latitude,
           long: position.coords.longitude,
@@ -21,8 +19,8 @@ function showPosition(position) {
       success: function (response) {
         response = JSON.parse(response);
         if response.success {
-          document.getElementById('temperature').innerHTML = response.temperature;
-          document.getElementById('sky').innerHTML = response.description;
+          document.getElementById('temperature').innerHTML = response.responseJSON.temperature;
+          document.getElementById('sky').innerHTML = response.responseJSON.description;
         }
       },
     });

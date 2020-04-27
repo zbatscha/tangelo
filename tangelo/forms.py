@@ -13,13 +13,13 @@ class CreateWidget(FlaskForm):
                         Length(min=1, max=20, message='Widget name must be 1-20 characters.')])
     description = StringField('Description',
                         validators=[DataRequired(message='What will you share with the world?'), Length(max=50, message='Description limited to 50 characters :(')])
-    access_type = SelectField('New Member Accessibility', choices=[('public', 'Public'),
-                                        ('private', 'Private'),
-                                        ('secret', 'Secret')],
-                                        validators=[DataRequired()])
-    post_type = SelectField('Who can post?', choices=[('public', 'Everyone'),
-                                        ('admin', 'Only Me')],
-                                        validators=[DataRequired()])
+    # access_type = SelectField('New Member Accessibility', choices=[('public', 'Public'),
+    #                                     ('private', 'Private'),
+    #                                     ('secret', 'Secret')],
+    #                                     validators=[DataRequired()])
+    # post_type = SelectField('Who can post?', choices=[('public', 'Everyone'),
+    #                                     ('admin', 'Only Me')],
+    #                                     validators=[DataRequired()])
     create_widget_submit = SubmitField('Create My Widget')
 
     def validate_name(self, name):

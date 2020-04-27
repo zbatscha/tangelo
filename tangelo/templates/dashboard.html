@@ -286,43 +286,44 @@
     // Submit Post
     let widget_id = '';
     function updateButton(widget_target) {
-    document.querySelector(".postPopup").style.display = "flex";
-    document.querySelector(".postPopup").style.opacity = "100%";
-    document.querySelector(".postPopup").style.zIndex = 1004;
+      document.querySelector(".postPopup").style.display = "flex";
+      document.querySelector(".postPopup").style.opacity = "100%";
+      document.querySelector(".postPopup").style.zIndex = 1004;
 
-    document.getElementsByClassName("navbar")[0].style.zIndex = 1002;
+      document.getElementsByClassName("navbar")[0].style.zIndex = 1002;
 
-    var w = $(window).width();
-    var h = $(window).height();
-    var $overlay = $('<div/>', {
-      'id': 'overlay',
-      css: {
-        position   : 'absolute',
-        height     : h + 'px',
-        width      : w + 'px',
-        left       : 0,
-        top        : 0,
-        background : '#000',
-        opacity    : 0.3,
-        zIndex     : 1003
+      let w = $(window).width();
+      let h = $(window).height();
+      let $overlay = $('<div/>', {
+        'id': 'overlay',
+        css: {
+          position   : 'absolute',
+          height     : h + 'px',
+          width      : w + 'px',
+          left       : 0,
+          top        : 0,
+          background : '#000',
+          opacity    : 0.3,
+          zIndex     : 1003
+       }
+     }).appendTo('body');
+     // access the id, name, and content of the widget to use for front end stuff
+     widget_id = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-id");
+     widget_name = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-name");
+     alert(widget_name);
+     if (widget_name.length > 9) {
+       widget_name = widget_name.substring(0, 9).concat("..");
      }
-   }).appendTo('body');
-   // access the id, name, and content of the widget to use for front end stuff
-   widget_id = widget_target.parentNode.parentNode.getAttribute("widget-id");
-   widget_name = widget_target.parentNode.parentNode.getAttribute("widget-name");
-   if (widget_name.length > 9) {
-     widget_name = widget_name.substring(0, 9).concat("..");
-   }
-   widget_post = widget_target.parentNode.parentNode.getAttribute("wicontent");
-   let postLen = widget_post.length;
-   // replace texts with widget info
-   document.getElementById("popupTop").textContent = "Update " + widget_name;
-   if (postLen < 1) {
-    document.getElementById("postText").placeholder = "Share it with the world";
-   }
-   else {
-    document.getElementById("postText").value = widget_post;
-   }
+     widget_post = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("wicontent");
+     let postLen = widget_post.length;
+     // replace texts with widget info
+     document.getElementById("popupTop").textContent = "Update " + widget_name;
+     if (postLen < 1) {
+       document.getElementById("postText").placeholder = "Share it with the world";
+     }
+     else {
+       document.getElementById("postText").value = widget_post;
+     }
 
   // Click overlay to remove
   }

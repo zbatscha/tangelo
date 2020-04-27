@@ -64,7 +64,7 @@
         // generic widget with empty post
         if (!node.widget_post.length) {
           grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="">
-                          <div class="grid-stack-item-content">
+                          <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
                             ${node.admin ? `<img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)">` : ''}
                             <div class = "centerPanelWidget">
                               <h3 class = "genericTitle">${node.widget_name}</h3>

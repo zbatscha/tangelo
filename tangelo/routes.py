@@ -73,7 +73,7 @@ Tangelo Dashboard
 @login_required
 def dashboard():
     displayed_widgets = utils.getGridWidgets(current_user)
-    
+
     for wid in displayed_widgets:
         if wid['widget_name'] == 'Birthday':
             day = request.args.get('day')
@@ -142,10 +142,8 @@ Create a new widget with current_user as admin, if form is valid.
 @app.route('/createwidget', methods=['POST'])
 @login_required
 def createWidget():
-    print('here')
     create_widget_form = createForm.CreateWidget()
     if create_widget_form.validate_on_submit():
-        print('here!')
         try:
             utils.createNewWidget(current_user, create_widget_form)
             flash(f'Your widget has been created!', 'success')

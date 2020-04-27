@@ -28,7 +28,7 @@ with app.app_context():
     widget_3 = Widget(name = '📅', description = '', style='<link rel=\"stylesheet\" href=\"../static/date.css\"/><script type=\"text/javascript\" src=\"../static/date.js\"></script><div id=\"centerPanelDate\"><h1 id = \"date\"></h1></div>', type = 'custom')
     widget_4 = Widget(name = '🌦️', description = '', style='<link rel=\"stylesheet\" href=\"../static/weather.css\"/><script type=\"text/javascript\" src=\"../static/weather.js\"></script><div id=\"centerPanelWeather\"><h1 id=\"temperature\">One moment, we\'re getting some weathery goodness</h1><h1 id=\"sky\"></h1></div>', type = 'custom')
 
-    widget_5 = Widget(name = 'News', description = 'Keep up to date with the latest top headlines.', type = 'custom', alias_name = 'news')
+    widget_5 = Widget(name = 'News', description = 'Keep up to date with the latest top headlines.', type = 'custom', alias_name = 'news', post_limit=10)
 
     us_data = covid_data('US')
     outputString = us_data.number_day_decreasing_confirmed()

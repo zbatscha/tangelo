@@ -13,7 +13,7 @@ from tangelo import db, app, log
 from tangelo.models import User, Widget, Post, Subscription, CustomPost
 import tangelo.user_utils as user_utils
 from sqlalchemy import desc
-from datetime import datetime 
+from datetime import datetime
 
 error_msg_global = "hmmm, something\'s not right."
 default_widget_location = {'x': 0, 'y': 0, 'width': 6, 'height': 2, 'minWidth': 4, 'minHeight': 1}
@@ -103,7 +103,7 @@ def updateBirthday(current_user, birthday):
     """
     Set the current user's birthday to month/day/year
 
-    Parameters 
+    Parameters
     ----------
     current_user : User
     day : int
@@ -218,19 +218,24 @@ def removeSubscription(current_user, widget_id):
         if not widget:
             log.error(f'Failed to remove subscription for {current_user}. widget_id = {widget_id} does not exist.')
             raise Exception(error_msg_global)
-
         subscription = Subscription.query.filter_by(user=current_user, widget=widget).first()
         if not subscription:
             log.error(f'{current_user} tried unsubscribing from non-existing subscription of {widget}')
             raise Exception(error_msg_global)
+        if current_user in widget.admins:
+            log.warning(f'{current_user} tried unsubscribing from administered {widget}')
+            raise Exception(f'You are an admin of {widget.name}. To permanently delete, visit admin settings.')
+    except Exception as e:
+        raise Exception(e.args[0])
 
+    try:
         db.session.delete(subscription)
         db.session.commit()
         log.info(f'{current_user} unsubscribed from {widget}')
     except Exception as e:
         db.session.rollback()
-        log.error(f'Error removing subscription for widget {widget_id}. Rolling back.')
-        raise Exception(error_msg_global + f'\"{widget.name}\" cannot be removed.')
+        log.error(f'Error removing subscription for widget {widget_id}. Rolling back.', exc_info=True)
+        raise Exception(error_msg_global + f' \"{widget.name}\" cannot be removed.')
 
 #-----------------------------------------------------------------------
 
@@ -347,19 +352,24 @@ def getPost(widget_id):
 
     """
     widget = Widget.query.get(widget_id)
+    if not widget.active:
+        return []
+
     if widget.type == 'generic':
         post = Post.query.filter_by(widget_id=widget_id).order_by(desc(Post.create_dttm)).first()
-        if not post:
-            return {'content': '', 'author': ''}
-        generic_post = {'content': post.content, 'author': post.author.netid}
+        generic_post = [{'content': post.content, 'author': post.author.netid}]
         return generic_post
     else:
         # Need to update this method to return multiple posts
-        post = CustomPost.query.filter_by(widget_id=widget_id).order_by(desc(CustomPost.create_dttm)).first()
-        if not post:
-            return {'content': '', 'author': ''}
-        custom_post = {'content': post.content, 'author': post.custom_author}
-        return custom_post
+        posts = CustomPost.query.filter_by(widget_id=widget_id).order_by(desc(CustomPost.create_dttm)).all()
+        post_count = min(widget.post_limit, len(posts))
+        if not post_count:
+            return []
+        posts = posts[:post_count]
+        displayed_custom_posts = [None] * post_count
+        for i, post in enumerate(posts):
+            displayed_custom_posts[i] = {'content': post.content, 'author': post.custom_author}
+        return displayed_custom_posts
 
 
 
@@ -382,17 +392,32 @@ def addPost(current_user, widget_id, post):
     """
     try:
         # check if valid widget
+        widget_id = int(widget_id)
         widget = Widget.query.filter_by(id=widget_id).first()
         if not widget:
-            raise Exception('Selected widget does not exist.')
+            raise Exception('Selected widget does not exist :(')
+        if current_user not in widget.admins:
+            raise Exception(f'You can\'t post to "{widget.name}" :(')
+
+        # if post is empty, dont save. Update widget active to False.
+        if not post.strip():
+            widget.active = False
+            db.session.commit()
+            return
+
+        # if post, add and update widget active status to True
         post = Post(content=post,
                     author=current_user,
                     widget=widget)
+
         db.session.add(post)
+        widget.active = True
         db.session.commit()
+
     except Exception as e:
         db.session.rollback()
-        raise Exception(e)
+        log.error(f'Error updating post to {widget} for {current_user}', exc_info=True)
+        raise Exception(error_msg_global)
 
 #-----------------------------------------------------------------------
 

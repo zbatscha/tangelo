@@ -2,7 +2,7 @@ body {
     margin: 0px;
     font-family: 'Lato', sans-serif;
 
-    background:url(tangelo-home-1.jpg) no-repeat center center fixed; 
+    background:url(tangelo-home-1.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -39,10 +39,12 @@ h2 {
 }
 
 button {
+    font-family: 'Lato', sans-serif;
     width: 150px;
     margin: 30px;
     margin-top: 5px;
-    font-size: 14px;
+    font-size: 18px;
+    border-radius: 10px;
 }
 
 #loginContainer {
@@ -74,7 +76,7 @@ button {
 #signupContainer:hover {
     color: #E58919;
     background-color: #E5E5E5;
-    border-color: #E58919;   
+    border-color: #E58919;
     -webkit-transition: .5s ease-in-out; /* Safari */
     transition: .5s ease-in-out;
     cursor: pointer;

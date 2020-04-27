@@ -32,7 +32,7 @@ Landing page. If user logged in, redirect them to their ashboard.
 def welcome():
     if current_user.is_authenticated:
          return redirect(url_for('dashboard'))
-    return make_response(render_template("welcome.html"))
+    return make_response(render_template("tangelohome.html"))
 
 #-----------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ Tangelo Dashboard
 @login_required
 def dashboard():
     displayed_widgets = utils.getGridWidgets(current_user)
-
+    
     for wid in displayed_widgets:
         if wid['widget_name'] == 'Birthday':
             day = request.args.get('day')
@@ -114,7 +114,7 @@ def dashboard():
                     if birthday_date < now:
                         age += 1
                         daysDiff = 365 - daysDiff
-                    wid['widget_style'] = '<h2> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h2><hr><h3>You have been alive for ' + str(daysAlive) +' days!</h3>'           
+                    wid['widget_style'] = '<h2> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</h2><hr><h3>You have been alive for ' + str(daysAlive) +' days!</h3>'
 
     create_widget_form = createForm.CreateWidget()
     return make_response(render_template('dashboard.html',
@@ -165,11 +165,11 @@ def createPost():
     id = request.args.get('id')
     try:
         utils.addPost(current_user, id, post)
-        flash(f'Your post has been created!', 'success')
-        return redirect(url_for('dashboard'))
+        flash('Your post has been created!', 'success') # not flashing on redirect
     except Exception as e:
-        print(e)
-        flash(f'Error occured!', 'danger')
+        flash(str(e), 'danger') # not flashing on redirect
+    return redirect(url_for('dashboard'))
+
 
 
 #-----------------------------------------------------------------------
@@ -185,8 +185,8 @@ def removeSubscription():
             for w in widgets:
                 utils.removeSubscription(current_user, w['widget_id'])
     except Exception as e:
-        flash(e, 'danger')
-        response = jsonify(success=False)
+        flash(e.args[0], 'danger')
+        response = jsonify(success=False), 500
     return response
 
 #-----------------------------------------------------------------------
@@ -237,7 +237,7 @@ def addSubscription():
         try:
             utils.addSubscription(current_user, subscription.get('widget_id'))
         except Exception as e:
-            flash(e, 'danger')
+            flash(e.args[0], 'danger')
             response = jsonify(success=False)
     return response
 

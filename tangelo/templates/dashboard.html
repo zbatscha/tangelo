@@ -334,6 +334,28 @@
     document.getElementById("postText").value = ""
   }
 
+  // toggles sidebars when the screen gets too small
+  $(window).resize(function() {
+      if( $(this).width() < 900) {
+        closeSidebars();
+      }
+  });
+
+  if($(window).width() < 900){
+    closeSidebars();
+  }
+
+  // closes windows if they are open
+  function closeSidebars() {
+    if (!document.getElementById("wrapper").classList.contains("left-toggled")) {
+      $("#wrapper").toggleClass("left-toggled");
+    }
+
+    if (!document.getElementById("wrapper").classList.contains("right-toggled")) {
+      $("#wrapper").toggleClass("right-toggled");
+    }
+  }
+
 
   function submitPost() {
     let request = null;

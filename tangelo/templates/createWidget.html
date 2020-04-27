@@ -28,32 +28,6 @@
                 {{ widget_form.description(class="form-control") }}
             {% endif %}
         </div>
-        <div class="form-group">
-            {{ widget_form.access_type.label(class="form-control-label") }}
-            {% if widget_form.access_type.errors %}
-                {{ widget_form.access_type(class="form-control is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in widget_form.access_type.errors %}
-                        <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ widget_form.access_type(class="form-control") }}
-            {% endif %}
-        </div>
-        <div class="form-group">
-            {{ widget_form.post_type.label(class="form-control-label") }}
-            {% if widget_form.post_type.errors %}
-                {{ widget_form.post_type(class="form-control is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in widget_form.post_type.errors %}
-                        <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ widget_form.post_type(class="form-control") }}
-            {% endif %}
-        </div>
     </fieldset>
     <div class="form-group">
         {{ widget_form.create_widget_submit(class="btn btn-outline-info")}}

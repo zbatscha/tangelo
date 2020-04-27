@@ -51,8 +51,10 @@ def getPoem():
         poem_author = poem_author.strip()
 
         poem = '\n' + poem_title + '\n\n' + poem_body
+
     except Exception as e:
         log.error('Error scraping daily poem.', exc_info=True)
+        print('here')
         return
 
     with app.app_context():
@@ -65,7 +67,14 @@ def getPoem():
             poem_widget.active = True
             db.session.commit()
         except Exception as e:
+            db.session.rollback()
             log.error('Error updating daily poem post.', exc_info=True)
+            try:
+                poem_widget.active = False
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+
 
 if __name__=='__main__':
 

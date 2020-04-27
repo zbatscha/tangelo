@@ -110,10 +110,10 @@ class CustomPost(db.Model):
     __tablename__ = 'custom_posts'
     id = db.Column(db.Integer, primary_key=True)
     widget_id = db.Column(db.Integer, db.ForeignKey('widgets.id', ondelete='CASCADE'))
-    custom_author = db.Column(db.String(), nullable=True)
+    custom_author = db.Column(db.String(), default="")
     # title = db.Column(db.String(), nullable=True)
-    content = db.Column(db.String(), nullable=True)
-    url = db.Column(db.String(), nullable=True)
+    content = db.Column(db.String(), default="")
+    url = db.Column(db.String(), default="")
     create_dttm = db.Column(db.DateTime, default=datetime.utcnow)
 
     widget = db.relationship(Widget, backref=db.backref("customposts", cascade="all, delete-orphan"))

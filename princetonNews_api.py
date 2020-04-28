@@ -9,7 +9,6 @@ from datetime import datetime
 from tangelo.models import Post, User, Widget, CustomPost
 from tangelo import db, app, log
 import sys
-import pprint
 
 #-----------------------------------------------------------------------
 

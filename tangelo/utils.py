@@ -254,6 +254,9 @@ def updateSubscriptionLocation(current_user, widget_id, grid_location):
     None
 
     """
+
+    if grid_location['width'] < default_widget_location['minWidth']:
+        return
     subscription = None
     widget = None
     try:

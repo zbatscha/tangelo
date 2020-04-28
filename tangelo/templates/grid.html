@@ -143,7 +143,10 @@
             x: item.x * 1,
             y: item.y * 1,
             width: item.width * 1,
-            height: item.height * 1}
+            height: item.height * 1,
+            minWidth: item.minWidth * 1,
+            minHeight: item.minHeight * 1,
+          }
         });
       });
       $.ajax({
@@ -201,6 +204,14 @@
     var grid = document.getElementById("mainGridContainer");
     grid.style.border = "2px dashed #fafafa";
   });
+  // $(window).resize(function() {
+  //   dashboardPopulated = False
+  //   clearTimeout(window.resizedFinished);
+  //   window.resizedFinished = setTimeout(function(){
+  //      dashboardPopulated = True;
+  //      alert('here');
+  //   }, 250);
+  // });
 
   grid.on('added removed change', updateGrid);
 

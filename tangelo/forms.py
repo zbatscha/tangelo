@@ -24,7 +24,7 @@ class CreateWidget(FlaskForm):
 
     def validate_name(self, name):
 
-        widget = Widget.query.filter_by(name=name.data).first()
+        widget = Widget.query.filter_by(name=name.data.rstrip()).first()
         if widget:
             raise ValidationError(f'\"{name.data}\" is taken. Please choose another.')
 

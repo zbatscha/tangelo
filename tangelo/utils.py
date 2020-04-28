@@ -320,8 +320,8 @@ def createNewWidget(current_user, form):
     """
     try:
         log.info(f'{current_user} creating new widget...')
-        widget = Widget(name=form.name.data,
-                        description=form.description.data)
+        widget = Widget(name=form.name.data.strip(),
+                        description=form.description.data.strip())
 
         # place new widgets in top left corner of admins dashboard
         subscription = Subscription(user=current_user, widget=widget,

@@ -23,10 +23,12 @@ class CreateWidget(FlaskForm):
     create_widget_submit = SubmitField('Create My Widget')
 
     def validate_name(self, name):
-
-        widget = Widget.query.filter_by(name=name.data.rstrip()).first()
+        proposed_name = name.data.strip()
+        if not proposed_name:
+            raise ValidationError(f'\"{proposed_name}\" must not be empty.')
+        widget = Widget.query.filter(Widget.name.ilike(proposed_name)).first()
         if widget:
-            raise ValidationError(f'\"{name.data}\" is taken. Please choose another.')
+            raise ValidationError(f'\"{proposed_name}\" is taken. Please choose another.')
 
 class CreatePost(FlaskForm):
     # title = StringField('Post Title',

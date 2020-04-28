@@ -1,6 +1,6 @@
 .updateButton {
-    height: 10%;
-    width: 10%;
+    height: 16px;
+    width: 16px;
     position: absolute;
     top: 5px;
     right: 3px;
@@ -14,17 +14,17 @@
 }
 
 @keyframes shake {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    10% { transform: translate(-1px, -2px) rotate(-1deg); }
-    20% { transform: translate(-2px, 0px) rotate(1deg); }
-    30% { transform: translate(2px, 2px) rotate(0deg); }
-    40% { transform: translate(1px, -1px) rotate(1deg); }
-    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-    60% { transform: translate(-3px, 1px) rotate(0deg); }
-    70% { transform: translate(2px, 1px) rotate(-1deg); }
-    80% { transform: translate(-1px, -1px) rotate(1deg); }
-    90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
+    0% { transform: translate(1px, 0px) rotate(0deg); }
+    10% { transform: translate(px, 0px) rotate(-1deg); }
+    20% { transform: translate(0px, 1px) rotate(1deg); }
+    30% { transform: translate(1px, 0px) rotate(0deg); }
+    40% { transform: translate(0px, 1px) rotate(1deg); }
+    50% { transform: translate(-1px, 0px) rotate(-1deg); }
+    60% { transform: translate(0px, -1px) rotate(0deg); }
+    70% { transform: translate(1px, 0px) rotate(-1deg); }
+    80% { transform: translate(0px, 1px) rotate(1deg); }
+    90% { transform: translate(1px, 0px) rotate(0deg); }
+    100% { transform: translate(0px, -1px) rotate(-1deg); }
   }
 
 .popupHeader{
@@ -32,16 +32,28 @@
 }
 
 .clearPost {
-    transform: scale(0.035);
-    background: white;
-    cursor: pointer;
     position: absolute;
-    top: -210px;
-    right: -274px;
+    top: 160px;
+    right: 65px;
+    background-color:white;
+	border-radius:6px;
+	border:1px solid #FF8F00;
+	display:inline-block;
+	cursor:pointer;
+	color:#FF8F00;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+    transition: .1s ease-in-out;
 }
 
 .clearPost:hover {
-    transform: scale(0.04);
+    background-color:#FF8F00;
+    text-decoration: none !important;
+    color: white;
+}
+.clearPost:active {
+	top:162px;
 }
 
 .closePopup {
@@ -97,6 +109,9 @@
 }
 
 .makePost {
+    position: absolute;
+    top: 160px;
+    right: 210px;
 	background-color:white;
 	border-radius:6px;
 	border:1px solid #FF8F00;
@@ -106,7 +121,7 @@
 	font-size:15px;
 	font-weight:bold;
 	padding:6px 24px;
-    transition: .3s ease-in-out;
+    transition: .1s ease-in-out;
 }
 .makePost:hover {
     background-color:#FF8F00;
@@ -114,8 +129,7 @@
     color: white;
 }
 .makePost:active {
-	position:relative;
-	top:1px;
+	top:162px;
 }
 
 .popupInputText {

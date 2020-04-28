@@ -116,9 +116,9 @@
         <div class="postPopup">
           <div class="postPopupContent">
             <h3 class="popupHeader" id="popupTop" style="margin-top: 5px; margin-bottom: 25px;"></insert></h2>
-            <img src="../static/backspace-solid.svg" title="Clear post" class="clearPost" onClick="clearPost()">
+              <a href="#" onClick="clearPost()" class="clearPost">Clear Post</a>
             <textarea name="newPost" class="popupInputText" id="postText" maxlength="200"></textarea>
-            <a href="#" onClick="submitPost()" class="makePost">Save</a>
+            <a href="#" onClick="submitPost()" class="makePost">Save Post</a>
             <img src="../static/close2.png" class="closePopup" onClick="closeUpdate()">
           </div>
         </div>
@@ -310,8 +310,8 @@
      // access the id, name, and content of the widget to use for front end stuff
      widget_id = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-id");
      widget_name = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-name");
-     if (widget_name.length > 9) {
-       widget_name = widget_name.substring(0, 9).concat("..");
+     if (widget_name.length > 18) {
+       widget_name = widget_name.substring(0, 18).concat("..");
      }
      widget_post = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("wicontent");
      let postLen = widget_post.length;

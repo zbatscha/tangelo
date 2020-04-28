@@ -3,6 +3,7 @@ from tangelo.models import User, Widget, Subscription, Post, AdminAssociation, C
 from tangelo.WHO_RSS import covid_data
 import news_api
 import poem_api
+import princetonNews_api
 
 with app.app_context():
     db.drop_all()
@@ -34,6 +35,7 @@ with app.app_context():
     outputString = us_data.number_day_decreasing_confirmed()
     widget_6 = Widget(name = 'Covid-19 Cases', description='Keep up to date with the latest numbers on new COVID-19 Cases.', style='<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Covid-19 Cases Update</center></h3><hr class = \"genericDivider\"><div class = \"GenericPost\"><a class = \"GenericPoster\">@Johns Hopkins CSSE</a>'+outputString+'</div>', type = 'custom')
     widget_7 = Widget(name = 'Daily Poem', description = 'A daily poem for you sourced from Poetry Foundation.', type = 'custom', alias_name = 'poems')
+    widget_8 = Widget(name = 'Princeton University News', description = 'The latest news and events stories from Princeton University.', type = 'custom', alias_name = 'princeton_news', post_limit=10)
     widget_9 = Widget(name = 'Birthday', description = 'Tracks how many days until your birthday')
 
     db.session.add(widget_1)
@@ -43,6 +45,7 @@ with app.app_context():
     db.session.add(widget_5)
     db.session.add(widget_6)
     db.session.add(widget_7)
+    db.session.add(widget_8)
     db.session.add(widget_9)
 
     widget_1.admins.append(user_1)
@@ -52,6 +55,7 @@ with app.app_context():
     widget_5.admins.append(user_1)
     widget_6.admins.append(user_1)
     widget_7.admins.append(user_1)
+    widget_8.admins.append(user_1)
     widget_9.admins.append(user_1)
 
 
@@ -60,4 +64,5 @@ with app.app_context():
     db.session.commit()
 
 news_api.updateNews()
-poem_api.getPoem()
+poem_api.updatePoem()
+princetonNews_api.updateNews()

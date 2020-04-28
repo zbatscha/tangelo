@@ -14,7 +14,7 @@ from tangelo import db, app, log
 
 daily_url = 'https://www.poetryfoundation.org/poems/poem-of-the-day'
 
-def getPoem():
+def updatePoem():
 
     soup = None
     try:
@@ -34,13 +34,11 @@ def getPoem():
         return
 
     try:
-        poem_body = soup.findAll("div", {"class": "o-poem"})
-        poem_body_soup = poem_body[0]
-        divs = poem_body_soup.findAll("div")
-        poem_body = []
-        for line in divs:
-            poem_body.append(line.text.strip())
-        poem_body = "\n".join(poem_body).strip()
+        poem_body = soup.find("div", {"class": "o-poem"})
+        for elem in poem_body.find_all(["a", "p", "div", "h3", "br"]):
+            elem.replace_with(elem.text + "\n\n")
+        poem_body = '\n'.join([line.strip() for line in poem_body.findAll(text=True)])
+        poem_body = poem_body.strip()
 
         poem_title_div = soup.find('div', {"class": "c-feature-hd"})
         poem_title = poem_title_div.find('h1').text
@@ -54,7 +52,6 @@ def getPoem():
 
     except Exception as e:
         log.error('Error scraping daily poem.', exc_info=True)
-        print('here')
         return
 
     with app.app_context():
@@ -62,7 +59,7 @@ def getPoem():
             tangelo = User.query.filter_by(netid='tangelo').first()
             poem_widget = Widget.query.filter_by(alias_name='poems').first()
             db.session.query(CustomPost).filter(CustomPost.widget_id==poem_widget.id).delete()
-            poem_post = CustomPost(content=poem, custom_author=poem_author, widget=poem_widget)
+            poem_post = CustomPost(content=poem, custom_author=poem_author, url=poem_url, widget=poem_widget)
             db.session.add(poem_post)
             poem_widget.active = True
             db.session.commit()
@@ -78,4 +75,4 @@ def getPoem():
 
 if __name__=='__main__':
 
-    getPoem()
+    updatePoem()

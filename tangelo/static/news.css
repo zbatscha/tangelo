@@ -1,0 +1,26 @@
+#centerPanelNews {
+    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 2s; /* Firefox < 16 */
+        -ms-animation: fadein 2s; /* Internet Explorer */
+         -o-animation: fadein 2s; /* Opera < 12.1 */
+            animation: fadein 2s;
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      border-radius: 5px;
+  }
+  
+  #centerPanelNews h1 {
+      font-size: 15pt;
+      line-height: 30px;
+      font-weight: 100;
+      padding-top: 25px;
+      color: rgb(238, 174, 36);
+  }
+  
+  h2 {
+      font-size: 15pt;
+      line-height: 0px;
+      color: rgb(238, 174, 36);
+      font-weight: 500;
+  }

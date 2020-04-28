@@ -293,7 +293,9 @@ def getAvailableFollowWidgets(current_user, widgetSearchText):
         List of Widget objects that are available for current_user to follow.
 
     """
-    widgets = Widget.query.filter(Widget.name.ilike('%'+widgetSearchText+'%')).all()
+    widgets1 = Widget.query.filter(Widget.name.ilike('%'+widgetSearchText+'%')).all()
+    widgets2 = Widget.query.filter(Widget.description.ilike('%'+widgetSearchText+'%')).all()
+    widgets = list(set(widgets1) | set(widgets2))
     not_subscribed = [widget for widget in widgets if current_user not in widget.users]
     return not_subscribed
 

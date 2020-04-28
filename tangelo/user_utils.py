@@ -36,9 +36,9 @@ def generateHeaders():
     nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(32)])
     nonce_bytes = b64encode(bytes(nonce, 'ascii')).decode()
 
-    username = os.environ.get('TIGERBOOK_USERNAME')
+    username = 'rmthorpe'
     #os.environ.get('TIGERBOOK_USERNAME') # use your own netid
-    password = os.environ.get('TIGERBOOK_KEY')
+    password = 'a373e0baf702e5509edde8d3e3b0cf16'
     #os.environ.get('TIGERBOOK_KEY') # use your own from /getkey
     if not username or not password:
         raise Exception('Missing tigerbook key and/or username')

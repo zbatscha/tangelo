@@ -104,7 +104,7 @@ def dashboard():
                     if birthday_date < now:
                         age += 1
                         daysDiff = 365 - daysDiff
-                    wid['widget_style'] = '<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Birthday Widget</center></h3><hr class = \"genericDivider\"><div class = \"GenericPost\"><a class = \"GenericPoster\">@tangelo </a> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</div>'
+                    wid['widget_style'] = '<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Birthday Widget</center></h3><center><hr class = \"genericDivider\"></center><div class = \"GenericPost\"><a class = \"GenericPoster\">@tangelo </a> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!<br><br><a class = \"GenericPoster\">@tangelo </a>You have been alive for ' + str(daysAlive) + ' days!</div>'
 
             else:
                 if birthday_tuple[0] is False:
@@ -120,7 +120,7 @@ def dashboard():
                     if birthday_date < now:
                         age += 1
                         daysDiff = 365 - daysDiff
-                    wid['widget_style'] = '<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Birthday Widget</center></h3><hr class = \"genericDivider\"><div class = \"GenericPost\"><a class = \"GenericPoster\">@tangelo </a> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!</div>'
+                    wid['widget_style'] = '<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Birthday Widget</center></h3><center><hr class = \"genericDivider\"></center><div class = \"GenericPost\"><a class = \"GenericPoster\">@tangelo </a> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!<br><br><a class = \"GenericPoster\">@tangelo </a>You have been alive for ' + str(daysAlive) + ' days!</div>'
 
     create_widget_form = createForm.CreateWidget()
     return make_response(render_template('dashboard.html',

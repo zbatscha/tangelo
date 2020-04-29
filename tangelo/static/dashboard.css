@@ -288,3 +288,49 @@ li > .sub-bar {
         margin-left: 0;
     /* } */
 }
+
+.birthText {
+    padding: 5px;
+    margin: 5px;
+    border-radius: 15px;
+    border: 1px solid #FF8F00;
+}
+
+.birthSubmit {
+    background-color:white;
+	border-radius:6px;
+	border:1px solid #FF8F00;
+	display:inline-block;
+	cursor:pointer;
+	color:#FF8F00;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+    transition: .1s ease-in-out;
+}
+
+.birthSubmit:hover {
+    background-color:#FF8F00;
+    text-decoration: none !important;
+    color: white;
+}
+.birthSubmit:active {
+	top:162px;
+}
+
+.bcake {
+    height: 22px;
+    width: 22px;
+    position: relative;
+    animation: hoverUpDown 2s linear infinite;
+}
+
+
+@keyframes hoverUpDown {
+    0%, 100% {
+      bottom: 0;
+    }
+    50% {
+      bottom: 6px;
+    }
+  }

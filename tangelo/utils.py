@@ -12,7 +12,7 @@ User, Widget, Subscription, AdminAssociation, Post.
 from tangelo import db, app, log
 from tangelo.models import User, Widget, Post, Subscription, CustomPost
 import tangelo.user_utils as user_utils
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 from datetime import datetime
 
 error_msg_global = "hmmm, something\'s not right."
@@ -296,9 +296,7 @@ def getAvailableFollowWidgets(current_user, widgetSearchText):
         List of Widget objects that are available for current_user to follow.
 
     """
-    widgets1 = Widget.query.filter(Widget.name.ilike('%'+widgetSearchText+'%')).all()
-    widgets2 = Widget.query.filter(Widget.description.ilike('%'+widgetSearchText+'%')).all()
-    widgets = list(set(widgets1) | set(widgets2))
+    widgets = Widget.query.filter(or_(Widget.name.ilike('%'+widgetSearchText+'%'), Widget.description.ilike('%'+widgetSearchText+'%'))).all()
     not_subscribed = [widget for widget in widgets if current_user not in widget.users]
     return not_subscribed
 

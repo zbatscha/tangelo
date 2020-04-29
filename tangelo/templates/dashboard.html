@@ -310,13 +310,13 @@
      // access the id, name, and content of the widget to use for front end stuff
      widget_id = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-id");
      widget_name = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-name");
-     if (widget_name.length > 18) {
-       widget_name = widget_name.substring(0, 18).concat("..");
+     if (widget_name.length > 25) {
+       widget_name = widget_name.substring(0, 25).concat("..");
      }
      widget_post = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("wicontent");
      let postLen = widget_post.length;
      // replace texts with widget info
-     document.getElementById("popupTop").textContent = "Update " + widget_name;
+     document.getElementById("popupTop").textContent = widget_name;
      if (postLen < 1) {
        document.getElementById("postText").placeholder = "Share it with the world";
      }

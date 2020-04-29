@@ -34,7 +34,7 @@
 .clearPost {
     position: absolute;
     top: 160px;
-    right: 65px;
+    right: 210px;
     background-color:white;
 	border-radius:6px;
 	border:1px solid #FF8F00;
@@ -111,7 +111,7 @@
 .makePost {
     position: absolute;
     top: 160px;
-    right: 210px;
+    right: 67px;
 	background-color:white;
 	border-radius:6px;
 	border:1px solid #FF8F00;

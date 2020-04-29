@@ -283,12 +283,50 @@
       }
     }
 
+    // left: 37, up: 38, right: 39, down: 40,
+    // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
+    var keys = {37: 1, 38: 1, 39: 1, 40: 1};
+
+    function preventDefault(e) {
+    e.preventDefault();
+    }
+
+    function preventDefaultForScrollKeys(e) {
+    if (keys[e.keyCode]) {
+        preventDefault(e);
+        return false;
+    }
+    }
+
+    // modern Chrome requires { passive: false } when adding event
+    var supportsPassive = false;
+    try {
+    window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
+        get: function () { supportsPassive = true; } 
+    }));
+    } catch(e) {}
+
+    var wheelOpt = supportsPassive ? { passive: false } : false;
+    var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
+
     // Submit Post
     let widget_id = '';
     function updateButton(widget_target) {
+
+      // stops scrolling
+      window.addEventListener('DOMMouseScroll', preventDefault, false); // older FF
+      window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
+      window.addEventListener('touchmove', preventDefault, wheelOpt); // mobile
+      window.addEventListener('keydown', preventDefaultForScrollKeys, false);
+
+
       document.querySelector(".postPopup").style.display = "flex";
       document.querySelector(".postPopup").style.opacity = "100%";
       document.querySelector(".postPopup").style.zIndex = 1004;
+      var redoWidth = $(window).width() - 80;
+      redoWidth = redoWidth + "px";
+      document.querySelector(".postPopup").style.width = redoWidth;
+      //document.querySelector(".postPopup").style.width = (document.getElementById("page-content-wrapper").style.width - 80) + 'px';
 
       document.getElementsByClassName("navbar")[0].style.zIndex = 1002;
 
@@ -327,6 +365,13 @@
   // Click overlay to remove
   }
   function closeUpdate() {
+
+    // enable scrolling
+    window.removeEventListener('DOMMouseScroll', preventDefault, false);
+    window.removeEventListener(wheelEvent, preventDefault, wheelOpt); 
+    window.removeEventListener('touchmove', preventDefault, wheelOpt);
+    window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
+
     document.querySelector(".postPopup").style.display = "none";
     document.querySelector(".postPopup").style.opacity = "0";
     document.getElementById("overlay").remove();
@@ -339,6 +384,15 @@
       if( $(this).width() < 900) {
         closeSidebars();
       }
+
+      var redoWidth = $(window).width() - 80;
+      redoWidth = redoWidth + "px";
+      document.querySelector(".postPopup").style.width = redoWidth;
+      document.querySelector(".postPopup").style.height = "100vh";
+
+      document.getElementById("overlay").style.height = $(window).height() + 'px';
+      document.getElementById("overlay").style.width = $(window).width() + 'px';
+
   });
 
   if($(window).width() < 900){

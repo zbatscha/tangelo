@@ -67,7 +67,12 @@ def updateCalendar():
             while t >= 0:
                 e = next_ten_events[t]
                 content_string = str(e['event_name'])
-                author_string = str(e['start_month']) + "/" + str(e['start_day']) + "/" + str(e['start_year'])
+                day = str(e['start_day'])
+
+                if len(day) == 1:
+                    day = "0" + day
+                
+                author_string = str(e['start_month']) + "/" + day + "/" + str(e['start_year'])
                 calendar_event = CustomPost(content=content_string, custom_author=author_string, widget = pton_calendar)
                 db.session.add(calendar_event)
                 t -= 1

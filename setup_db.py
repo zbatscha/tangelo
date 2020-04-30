@@ -37,7 +37,7 @@ with app.app_context():
     widget_6 = Widget(name = 'COVID-19', description='The latest numbers on US COVID-19 Cases.', style='<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Covid-19 Cases Update</center></h3><hr class = \"genericDivider\"><div class = \"GenericPost\"><a class = \"GenericPoster\">@Johns Hopkins CSSE</a>'+outputString+'</div>', type = 'custom')
     widget_7 = Widget(name = 'Poem-a-Day', description = 'A daily poem for you sourced from Poetry Foundation.', type = 'custom', alias_name = 'poems')
     widget_8 = Widget(name = 'Princeton University News', description = 'The latest news and stories from Princeton University.', type = 'custom', alias_name = 'princeton_news', post_limit=10)
-    widget_9 = Widget(name = 'Happy Birthday!', description = 'We\'re counting down the days until your next birthday celebration! 🎉 🎂')
+    widget_9 = Widget(name = 'Happy Birthday!', description = 'We\'re counting down the days till your birthday celebration!🎉🎂')
     widget_10 = Widget(name = 'Princeton Academic Calendar', description = 'Never miss course selection with this handy academic calendar.', type = 'custom', alias_name = 'pton_calendar',  post_limit=10)
 
 

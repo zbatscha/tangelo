@@ -13,8 +13,15 @@ function startIntro(){
           element: document.querySelector('[widget-id="1"]'),
           intro: "And this is your first widget."
         },
+        {
+          element: document.getElementById("#left-menu-toggle"),
+          intro: "Click here to search for available widgets."
+        },
+        {
+          element: document.querySelector("#right-menu-toggle"),
+          intro: "And click here to manage your administred widgets and subscription."
+        },
       ]
     });
-
     intro.start();
 }

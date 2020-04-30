@@ -117,10 +117,10 @@
       <div id="page-content-wrapper">
         <div class="postPopup">
           <div class="postPopupContent">
-            <h3 class="popupHeader" id="popupTop" style="margin-top: 5px; margin-bottom: 25px;"></insert></h2>
-              <a href="#" onClick="clearPost()" class="clearPost">Clear Post</a>
-            <textarea name="newPost" class="popupInputText" id="postText" maxlength="200"></textarea>
+            <h3 class="popupHeader" id="popupTop" style="margin-top: 5px; margin-bottom: 25px;"></h2>
+            <a href="#" onClick="clearPost()" class="clearPost">Clear Post</a>
             <a href="#" onClick="submitPost()" class="makePost">Save Post</a>
+            <textarea name="newPost" class="popupInputText" id="postText" maxlength="200"></textarea>
             <img src="../static/close2.png" class="closePopup" onClick="closeUpdate()">
           </div>
         </div>
@@ -133,9 +133,13 @@
                 <div class="container-fluid">
 
                     <!-- Follow Button Left Sidebar Collapse -->
-                    <button class="btn btn-info" id="left-menu-toggle">
-                      <i class="fas fa-chevron-left"></i><span class="d-none d-lg-block">&nbsp;&nbsp;Follow</span>
-                    </button>
+                    <div id ="step-4">
+                      <div id="follow-button">
+                        <button class="btn btn-info" id="left-menu-toggle">
+                          <i class="fas fa-chevron-left"></i><span class="d-none d-lg-block">&nbsp;&nbsp;Follow</span>
+                        </button>
+                      </div>
+                    </div>
 
                     <!-- Tangelo Logo -->
                     <ul class="nav navbar-nav flex-fill justify-content-center">

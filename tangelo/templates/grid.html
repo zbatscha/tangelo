@@ -82,7 +82,7 @@
                                 <hr class = "genericDivider">
                                 ${node.widget_post.map(post =>
                                     `<div class = "GenericPost">
-                                        <div class = "GenericPostContent"><a class = "GenericPoster">@${post.author}</a>${post.content} ${post.url.trim().length ? `<a href="${post.url}" target="_blank"><i class="fas fa-external-link-alt fa-xs" style="color: gray;"></i></a>` : ''}</div>
+                                        <div class = "GenericPostContent"><a class = "GenericPoster">${post.author}</a>${post.content} ${post.url.trim().length ? `<a href="${post.url}" target="_blank"><i class="fas fa-external-link-alt fa-xs" style="color: gray;"></i></a>` : ''}</div>
                                      </div>`).join('')}
                               </div>
                             </div>

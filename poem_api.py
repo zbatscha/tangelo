@@ -15,7 +15,7 @@ from tangelo import db, app, log
 daily_url = 'https://www.poetryfoundation.org/poems/poem-of-the-day'
 
 def updatePoem():
-
+    log.info('Starting \'Poem-A-Day\' widget update...')
     soup = None
     try:
         hdr = {'User-Agent': 'Mozilla/5.0'}
@@ -72,6 +72,7 @@ def updatePoem():
             except Exception as e:
                 db.session.rollback()
 
+    log.info('Exiting \'Poem-A-Day\' widget update.')
 
 if __name__=='__main__':
 

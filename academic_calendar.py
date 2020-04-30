@@ -9,7 +9,7 @@ error_message = "hmmm, something\'s not right."
 MAX_EVENTS = 10
 
 def updateCalendar():
-
+    log.info('Starting \'Academic Calendar\' widget update...')
     url = "https://registrar.princeton.edu/feeds/events/ical.ics"
 
     try:
@@ -71,7 +71,7 @@ def updateCalendar():
 
                 if len(day) == 1:
                     day = "0" + day
-                
+
                 author_string = str(e['start_month']) + "/" + day + "/" + str(e['start_year'])
                 calendar_event = CustomPost(content=content_string, custom_author=author_string, widget = pton_calendar)
                 db.session.add(calendar_event)
@@ -89,6 +89,7 @@ def updateCalendar():
             except Exception as e:
                 db.session.rollback()
                 log.error('Error updating Pton Calendar Widget active status')
+    log.info('Exiting \'Academic Calendar\' widget update.')
 
 def weekday_converter(weekday):
     if weekday == 0:

@@ -88,7 +88,7 @@ def dashboard():
     displayed_widgets = utils.getGridWidgets(current_user)
 
     for wid in displayed_widgets:
-        if wid['widget_name'] == 'Birthday':
+        if wid['widget_name'] == 'Happy Birthday!':
             day = request.args.get('day')
             month = request.args.get('month')
             year = request.args.get('year')

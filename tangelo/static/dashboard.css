@@ -32,6 +32,13 @@ body {
     transition: all 0.3s ease;
 }
 
+#trash {
+    padding: 50px; 
+    margin-bottom: 15px;
+    height: 200px;
+}
+
+
 #wrapper.left-toggled {
     padding-left: 300px;
 }
@@ -290,13 +297,14 @@ li > .sub-bar {
 }
 
 .birthText {
+    text-align: center;
     padding: 5px;
     margin: 5px;
     border-radius: 15px;
     border: 1px solid #FF8F00;
 }
 
-.birthSubmit {
+.birthSubmit { 
     background-color:white;
 	border-radius:6px;
 	border:1px solid #FF8F00;

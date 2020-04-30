@@ -23,10 +23,8 @@ log = logging.getLogger('tangelo')
 export POSTGRES variables and SECRET_KEY key to environment and remove!
 """
 
-app.config['SECRET_KEY'] = 'passwordstring'
-#os.environ.get('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:asdf1234$@127.0.0.1:5432/tangelo_test' 
-#os.environ.get('DATABASE_URL')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)

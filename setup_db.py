@@ -4,6 +4,7 @@ from tangelo.WHO_RSS import covid_data
 import news_api
 import poem_api
 import princetonNews_api
+import academic_calendar
 
 with app.app_context():
     db.drop_all()
@@ -37,6 +38,8 @@ with app.app_context():
     widget_7 = Widget(name = 'Daily Poem', description = 'A daily poem for you sourced from Poetry Foundation.', type = 'custom', alias_name = 'poems')
     widget_8 = Widget(name = 'Princeton University News', description = 'The latest news and events stories from Princeton University.', type = 'custom', alias_name = 'princeton_news', post_limit=10)
     widget_9 = Widget(name = 'Birthday', description = 'Tracks how many days until your birthday')
+    widget_10 = Widget(name = 'Princeton Academic Calendar', description = 'Keeps track of upcoming events on the academic calendar', type = 'custom', alias_name = 'pton_calendar',  post_limit=10)
+
 
     db.session.add(widget_1)
     db.session.add(widget_2)
@@ -47,6 +50,7 @@ with app.app_context():
     db.session.add(widget_7)
     db.session.add(widget_8)
     db.session.add(widget_9)
+    db.session.add(widget_10)
 
     widget_1.admins.append(user_1)
     widget_2.admins.append(user_1)
@@ -66,3 +70,4 @@ with app.app_context():
 news_api.updateNews()
 poem_api.updatePoem()
 princetonNews_api.updateNews()
+academic_calendar.updateCalendar() 

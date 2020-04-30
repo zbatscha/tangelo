@@ -63,11 +63,14 @@ def updateCalendar():
 
         try:
             db.session.query(CustomPost).filter(CustomPost.widget_id==pton_calendar.id).delete()
-            next_ten_events = next_ten_events[::-1]
-            for e in next_ten_events:
+            t = len(next_ten_events) - 1
+            while t >= 0:
+                e = next_ten_events[t]
                 content_string = str(e['event_name']) + ": "+ str(e['start_month']) + "/" + str(e['start_day']) + "/" + str(e['start_year'])
+                print(content_string)
                 calendar_event = CustomPost(content=content_string, custom_author="Princeton", widget = pton_calendar)
                 db.session.add(calendar_event)
+                t -= 1
             pton_calendar.active = True
             db.session.commit()
 

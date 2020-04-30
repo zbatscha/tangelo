@@ -217,11 +217,11 @@ def removeSubscription(current_user, widget_id):
 
         if not widget:
             log.error(f'Failed to remove subscription for {current_user}. widget_id = {widget_id} does not exist.')
-            raise Exception(error_msg_global)
+            return
         subscription = Subscription.query.filter_by(user=current_user, widget=widget).first()
         if not subscription:
             log.error(f'{current_user} tried unsubscribing from non-existing subscription of {widget}')
-            raise Exception(error_msg_global)
+            return
         if current_user in widget.admins:
             log.warning(f'{current_user} tried unsubscribing from administered {widget}')
             raise Exception(f'You are an admin of {widget.name}. To permanently delete, visit admin settings.')
@@ -423,10 +423,39 @@ def addPost(current_user, widget_id, post):
 #-----------------------------------------------------------------------
 
 
+def deleteWidget(current_user, widget_id):
+    """
+    Deletes widget of id widget_id adminstered by current_user. This action
+    removes all user subscriptions, posts, and admins associated with
+    the widget. This action cannot be undone.
 
+    Parameters
+    ----------
+    current_user : User
+    widget_id : int
 
+    Returns
+    -------
+    None
 
-
+    """
+    try:
+        widget_id = int(widget_id)
+        widget = Widget.query.filter_by(id=widget_id).first()
+        if not widget:
+            return None
+        if current_user not in widget.admins:
+            log.error(f'{current_user} tried to delete {widget}. They are not an admin!')
+            return None
+        widget_name = widget.name
+        db.session.delete(widget)
+        db.session.commit()
+        log.info(f'{current_user} permanently deleted {widget}.')
+        return widget_name
+    except Exception as e:
+        log.error(f'Failed to permanently delete {widget} for {current_user}', exc_info=True)
+        db.session.rollback()
+        raise Exception(error_msg_global)
 
 
 

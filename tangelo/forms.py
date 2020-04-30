@@ -28,7 +28,7 @@ class CreateWidget(FlaskForm):
             raise ValidationError(f'\"{proposed_name}\" must not be empty.')
         widget = Widget.query.filter(Widget.name.ilike(proposed_name)).first()
         if widget:
-            raise ValidationError(f'\"{proposed_name}\" is taken. Please choose another.')
+            raise ValidationError(f'\"{proposed_name}\" is taken.')
 
 class CreatePost(FlaskForm):
     # title = StringField('Post Title',

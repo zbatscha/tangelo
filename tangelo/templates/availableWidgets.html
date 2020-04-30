@@ -5,7 +5,7 @@
     <img src ="static/i-icon.png" id = "i-icon-{{ wid.id }}" onClick="followWidget({{ wid.id }})" onmouseover="disableScroll({{ wid.id }})" onmouseout="enableScroll()" style="position: relative; height: 18px; width: 18px; float: right; margin: 24px 25px -55px 0px;"/>
     <a class="btn btn-outline-info div-{{ wid.id }}" style="margin: 15px; margin-bottom: 0px; width: 90%; transition:all .3s ease;" id='{{ wid.id }}' onClick="followWidget(this.id)">
         <span id = "title-{{ wid.id }}">{{ wid.name }}</span>
-        <p id = "span-{{ wid.id }}" style="margin-bottom: 0px;">{{ wid.description }}</p>
+        <p id = "span-{{ wid.id }}" style="margin-bottom: 0px;">{{ wid.description }}</p> @{{ wid.admins[0].netid }}
     </a>
     <style>
         .div-{{ wid.id }} {
@@ -45,7 +45,7 @@
         }
 
         .addAndRemoveSecret {
-            height: 30px !important; 
+            height: 30px !important;
         }
 
         .bitchBar {
@@ -101,7 +101,7 @@
         var supportsPassive = false;
         try {
         window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
-            get: function () { supportsPassive = true; } 
+            get: function () { supportsPassive = true; }
         }));
         } catch(e) {}
 
@@ -132,7 +132,7 @@
         // call this to Enable
         function enableScroll() {
             window.removeEventListener('DOMMouseScroll', preventDefault, false);
-            window.removeEventListener(wheelEvent, preventDefault, wheelOpt); 
+            window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
             window.removeEventListener('touchmove', preventDefault, wheelOpt);
             window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
             document.getElementById("widget-follow-list").classList.remove("addAndRemove");

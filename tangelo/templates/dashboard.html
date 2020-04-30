@@ -101,7 +101,7 @@
             <div class="collapse sub-bar" id="admin-widgets">
               {% for widget in current_user.widgets_admin %}
               <a href="#">{{ widget.name }}
-                <ion-icon name="trash" onclick="console.log('hi')" style="position: relative; font-size: 150%; margin-top: 7px; margin-right: 10px; float: right;"></ion-icon>
+                <ion-icon name="trash" data-widgetId="{{ widget.id }}" data-widgetName="{{ widget.name }}" onClick="deleteAdminWidget(this)" style="position: relative; font-size: 150%; margin-top: 7px; margin-right: 10px; float: right;"></ion-icon>
               </a>
               {% endfor %}
             </div>
@@ -194,49 +194,41 @@
   <!-- Menu Toggle Script -->
   <script>
 
-    function handleBirthday(response)
-    {
-      console.log("Hello")
-    }
+      $(document).ready(function () {
+          searchFollowWidgets();
+          $("#searchWidgets").on('input', searchFollowWidgets);
+          $("#left-sidebar-wrapper").mCustomScrollbar({
+              theme: "minimal",
+              advanced: {
+                updateOnContentResize: true
+              },
+          });
 
+          $(document).on('click', "#create_widget_submit", function(event) {
 
-
-    $(document).ready(function () {
-      $("#searchWidgets").on('input', searchFollowWidgets);
-      $("#left-sidebar-wrapper").mCustomScrollbar({
-          theme: "minimal",
-          advanced: {
-            updateOnContentResize: true
-          },
+              let csrf_token = "{{ csrf_token }}";
+              let url = "{{ url_for('createWidget') }}";
+              event.preventDefault();
+              $.ajax({
+                  type: "POST",
+                  url: url,
+                  dataType: 'json',
+                  beforeSend: function(xhr, settings) {
+                      if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                          xhr.setRequestHeader("X-CSRFToken", csrf_token)
+                      }
+                  },
+                  data: $('#create-widget-form').serialize(),
+                  success: function (response) {
+                      window.location.reload();
+                      window.location();
+                  },
+                  error: function (response) {
+                      $('#create-widget').html(response.responseText);
+                  }
+              });
+          });
       });
-      // populate follow widget on load
-      searchFollowWidgets();
-
-      $(document).on('click', "#create_widget_submit", function(event) {
-
-            let csrf_token = "{{ csrf_token }}";
-            let url = "{{ url_for('createWidget') }}";
-            event.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: url,
-                dataType: 'json',
-                beforeSend: function(xhr, settings) {
-                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrf_token)
-                    }
-                },
-                data: $('#create-widget-form').serialize(),
-                success: function (response) {
-                    window.location.reload();
-                    window.location();
-                },
-                error: function (response) {
-                    $('#create-widget').html(response.responseText);
-                }
-            });
-        });
-    });
 
     $("#left-menu-toggle").click(function(e) {
         e.preventDefault();
@@ -304,7 +296,7 @@
     var supportsPassive = false;
     try {
     window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
-        get: function () { supportsPassive = true; } 
+        get: function () { supportsPassive = true; }
     }));
     } catch(e) {}
 
@@ -370,7 +362,7 @@
 
     // enable scrolling
     window.removeEventListener('DOMMouseScroll', preventDefault, false);
-    window.removeEventListener(wheelEvent, preventDefault, wheelOpt); 
+    window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
     window.removeEventListener('touchmove', preventDefault, wheelOpt);
     window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
 
@@ -381,6 +373,24 @@
     document.getElementById("postText").value = ""
   }
 
+  function deleteAdminWidget(widgetTarget) {
+    let widgetId = widgetTarget.getAttribute('data-widgetId');
+    let widgetName = widgetTarget.getAttribute('data-widgetName');
+    if (window.confirm("Deleting " + widgetName + " will remove the widget for all users. This action cannot be undone. Would you still like to permanently delete?")) {
+        $.ajax({
+            type : 'POST',
+            url : "{{url_for('deleteWidget')}}",
+            data : JSON.stringify({"widget": {"widgetId": widgetId}}),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (response) {
+                window.location.reload();
+            }
+        });
+    } else {
+       return
+    }
+  }
   // toggles sidebars when the screen gets too small
   $(window).resize(function() {
       if( $(this).width() < 900) {

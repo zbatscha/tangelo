@@ -61,6 +61,7 @@ with app.app_context():
     widget_7.admins.append(user_1)
     widget_8.admins.append(user_1)
     widget_9.admins.append(user_1)
+    widget_10.admins.append(user_1)
 
 
     db.session.add(user_1)
@@ -70,4 +71,4 @@ with app.app_context():
 news_api.updateNews()
 poem_api.updatePoem()
 princetonNews_api.updateNews()
-academic_calendar.updateCalendar() 
+academic_calendar.updateCalendar()

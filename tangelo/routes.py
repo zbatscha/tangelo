@@ -254,6 +254,24 @@ def addSubscription():
             response = jsonify(success=False)
     return response
 
+#-----------------------------------------------------------------------
+
+@app.route('/deleteWidget', methods=['GET', 'POST'])
+@login_required
+def deleteWidget():
+    widget_name = ''
+    try:
+        delete_request = request.json.get('widget')
+        widget_id = delete_request.get('widgetId')
+        widget_name = utils.deleteWidget(current_user, widget_id)
+        if not widget_name:
+            return jsonify(success=False), 500
+    except Exception as e:
+        flash(error_msg_global, 'danger')
+        return jsonify(success=False), 500
+    flash(f'Successfully deleted {widget_name}', 'success')
+    return jsonify(success=True), 200
+
 @app.route('/updateWeather', methods=['GET', 'POST'])
 @login_required
 def updateWeather():

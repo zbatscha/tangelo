@@ -28,7 +28,7 @@ def updatePrincetonNews():
     log.info('Launching task for Princeton News Widget')
     princetonNews_api.updateNews()
 
-@periodic_task(run_every=timedelta(seconds=10))
+@periodic_task(run_every=timedelta(hours=1))
 def updateAcademicCalendar():
     log.info('Launching task for Academic Calendar Widget')
     academic_calendar.updateCalendar()

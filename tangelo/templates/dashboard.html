@@ -100,7 +100,9 @@
             <a data-toggle="collapse" href="#admin-widgets" aria-expanded="false" onclick="rotateArrow('adminArrow')">Admin  <i class ="menu-arrow" id="adminArrow"></i></a>
             <div class="collapse sub-bar" id="admin-widgets">
               {% for widget in current_user.widgets_admin %}
-              <a href="#">{{ widget.name }}</a>
+              <a href="#">{{ widget.name }}
+                <ion-icon name="trash" onclick="console.log('hi')" style="position: relative; font-size: 150%; margin-top: 7px; margin-right: 10px; float: right;"></ion-icon>
+              </a>
               {% endfor %}
             </div>
           </li>

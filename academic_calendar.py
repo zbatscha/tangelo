@@ -18,11 +18,11 @@ def updateCalendar():
         c = Calendar(response.text)
     except requests.exceptions.HTTPError as err:
         log.error("Error updating academic calendar widget", exc_info=True)
-        raise Exception(error_message)
+        return
     info = []
     for event in c.events:
         info.append({'event_name': event.name, 'start_month': date_extraction(str(event.begin))[0], 'start_day': date_extraction(str(event.begin))[1], 'start_year': date_extraction(str(event.begin))[2]})
-    
+
     sorted_info = sorted(info, key=itemgetter('start_year', 'start_month', 'start_day'))
     current_month = datetime.datetime.today().month
     current_day = datetime.datetime.today().day
@@ -37,7 +37,7 @@ def updateCalendar():
     j = i
     while sorted_info[j]['start_month'] < current_month:
         j += 1
-    
+
 
     m = j
     while sorted_info[m]['start_day'] < current_day:
@@ -81,7 +81,7 @@ def updateCalendar():
             except Exception as e:
                 db.session.rollback()
                 log.error('Error updating Pton Calendar Widget active status')
-    
+
 def weekday_converter(weekday):
     if weekday == 0:
         return "Monday"
@@ -143,4 +143,3 @@ def date_extraction(event_date):
 
 if __name__ == "__main__":
     updateCalendar()
-

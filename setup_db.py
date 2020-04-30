@@ -25,20 +25,20 @@ with app.app_context():
                                     <a class=\"btn btn-large btn-success\" href=\"#\" onclick=\"startIntro();\">How It Works</a> \
                                 </div> \
                              </div> \
-                          </div>', description = 'Tangelo Demo!', type = 'custom')
-    widget_2 = Widget(name = '🕒', description = 'Widget that tells the current time', style='<link rel=\"stylesheet\" href=\"../static/clock.css\"/><script type=\"text/javascript\" src=\"../static/clock.js\"></script><div id=\"centerPanelClock\"><h1 id=\"time\"></h1></div>', type = 'custom')
-    widget_3 = Widget(name = '📅', description = 'Calendar widget that shows the current date', style='<link rel=\"stylesheet\" href=\"../static/date.css\"/><script type=\"text/javascript\" src=\"../static/date.js\"></script><div id=\"centerPanelDate\"><h1 id = \"date\"></h1></div>', type = 'custom')
-    widget_4 = Widget(name = '🌦️', description = 'Widget that shows the current weather', style='<link rel=\"stylesheet\" href=\"../static/weather.css\"/><script type=\"text/javascript\" src=\"../static/weather.js\"></script><div id=\"centerPanelWeather\"><h1 id=\"temperature\">One moment, we\'re getting some weathery goodness</h1><h1 id=\"sky\"></h1></div>', type = 'custom')
+                          </div>', description = 'Here\'s a quick demo to get you started on Tangelo!', type = 'custom')
+    widget_2 = Widget(name = '🕒', description = 'Life as a Princeton tiger is hectic. Stay on time with this clock.', style='<link rel=\"stylesheet\" href=\"../static/clock.css\"/><script type=\"text/javascript\" src=\"../static/clock.js\"></script><div id=\"centerPanelClock\"><h1 id=\"time\"></h1></div>', type = 'custom')
+    widget_3 = Widget(name = '📅', description = 'Missing deadlines? Get back on track with this date widget.', style='<link rel=\"stylesheet\" href=\"../static/date.css\"/><script type=\"text/javascript\" src=\"../static/date.js\"></script><div id=\"centerPanelDate\"><h1 id = \"date\"></h1></div>', type = 'custom')
+    widget_4 = Widget(name = '🌦️', description = 'Rain or shine, we\'ve got the current weather for you.', style='<link rel=\"stylesheet\" href=\"../static/weather.css\"/><script type=\"text/javascript\" src=\"../static/weather.js\"></script><div id=\"centerPanelWeather\"><h1 id=\"temperature\">One moment, we\'re getting some weathery goodness</h1><h1 id=\"sky\"></h1></div>', type = 'custom')
 
     widget_5 = Widget(name = 'News', description = 'Keep up to date with the latest top headlines.', type = 'custom', alias_name = 'news', post_limit=10)
 
     us_data = covid_data('US')
     outputString = us_data.number_day_decreasing_confirmed()
-    widget_6 = Widget(name = 'Covid-19 Cases', description='Keep up to date with the latest numbers on new COVID-19 Cases.', style='<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Covid-19 Cases Update</center></h3><hr class = \"genericDivider\"><div class = \"GenericPost\"><a class = \"GenericPoster\">@Johns Hopkins CSSE</a>'+outputString+'</div>', type = 'custom')
-    widget_7 = Widget(name = 'Daily Poem', description = 'A daily poem for you sourced from Poetry Foundation.', type = 'custom', alias_name = 'poems')
-    widget_8 = Widget(name = 'Princeton University News', description = 'The latest news and events stories from Princeton University.', type = 'custom', alias_name = 'princeton_news', post_limit=10)
-    widget_9 = Widget(name = 'Birthday', description = 'Tracks how many days until your birthday')
-    widget_10 = Widget(name = 'Princeton Academic Calendar', description = 'Keeps track of upcoming events on the academic calendar', type = 'custom', alias_name = 'pton_calendar',  post_limit=10)
+    widget_6 = Widget(name = 'COVID-19', description='The latest numbers on US COVID-19 Cases.', style='<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Covid-19 Cases Update</center></h3><hr class = \"genericDivider\"><div class = \"GenericPost\"><a class = \"GenericPoster\">@Johns Hopkins CSSE</a>'+outputString+'</div>', type = 'custom')
+    widget_7 = Widget(name = 'Poem-a-Day', description = 'A daily poem for you sourced from Poetry Foundation.', type = 'custom', alias_name = 'poems')
+    widget_8 = Widget(name = 'Princeton University News', description = 'The latest news and stories from Princeton University.', type = 'custom', alias_name = 'princeton_news', post_limit=10)
+    widget_9 = Widget(name = 'Happy Birthday!', description = 'We\'re counting down the days until your next birthday celebration! 🎉 🎂')
+    widget_10 = Widget(name = 'Princeton Academic Calendar', description = 'Never miss course selection with this handy academic calendar.', type = 'custom', alias_name = 'pton_calendar',  post_limit=10)
 
 
     db.session.add(widget_1)

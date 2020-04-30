@@ -10,9 +10,10 @@ class SearchWidget(FlaskForm):
 class CreateWidget(FlaskForm):
     name = StringField('Widget Name',
                         validators=[DataRequired(message='Make it memorable!'),
-                        Length(min=1, max=20, message='Widget name must be 1-20 characters.')])
+                        Length(min=1, max=25, message='Widget name must be 1-25 characters.')],
+                        render_kw={'maxlength': 25})
     description = StringField('Description',
-                        validators=[DataRequired(message='What will you share with the world?'), Length(max=50, message='Description limited to 50 characters :(')])
+                        validators=[DataRequired(message='What will you share with the world?'), Length(max=60, message='Description limited to 60 characters :(')], render_kw={'maxlength': 60})
     # access_type = SelectField('New Member Accessibility', choices=[('public', 'Public'),
     #                                     ('private', 'Private'),
     #                                     ('secret', 'Secret')],

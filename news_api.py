@@ -16,7 +16,7 @@ def updateNews():
         data = response.json()
     except requests.exceptions.HTTPError as err:
         log.error('Error updating news widget', exc_info=True)
-        raise Exception(error_msg_global)
+        return
     articles = data.get('articles')
     if not articles:
         return
@@ -46,7 +46,7 @@ def updateNews():
                 return
         except Exception as e:
             log.error('Error retrieving News Widget', exc_info=True)
-
+            return 
         try:
             db.session.query(CustomPost).filter(CustomPost.widget_id==news_widget.id).delete()
             for a in new_articles:

@@ -12,16 +12,16 @@ function showPosition(position) {
     };
     $.ajax({
       type : 'POST',
-      url : '/updateWeather',
+      url : "{{ url_for('updateWeather') }}",
       data : JSON.stringify({"coordinates": coordinates}),
       dataType: "json",
       contentType: "application/json",
       success: function (response) {
-        response = JSON.parse(response);
-        if response.success {
-          document.getElementById('temperature').innerHTML = response.responseJSON.temperature;
-          document.getElementById('sky').innerHTML = response.responseJSON.description;
-        }
+          response = JSON.parse(response);
+          if response.success {
+            document.getElementById('temperature').innerHTML = response.responseJSON.temperature;
+            document.getElementById('sky').innerHTML = response.responseJSON.description;
+          }
       },
     });
 };

@@ -170,14 +170,16 @@ Add a post to a widget
 @app.route('/postUpdate', methods=['GET', 'POST'])
 @login_required
 def createPost():
-    post = request.args.get('post')
-    id = request.args.get('id')
-    try:
-        utils.addPost(current_user, id, post)
-        flash('Your post has been created!', 'success') # not flashing on redirect
-    except Exception as e:
-        flash(str(e), 'danger') # not flashing on redirect
-    return redirect(url_for('dashboard'))
+    if request.method == "POST":
+        try:
+            postData = request.json.get('postData')
+            utils.addPost(current_user, postData.get('widgetId'), postData.get('post'))
+            flash('Your post has been created!', 'success') # not flashing on redirect
+        except Exception as e:
+            flash(str(e), 'danger') # not flashing on redirect
+        return jsonify(success=True)
+    abort(404) 
+
 
 
 

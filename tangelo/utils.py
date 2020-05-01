@@ -16,7 +16,7 @@ from sqlalchemy import desc, or_
 from datetime import datetime
 
 error_msg_global = "hmmm, something\'s not right."
-default_widget_location = {'x': 0, 'y': 0, 'width': 6, 'height': 2, 'minWidth': 4, 'minHeight': 1}
+default_widget_location = {'x': 0, 'y': 0, 'width': 6, 'height': 4, 'minWidth': 4, 'minHeight': 1}
 
 #-----------------------------------------------------------------------
 
@@ -68,6 +68,7 @@ def getGridWidgets(current_user):
     """
     subscriptions = Subscription.query.filter_by(user_id=current_user.id).all()
     displayed = [{
+        'widget_type' : sub.widget.type,
         'widget_id': sub.widget_id,
         'grid_location': sub.grid_location,
         'widget_name': sub.widget.name,

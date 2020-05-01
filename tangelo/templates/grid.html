@@ -15,204 +15,168 @@
 </div>
 
 <script type="text/javascript">
-  var grid = GridStack.init({
-    removable: '#trash',
-    removeTimeout: 100,
-    float : true,
-  });
-  // don't perform any dashboard widget updates until all widgets are loaded
-  let dashboardPopulated = false;
-
-  // load dashboard
-  window.onload = function() {
-
-    // preserve newlines, etc - use valid JSON
-    function escape (key, val) {
-      if (typeof(val) != "string") return val;
-      return val
-        .replace(/[\"]/g, '\\"')
-        .replace(/[\\]/g, '\\\\')
-        .replace(/[\/]/g, '\\/')
-        .replace(/[\b]/g, '\\b')
-        .replace(/[\f]/g, '\\f')
-        .replace(/[\n]/g, '\\n')
-        .replace(/[\r]/g, '\\r')
-        .replace(/[\t]/g, '\\t')
-      ;
-    }
-
-
-    let displayed = JSON.parse(JSON.stringify({{ displayedWidgets | tojson }}));
-
-    grid.removeAll()
-    for (var i = 0; i < displayed.length; ++i) {
-
-      let node =  {
-          x: displayed[i].grid_location.x,
-          y: displayed[i].grid_location.y,
-          width: displayed[i].grid_location.width,
-          height: displayed[i].grid_location.height,
-          minWidth: displayed[i].grid_location.minWidth,
-          minHeight: displayed[i].grid_location.minHeight,
-          widget_name: displayed[i].widget_name,
-          widget_post: displayed[i].widget_post,
-          id: displayed[i].widget_id,
-          widget_style: displayed[i].widget_style,
-          admin: displayed[i].widget_admin
-      };
-      if (!node.widget_style || node.widget_style.trim().length === 0) {
-        // generic widget with empty post
-        if (!node.widget_post.length) {
-          grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="">
-                          <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
-                            ${node.admin ? `<img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)">` : ''}
-                            <div class = "centerPanelWidget">
-                              <h3 class = "genericTitle">${node.widget_name}</h3>
-                              <hr class = "genericDivider">
-                            </div>
-                          </div>
-                        </div>`, node);
-        } else {
-          // generic widget with non-empty post
-          grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="${node.widget_post[0].content}">
-                            <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
-                              ${node.admin ? `<img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)">` : ''}
-                              <div class = "centerPanelWidget">
-                                <h3 class = "genericTitle">${node.widget_name}</h3>
-                                <hr class = "genericDivider">
-                                ${node.widget_post.map(post =>
-                                    `<div class = "GenericPost">
-                                        <div class = "GenericPostContent"><a class = "GenericPoster">${post.author}</a>${post.content} ${post.url.trim().length ? `<a href="${post.url}" target="_blank"><i class="fas fa-external-link-alt fa-xs" style="color: gray;"></i></a>` : ''}</div>
-                                     </div>`).join('')}
-                              </div>
-                            </div>
-                          </div>`, node);
-        }
-      } else {
-        // our unique non-generic widgets
-        grid.addWidget(`<div class="grid-stack-item" widget-id="${node.id}" widget-name="${node.widget_name}" wicontent="${node.widget_post.content}">
-                          <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
-                            ${node.widget_style}
-                          </div>
-                        </div>`, node);
-      }
-    }
-
-    var grid_height = document.querySelector(".grid-stack").getAttribute("data-gs-current-column");
-    var grid_width = document.querySelector(".grid-stack").getAttribute("data-gs-current-row");
-
-    // bring all widgets to front, so each appears above sidebar and navbar when dragged
-    for (const element of document.querySelectorAll(".grid-stack-item")) {
-      element.style.zIndex = 1001;
-    }
-    dashboardPopulated = true;
-  }
-
-  // subscribe to this widget by widget_id, and display on dashboard
-  followWidget = function (follow_widget_id) {
-    let new_subscription = {
-      widget_id: follow_widget_id,
-      grid_location: {
-        x: 0,
-        y: 0,
-        width: 6,
-        height: 2,
-      }
-    };
-    $.ajax({
-      type : 'POST',
-      url : "{{url_for('addSubscription')}}",
-      data : JSON.stringify({"subscription": new_subscription}),
-      dataType: "json",
-      contentType: "application/json",
-      success: function (response) {
-        window.location.reload();
-           window.location();
-         },
+    let grid = GridStack.init({
+        removable: '#trash',
+        removeTimeout: 100,
+        float : true,
     });
-  };
+    // don't perform any dashboard widget updates until all widgets are loaded
+    let dashboardPopulated = false;
 
-  // update widget grid_location for each widget that has been removed, added, changed
-  function updateGrid(e, items) {
-    if (dashboardPopulated) {
-      let widgets = []
-      items.forEach(function(item) {
-        widgets.push({
-          widget_id: item.id * 1,
-          grid_location: {
-            x: item.x * 1,
-            y: item.y * 1,
-            width: item.width * 1,
-            height: item.height * 1,
-            minWidth: item.minWidth * 1,
-            minHeight: item.minHeight * 1,
-          }
-        });
-      });
-      $.ajax({
-        type : 'POST',
-        url : 'update/' + e.type,
-        data : JSON.stringify({"widgets": widgets}),
-        dataType: "json",
-        contentType: "application/json",
-        success: function (response) {
-          searchFollowWidgets();
-        },
-        error: function (response) {
-          window.location.reload(false);
+    // load dashboard
+    window.onload = function() {
+
+        let node = null
+        {% for displayed in displayedWidgets %}
+            node =  {
+                x: {{ displayed['grid_location']['x'] }},
+                y: {{ displayed['grid_location']['y'] }},
+                width: {{ displayed['grid_location']['width'] }},
+                height: {{ displayed['grid_location']['height'] }},
+                minWidth: {{ displayed['grid_location']['minWidth'] }},
+                minHeight: {{ displayed['grid_location']['minHeight'] }},
+                id: {{ displayed['widget_id'] }},
+            };
+
+            {% if displayed['widget_style'] is none %}
+                // generic widget with empty post
+                {% if displayed['widget_post']|length == 0 %}
+                    grid.addWidget(`<div class="grid-stack-item" widget-id="{{ displayed['widget_id'] }}" widget-name="{{ displayed['widget_name'] }}" wicontent="">
+                                        <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
+                                            {% if displayed['widget_admin'] %} <img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)"> {% endif %}
+                                            <div class = "centerPanelWidget">
+                                                <h3 class = "genericTitle">{{ displayed['widget_name'] }}</h3>
+                                                <hr class = "genericDivider">
+                                            </div>
+                                        </div>
+                                  </div>`, node);
+                {% else %}
+                    // generic widget with non-empty post
+                    grid.addWidget(`<div class="grid-stack-item" widget-id="{{ displayed['widget_id'] }}" widget-name="{{ displayed['widget_name'] }}" wicontent="{{ displayed['widget_post'][0]['content'] }}">
+                                        <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
+                                            {% if displayed['widget_admin'] %} <img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)"> {% endif %}
+                                            <div class = "centerPanelWidget">
+                                                <h3 class = "genericTitle">{{ displayed['widget_name'] }}</h3>
+                                                <hr class = "genericDivider">
+                                                {% for post in displayed['widget_post'] %}
+                                                    <div class = "GenericPost">
+                                                            <div class = "GenericPostContent"><a class = "GenericPoster">{{ post['author'] }}</a>{{ post['content'] }} {% if post['url']|length != 0 %} <a href="{{ post['url'] }}" target="_blank"><i class="fas fa-external-link-alt fa-xs" style="color: gray;"></i></a> {% endif %}</div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>`, node);
+                {% endif %}
+            {% else %}
+                // our unique non-generic widgets
+                grid.addWidget(`<div class="grid-stack-item" widget-id="{{ displayed['widget_id'] }}" widget-name="{{ displayed['widget_name'] }}">
+                                  <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
+                                      ${ JSON.parse(JSON.stringify({{ displayed['widget_style'] | tojson }})) }
+                                  </div>
+                                </div>`, node);
+            {% endif %}
+        {% endfor %}
+
+        let grid_height = document.querySelector(".grid-stack").getAttribute("data-gs-current-column");
+        let grid_width = document.querySelector(".grid-stack").getAttribute("data-gs-current-row");
+
+        // bring all widgets to front, so each appears above sidebar and navbar when dragged
+        for (const element of document.querySelectorAll(".grid-stack-item")) {
+            element.style.zIndex = 1001;
         }
-
-      });
+        dashboardPopulated = true;
     }
-  };
+
+    // subscribe to this widget by widget_id, and display on dashboard
+    followWidget = function (follow_widget_id) {
+        let new_subscription = {
+            widget_id: follow_widget_id,
+        };
+        $.ajax({
+          type : 'POST',
+          url : "{{url_for('addSubscription')}}",
+          data : JSON.stringify({"subscription": new_subscription}),
+          dataType: "json",
+          contentType: "application/json",
+          success: function (response) {
+            window.location.reload();
+               window.location();
+             },
+        });
+    };
+
+    // update widget grid_location for each widget that has been removed, added, changed
+    function updateGrid(e, items) {
+        if (dashboardPopulated) {
+            let widgets = []
+                items.forEach(function(item) {
+                    widgets.push({
+                        widget_id: item.id * 1,
+                        grid_location: {
+                            x: item.x * 1,
+                            y: item.y * 1,
+                            width: item.width * 1,
+                            height: item.height * 1,
+                            minWidth: item.minWidth * 1,
+                            minHeight: item.minHeight * 1,
+                      }
+                    });
+                });
+                $.ajax({
+                  type : 'POST',
+                  url : 'update/' + e.type,
+                  data : JSON.stringify({"widgets": widgets}),
+                  dataType: "json",
+                  contentType: "application/json",
+                  success: function (response) {
+                    searchFollowWidgets();
+                  },
+                  error: function (response) {
+                    window.location.reload(false);
+                  }
+            });
+        }
+    };
 
 
-  function dragstart(event) {
-    jQuery.event.props.push('dataTransfer');
-    event.dataTransfer.setData('text/html', null); //cannot be empty string
-    var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "medium dashed orange";
-  }
+    function dragstart(event) {
+        jQuery.event.props.push('dataTransfer');
+        event.dataTransfer.setData('text/html', null); //cannot be empty string
+        var grid = document.getElementById("mainGridContainer");
+        grid.style.border = "medium dashed orange";
+    }
 
-  function allowDrop(event) {
-  event.preventDefault();
-  }
-  function dragend(event) {
-    event.preventDefault();
-    var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "none";
-  }
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+    function dragend(event) {
+        event.preventDefault();
+        var grid = document.getElementById("mainGridContainer");
+        grid.style.border = "none";
+    }
 
-  var bkgdcolor;
+    var bkgdcolor;
 
-  grid.on('dragstart', function(event, ui) {
-    var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "2px dashed orange";
-  });
+    grid.on('dragstart', function(event, ui) {
+        var grid = document.getElementById("mainGridContainer");
+        grid.style.border = "2px dashed orange";
+    });
 
-  grid.on('dragstop', function(event, ui) {
-    var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "2px dashed #fafafa";
-  });
+    grid.on('dragstop', function(event, ui) {
+        var grid = document.getElementById("mainGridContainer");
+        grid.style.border = "2px dashed #fafafa";
+    });
 
-  grid.on('resizestart', function(event, ui) {
-    var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "2px dashed orange";
-  });
+    grid.on('resizestart', function(event, ui) {
+        var grid = document.getElementById("mainGridContainer");
+        grid.style.border = "2px dashed orange";
+    });
 
-  grid.on('gsresizestop', function(event, element) {
-    var grid = document.getElementById("mainGridContainer");
-    grid.style.border = "2px dashed #fafafa";
-  });
-  // $(window).resize(function() {
-  //   dashboardPopulated = False
-  //   clearTimeout(window.resizedFinished);
-  //   window.resizedFinished = setTimeout(function(){
-  //      dashboardPopulated = True;
-  //      alert('here');
-  //   }, 250);
-  // });
+    grid.on('gsresizestop', function(event, element) {
+        var grid = document.getElementById("mainGridContainer");
+        grid.style.border = "2px dashed #fafafa";
+    });
 
-  grid.on('added removed change', updateGrid);
+    grid.on('added removed change', updateGrid);
 
 </script>

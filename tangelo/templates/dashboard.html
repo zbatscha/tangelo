@@ -284,13 +284,6 @@
           e.preventDefault();
       }
 
-      function preventDefaultForScrollKeys(e) {
-          if (keys[e.keyCode]) {
-              preventDefault(e);
-              return false;
-          }
-      }
-
       // modern Chrome requires { passive: false } when adding event
       var supportsPassive = false;
       try {
@@ -310,7 +303,6 @@
           window.addEventListener('DOMMouseScroll', preventDefault, false); // older FF
           window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
           window.addEventListener('touchmove', preventDefault, wheelOpt); // mobile
-          window.addEventListener('keydown', preventDefaultForScrollKeys, false);
           let offTop = widget_target.getBoundingClientRect().top + window.scrollY; // get vertical position of widget
           offTop = offTop - 300;
 
@@ -373,7 +365,6 @@
           window.removeEventListener('DOMMouseScroll', preventDefault, false);
           window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
           window.removeEventListener('touchmove', preventDefault, wheelOpt);
-          window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
 
           document.querySelector(".postPopup").style.display = "none";
           document.querySelector(".postPopup").style.opacity = "0";

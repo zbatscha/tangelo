@@ -348,6 +348,7 @@
                 zIndex     : 1003
              }
          }).appendTo('body');
+
          // access the id, name, and content of the widget to use for front end stuff
          widget_id = widget_target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-id");
          widget_name = widget_target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-name");
@@ -401,6 +402,18 @@
       }
       // toggles sidebars when the screen gets too small
       $(window).resize(function() {
+          if (document.getElementById("overlay")) {
+            let overlay = document.getElementById("overlay");
+
+            var body = document.body,
+                html = document.documentElement;
+
+            var height = Math.max( body.scrollHeight, body.offsetHeight, 
+                                  html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+            overlay.style.height = height + "px";
+          }
+
           if( $(this).width() < 900) {
               closeSidebars();
           }

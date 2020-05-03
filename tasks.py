@@ -7,6 +7,7 @@ import news_api
 import poem_api
 import princetonNews_api
 import academic_calendar
+import covid_api
 
 REDIS_URL = environ.get('REDISTOGO_URL', 'redis://localhost:6379')
 
@@ -32,3 +33,8 @@ def updatePrincetonNews():
 def updateAcademicCalendar():
     log.info('Launching task for Academic Calendar Widget')
     academic_calendar.updateCalendar()
+
+@periodic_task(run_every=timedelta(hours=1))
+def updateCOVID():
+    log.info('Launching task for COVID Widget')
+    covid_api.updateCOVIDReport()

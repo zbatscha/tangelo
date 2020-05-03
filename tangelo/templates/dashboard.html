@@ -10,7 +10,7 @@
     <link rel="icon"
       type="image/png"
       href="{{ url_for('static', filename='tangelo_icon.png') }}">
-
+    
     <title>Tangelo</title>
 
     <!-- Bootstrap CSS CDN -->
@@ -33,6 +33,8 @@
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
 </head>
 
 <body>
@@ -336,12 +338,12 @@
              }
          }).appendTo('body');
          // access the id, name, and content of the widget to use for front end stuff
-         widget_id = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-id");
-         widget_name = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-name");
+         widget_id = widget_target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-id");
+         widget_name = widget_target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-name");
          if (widget_name.length > 25) {
            widget_name = widget_name.substring(0, 25).concat("..");
          }
-         widget_post = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("wicontent");
+         widget_post = widget_target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute("wicontent");
          let postLen = widget_post.length;
          // replace texts with widget info
          document.getElementById("popupTop").textContent = widget_name;

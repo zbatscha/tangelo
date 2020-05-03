@@ -17,7 +17,6 @@ import json
 from flask import jsonify
 from tangelo.weather_api import getWeather
 import datetime
-from datetime import date, datetime
 
 error_msg_global = "hmmm, something\'s not right."
 # beta testing
@@ -64,6 +63,10 @@ def login():
 
 #-----------------------------------------------------------------------
 
+@app.route('/renderCustomWidget', methods=['GET', 'POST'])
+def renderCustomWidget():
+    return make_response(render_template(request.args.get('template')))
+
 """
 Log out User current_user.
 """
@@ -86,46 +89,6 @@ Tangelo Dashboard
 @login_required
 def dashboard():
     displayed_widgets = utils.getGridWidgets(current_user)
-
-    for wid in displayed_widgets:
-        if wid['widget_name'] == 'Happy Birthday!':
-            day = request.args.get('day')
-            month = request.args.get('month')
-            year = request.args.get('year')
-
-            birthday_tuple = utils.getBirthday(current_user)
-            if day is None or month is None or year is None:
-
-                if birthday_tuple[0] is False:
-                    wid['widget_style'] = '<h1> What is your birth date?</h1><hr class = \"genericDivider\"><br><input type=text id="month" class="birthText" placeholder="mm" size="10" maxlength="2"><img src="../static/bcake.png" class="bcake"><input type=text id="day" class = "birthText" placeholder="dd" size="10" maxlength="2"><img src="../static/bcake.png" class="bcake"><input type=text id="year" class="birthText" placeholder="yyyy" size="10" maxlength="4"><br><br><button class="birthSubmit" onclick="birthday()">And so I was born</button><script> function birthday(){ let day = $("#day").val(); let month = $("#month").val(); let year = $("#year").val(); console.log(year); day = encodeURIComponent(day); month = encodeURIComponent(month); year = encodeURIComponent(year); let url = "/dashboard?day="+day+"&month="+month+"&year="+year; if (request != null){request.abort();}; console.log("Sending request"); request=$.ajax({type: "GET", url: url, success: handleBirthday}); } function handleBirthday(){console.log("Hello"); location.reload();} </script>'
-                else:
-                    now = datetime.now().date()
-                    temp_date = birthday_tuple[1]
-                    birthday_date = temp_date.replace(year=now.year)
-                    age = abs(now.year - temp_date.year)
-                    daysDiff = abs((birthday_date - now).days)
-                    daysAlive = abs((temp_date - now).days)
-                    if birthday_date < now:
-                        age += 1
-                        daysDiff = 365 - daysDiff
-                    wid['widget_style'] = '<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Birthday Widget</center></h3><center><hr class = \"genericDivider\"></center><div class = \"GenericPost\"><a class = \"GenericPoster\">@tangelo </a> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!<br><br><a class = \"GenericPoster\">@tangelo </a>You have been alive for ' + str(daysAlive) + ' days!</div>'
-
-            else:
-                if birthday_tuple[0] is False:
-                    birthday = date(int(year), int(month), int(day))
-                    utils.updateBirthday(current_user, birthday)
-                else:
-                    now = datetime.now().date()
-                    temp_date = birthday_tuple[1]
-                    birthday_date = temp_date.replace(year=now.year)
-                    age = abs(now.year - temp_date.year)
-                    daysDiff = abs((birthday_date - now).days)
-                    daysAlive = abs((temp_date - now).days)
-                    if birthday_date < now:
-                        age += 1
-                        daysDiff = 365 - daysDiff
-                    wid['widget_style'] = '<link rel=\"stylesheet\" href=\"../static/genericWidget.css\"/><div class=\"centerPanelWidget\"><h3 class = \"genericTitle\"><center>Birthday Widget</center></h3><center><hr class = \"genericDivider\"></center><div class = \"GenericPost\"><a class = \"GenericPoster\">@tangelo </a> There are ' + str(daysDiff) + ' days until you turn ' + str(age) + '!<br><br><a class = \"GenericPoster\">@tangelo </a>You have been alive for ' + str(daysAlive) + ' days!</div>'
-
     create_widget_form = createForm.CreateWidget()
     return make_response(render_template('dashboard.html',
                 title='Dashboard', widget_form=create_widget_form,
@@ -178,10 +141,20 @@ def createPost():
         except Exception as e:
             flash(str(e), 'danger') # not flashing on redirect
         return jsonify(success=True)
-    abort(404) 
+    abort(404)
 
 
-
+@app.route('/updateBirthday', methods=['GET', 'POST'])
+@login_required
+def updateBirthday():
+    if request.method == "POST":
+        try:
+            birthday_str = f"{request.form.get('year')}/{request.form.get('month')}/{request.form.get('day')}"
+            birthday = datetime.datetime.strptime(birthday_str, '%Y/%m/%d')
+            utils.updateBirthday(current_user, birthday)
+        except Exception as e:
+            print(e)
+    return redirect(url_for('dashboard'))
 
 #-----------------------------------------------------------------------
 """
@@ -288,95 +261,3 @@ def updateWeather():
     if weather_info:
         return json.dumps(weather_info), 200
     return jsonify(success=False), 500
-
-#-----------------------------------------------------------------------
-
-
-
-"""
-Not currently in use...
-"""
-#-----------------------------------------------------------------------
-
-"""
-Create a new post with current_user as author, if form is valid.
-
-@app.route('/createpost', methods=['GET', 'POST'])
-@login_required
-def createPost():
-    widget_target_choices = utils.getWidgetChoicesForNewPost(current_user)
-    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
-    widget_form = createForm.CreateWidget()
-    post_form = createForm.CreatePost()
-    team_form = createForm.CreateAddTeam()
-    post_form.widget_target.choices = widget_target_choices
-    team_form.widget_target.choices = admin_widget_target_choices
-
-    if post_form.validate_on_submit():
-        try:
-            utils.addPost(current_user, post_form)
-            flash(f'Your post has been created!', 'success')
-            return redirect(url_for('account'))
-        except Exception as e:
-            print(e)
-            flash(f'Error occured!', 'danger')
-    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
-"""
-#-----------------------------------------------------------------------
-
-"""
-Add users to a private widget.
-"""
-@app.route('/addteam', methods=['GET', 'POST'])
-@login_required
-def addTeam():
-    widget_target_choices = utils.getWidgetChoicesForNewPost(current_user)
-    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
-    widget_form = createForm.CreateWidget()
-    post_form = createForm.CreatePost()
-    team_form = createForm.CreateAddTeam()
-    post_form.widget_target.choices = widget_target_choices
-    team_form.widget_target.choices = admin_widget_target_choices
-
-
-    if team_form.validate_on_submit():
-        try:
-            addBool = (dict(team_form.add_remove.choices).get(team_form.add_remove.data) == 'Add')
-            if addBool:
-                utils.addUserClosedWidget(team_form)
-                flash(f'{team_form.user.data} has been added to {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success')
-            else:
-                utils.removeUserClosedWidget(team_form)
-                flash(f'{team_form.user.data} has been removed from {dict(team_form.widget_target.choices).get(team_form.widget_target.data)}', 'success' )
-            return redirect(url_for('account'))
-        except Exception as e:
-            print(e)
-            flash(f'Error occured!', 'danger')
-    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))
-
-#-----------------------------------------------------------------------
-
-"""
-Deprecated
-"""
-@app.route('/about', methods=['GET', 'POST'])
-def about():
-    return make_response(render_template('about.html', title='About'))
-
-#----------------------------------------------------------------------
-
-"""
-Deprecated
-"""
-@app.route('/account', methods=['GET', 'POST'])
-@login_required
-def account():
-    widget_target_choices = utils.getWidgetChoicesForNewPost(current_user)
-    admin_widget_target_choices = utils.getValidWidgetsAdmin(current_user)
-    widget_form = createForm.CreateWidget()
-    post_form = createForm.CreatePost()
-    team_form = createForm.CreateAddTeam()
-    post_form.widget_target.choices = widget_target_choices
-    team_form.widget_target.choices = admin_widget_target_choices
-
-    return make_response(render_template('account.html', title='Account', widget_form=widget_form, post_form=post_form, team_form=team_form, current_user=current_user))

@@ -8,6 +8,7 @@ from flask import Flask
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_moment import Moment
 import logging
 import os
 
@@ -33,6 +34,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message = None
+
+moment = Moment(app)
 
 # import routes here to avoid circular import
 from tangelo import routes

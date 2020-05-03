@@ -27,6 +27,8 @@
     window.onload = function() {
 
         let node = null
+        let contentId = null
+        let template = null
         {% for displayed in displayedWidgets %}
             node =  {
                 x: {{ displayed['grid_location']['x'] }},
@@ -37,16 +39,18 @@
                 minHeight: {{ displayed['grid_location']['minHeight'] }},
                 id: {{ displayed['widget_id'] }},
             };
-
+            contentId = "widget_{{displayed['widget_id']}}"
             {% if displayed['widget_style'] is none %}
                 // generic widget with empty post
                 {% if displayed['widget_post']|length == 0 %}
                     grid.addWidget(`<div class="grid-stack-item" widget-id="{{ displayed['widget_id'] }}" widget-name="{{ displayed['widget_name'] }}" wicontent="">
                                         <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
-                                            {% if displayed['widget_admin'] %} <img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)"> {% endif %}
-                                            <div class = "centerPanelWidget">
-                                                <h3 class = "genericTitle">{{ displayed['widget_name'] }}</h3>
-                                                <hr class = "genericDivider">
+                                            <div id="${contentId}">
+                                                {% if displayed['widget_admin'] %} <img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)"> {% endif %}
+                                                <div class = "centerPanelWidget">
+                                                    <h3 class = "genericTitle">{{ displayed['widget_name'] }}</h3>
+                                                    <hr class = "genericDivider">
+                                                </div>
                                             </div>
                                         </div>
                                   </div>`, node);
@@ -54,15 +58,17 @@
                     // generic widget with non-empty post
                     grid.addWidget(`<div class="grid-stack-item" widget-id="{{ displayed['widget_id'] }}" widget-name="{{ displayed['widget_name'] }}" wicontent="{{ displayed['widget_post'][0]['content'] }}">
                                         <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
-                                            {% if displayed['widget_admin'] %} <img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)"> {% endif %}
-                                            <div class = "centerPanelWidget">
-                                                <h3 class = "genericTitle">{{ displayed['widget_name'] }}</h3>
-                                                <hr class = "genericDivider">
-                                                {% for post in displayed['widget_post'] %}
-                                                    <div class = "GenericPost">
-                                                            <div class = "GenericPostContent"><a class = "GenericPoster">{{ post['author'] }}</a>{{ post['content'] }} {% if post['url']|length != 0 %} <a href="{{ post['url'] }}" target="_blank"><i class="fas fa-external-link-alt fa-xs" style="color: gray;"></i></a> {% endif %}</div>
-                                                    </div>
-                                                {% endfor %}
+                                            <div id="${contentId}">
+                                                {% if displayed['widget_admin'] %} <img src="../static/edit-regular.svg" title="Make New Post" class="updateButton" onClick="updateButton(this)"> {% endif %}
+                                                <div class = "centerPanelWidget">
+                                                    <h3 class = "genericTitle">{{ displayed['widget_name'] }}</h3>
+                                                    <hr class = "genericDivider">
+                                                    {% for post in displayed['widget_post'] %}
+                                                        <div class = "GenericPost">
+                                                                <div class = "GenericPostContent"><a class = "GenericPoster">{{ post['author'] }}</a>{{ post['content'] }} {% if post['url']|length != 0 %} <a href="{{ post['url'] }}" target="_blank"><i class="fas fa-external-link-alt fa-xs" style="color: gray;"></i></a> {% endif %}</div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>`, node);
@@ -71,9 +77,12 @@
                 // our unique non-generic widgets
                 grid.addWidget(`<div class="grid-stack-item" widget-id="{{ displayed['widget_id'] }}" widget-name="{{ displayed['widget_name'] }}">
                                   <div class="grid-stack-item-content mCustomScrollbar _mCS_4 mCS-autoHide">
-                                      ${ JSON.parse(JSON.stringify({{ displayed['widget_style'] | tojson }})) }
+                                      <div id="${contentId}"></div>
                                   </div>
                                 </div>`, node);
+                template = "{{ displayed['widget_style'] }}"
+                $('#' + contentId).load("{{ url_for('renderCustomWidget', template='templateToRender')}}".replace("templateToRender", template));
+
             {% endif %}
         {% endfor %}
 

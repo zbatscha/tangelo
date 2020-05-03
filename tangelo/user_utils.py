@@ -5,16 +5,16 @@ Provides methods to perform a request to the tigerbook API to query a Princeton
 undergrad by netid.
 """
 
+from tangelo.models import User
+from tangelo import db
+from tangelo import log
+from base64 import b64encode
+from datetime import datetime
 import hashlib
 import random
 import requests
 import json
-from base64 import b64encode
-from datetime import datetime
 import os
-from tangelo.models import User
-from tangelo import db
-from tangelo import log
 
 #-----------------------------------------------------------------------
 
@@ -36,10 +36,8 @@ def generateHeaders():
     nonce = ''.join([random.choice('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(32)])
     nonce_bytes = b64encode(bytes(nonce, 'ascii')).decode()
 
-    username = 'rmthorpe'
-    #os.environ.get('TIGERBOOK_USERNAME') # use your own netid
-    password = 'a373e0baf702e5509edde8d3e3b0cf16'
-    #os.environ.get('TIGERBOOK_KEY') # use your own from /getkey
+    username = os.environ.get('TIGERBOOK_USERNAME') # use your own netid
+    password = os.environ.get('TIGERBOOK_KEY') # use your own from /getkey
     if not username or not password:
         raise Exception('Missing tigerbook key and/or username')
     password_digest = (nonce + created + password).encode('ascii')
@@ -55,7 +53,7 @@ def generateHeaders():
 
 def getUndergraduate(netid):
     """
-    Get the undergraduate profile associated with `netid`, if exists.
+    Returns the undergraduate profile associated with `netid`, if exists.
     Otherwise, returns None.
 
     Parameters
@@ -69,8 +67,8 @@ def getUndergraduate(netid):
         `netid`.
 
     """
+    log.info(f'Initiating TigerBook Request for netid = \"{netid}\".')
     try:
-        log.info(f'Initiating TigerBook Request for netid = \"{netid}\".')
         url = 'https://tigerbook.herokuapp.com/api/v1/undergraduates'
         url = os.path.join(url, netid)
         headers = generateHeaders()
@@ -121,21 +119,3 @@ def createUser(netid):
         msg = f'Failed to create user account with netid = \"{netid}\"'
         log.critical(msg, exc_info=True)
         return None
-
-#-----------------------------------------------------------------------
-
-if __name__=="__main__":
-    # existing user
-    netid = 'zbatscha'
-    undergrad_profile = getUndergraduate(netid)
-    print(undergrad_profile)
-    print(undergrad_profile.get('net_id'), undergrad_profile.get('first_name'),
-        undergrad_profile.get('last_name'), undergrad_profile.get('class_year'),
-        undergrad_profile.get('email'))
-
-    # non-existing user
-    undergrad_profile = getUndergraduate('notUndergraduate')
-    print(undergrad_profile)
-
-    # user = createUser('zbatscha')
-    # print(user)

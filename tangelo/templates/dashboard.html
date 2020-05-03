@@ -323,12 +323,19 @@
           document.getElementsByClassName("navbar")[0].style.zIndex = 1002;
 
           let w = $(window).width();
-          let h = $(window).height();
+
+          // find the "height" of the document
+          var body = document.body,
+              html = document.documentElement;
+
+          var height = Math.max( body.scrollHeight, body.offsetHeight, 
+                                html.clientHeight, html.scrollHeight, html.offsetHeight );
+
           let $overlay = $('<div/>', {
               'id': 'overlay',
               css: {
                 position   : 'absolute',
-                height     : h + 'px',
+                height     : height + 'px',
                 width      : w + 'px',
                 left       : 0,
                 top        : 0,

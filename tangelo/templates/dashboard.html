@@ -38,6 +38,15 @@
 </head>
 
 <body>
+  <div class="postPopup">
+    <div class="postPopupContent">
+      <h3 class="popupHeader" id="popupTop" style="margin-top: 5px; margin-bottom: 25px;"></h2>
+      <a href="#" onClick="clearPost()" class="clearPost">Clear Post</a>
+      <a href="#" onClick="submitPost()" class="makePost">Save Post</a>
+      <textarea name="newPost" class="popupInputText" id="postText" maxlength="200"></textarea>
+      <img src="../static/close2.png" class="closePopup" onClick="closeUpdate()">
+    </div>
+  </div>
   <div id="wrapper" class="right-toggled left-toggled">
 
       <!-- Left Sidebar -->
@@ -114,15 +123,7 @@
 
       <!-- Page Content -->
       <div id="page-content-wrapper">
-        <div class="postPopup">
-          <div class="postPopupContent">
-            <h3 class="popupHeader" id="popupTop" style="margin-top: 5px; margin-bottom: 25px;"></h2>
-            <a href="#" onClick="clearPost()" class="clearPost">Clear Post</a>
-            <a href="#" onClick="submitPost()" class="makePost">Save Post</a>
-            <textarea name="newPost" class="popupInputText" id="postText" maxlength="200"></textarea>
-            <img src="../static/close2.png" class="closePopup" onClick="closeUpdate()">
-          </div>
-        </div>
+        
         <div class="container-fluid">
           <div class="row">
             <div class="col-lg-12">
@@ -310,14 +311,17 @@
           window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
           window.addEventListener('touchmove', preventDefault, wheelOpt); // mobile
           window.addEventListener('keydown', preventDefaultForScrollKeys, false);
+          let offTop = widget_target.getBoundingClientRect().top + window.scrollY; // get vertical position of widget
+          offTop = offTop - 300;
 
-
-          document.querySelector(".postPopup").style.display = "flex";
-          document.querySelector(".postPopup").style.opacity = "100%";
-          document.querySelector(".postPopup").style.zIndex = 1004;
+          let postPop = document.querySelector(".postPopup");
+          postPop.style.display = "flex";
+          postPop.style.opacity = "100%";
+          postPop.style.zIndex = 1004;
+          postPop.style.top = offTop +'px';
           var redoWidth = $(window).width() - 80;
           redoWidth = redoWidth + "px";
-          document.querySelector(".postPopup").style.width = redoWidth;
+          postPop.style.width = redoWidth;
           //document.querySelector(".postPopup").style.width = (document.getElementById("page-content-wrapper").style.width - 80) + 'px';
 
           document.getElementsByClassName("navbar")[0].style.zIndex = 1002;

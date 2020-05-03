@@ -2,9 +2,6 @@ import os
 import requests
 import json
 
-lat = 34.286320
-long = -118.712799
-
 def getWeather(lat, long):
     weather = None
     weather_key = 'ff9101a1b97b3e7617260a4da9012daa' # os.environ.get('WEATHER_KEY')

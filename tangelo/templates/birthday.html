@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{{ moment.include_moment() }}
+{% if current_user.birthday is not none %}
+    <div class="centerPanelWidget">
+        <h3 class = "genericTitle">Birthday Widget</h3>
+        <hr class = "genericDivider">
+        <div class = "GenericPost">
+            <a class = "GenericPoster">@tangelo </a> <span id="nextBirthday"></span> <br><br>
+            <a class = "GenericPoster">@tangelo </a> <span id="lifespan"></span>
+        </div>
+    </div>
+    <script type="text/javascript">
+    setInterval(displayBirthday, 1200)
+    function displayBirthday() {
+        let now = new Date();
+        let moment_now = moment(now)
+        let birthday = "{{ birthday }}"
+        let moment_birthday = moment("{{ current_user.birthday }}")
+
+        let future_birthday = new Date(moment_now.year(), moment_birthday.month(), moment_birthday.date());
+        let lifespan = moment.duration(moment_now.diff(moment_birthday));
+        time_until = null
+        if (future_birthday.toDateString() === now.toDateString()) {
+            document.getElementById('nextBirthday').innerHTML = "Happy Birthday!🎉🎂"
+        } else {
+            let future = null
+            if (future_birthday > now) {
+                future = moment(future_birthday)
+                time_until = moment.duration(future.diff(moment_now));
+            }
+            else {
+                future = moment(future_birthday);
+                future.add(1, 'year')
+                time_until = moment.duration(future.diff(moment_now));
+            }
+
+            next_year = lifespan.years() + 1;
+            document.getElementById('nextBirthday').innerHTML = "There are " +
+                time_until.months() + " months, " +
+                time_until.days() + " days, " +
+                time_until.hours() + " hours, " +
+                time_until.minutes() + " minutes, " +
+                time_until.seconds() + " seconds until you turn " + next_year + "!"
+        }
+
+        document.getElementById('lifespan').innerHTML = "You have been alive for " +
+            lifespan.years() + " years, " +
+            lifespan.months() + " months, " +
+            lifespan.days() + " days, " +
+            lifespan.hours() + " hours, " +
+            lifespan.minutes() + " minutes, " +
+            lifespan.seconds() + " seconds!"
+
+    }
+
+    </script>
+{% else %}
+<div class="centerPanelWidget">
+    <h3 class = "genericTitle">What is your birth date?</h3>
+    <hr class = "genericDivider">
+    <center>
+    <br>
+    <form action="{{ url_for('updateBirthday') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="number" name="month" class="birthText" placeholder="mm" min="01" max="12" required/>
+        <img src="../static/bcake.png" class="bcake">
+        <input type="number" name="day" class = "birthText" placeholder="dd" min="01" max="31" required/>
+        <img src="../static/bcake.png" class="bcake">
+        <input type="number" name="year" class="birthText" placeholder="yyyy" min="1900" max="2020" required/>
+        <br><br>
+        <button type="submit" value="Submit" class="birthSubmit">And so I was born</button></center>
+    </form>
+ </div>
+ <script>
+     function birthday() {
+         let day = $('#day').val();
+         let month = $('#month').val();
+         let year = $('#year').val();
+         $.ajax({
+               type : "POST",
+               url : "{{ url_for('updateBirthday') }}",
+               data : JSON.stringify({"birthday": {'day': day, 'month': month, 'year': year }}),
+               dataType: "json",
+               contentType: "application/json",
+               success: function (response) {
+                     window.location.reload();
+               },
+         });
+     };
+ </script>
+ {% endif %}

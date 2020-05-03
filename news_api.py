@@ -7,15 +7,15 @@ import re
 error_msg_global = "hmmm, something\'s not right."
 MAX_POSTS = 10
 def updateNews():
-
+    log.info('Starting \'News\' widget update...')
     news_url = ('http://newsapi.org/v2/top-headlines?country=us&apiKey=02f90cf35f2b4176a559db2847011096')
 
     try:
         response = requests.get(news_url)
         response.raise_for_status()
         data = response.json()
-    except requests.exceptions.HTTPError as err:
-        log.error('Error updating news widget', exc_info=True)
+    except Exception as e:
+        log.error('Failed to update \'News\' widget.', exc_info=True)
         return
     articles = data.get('articles')
     if not articles:
@@ -46,7 +46,7 @@ def updateNews():
                 return
         except Exception as e:
             log.error('Error retrieving News Widget', exc_info=True)
-            return 
+            return
         try:
             db.session.query(CustomPost).filter(CustomPost.widget_id==news_widget.id).delete()
             for a in new_articles:
@@ -64,7 +64,7 @@ def updateNews():
             except Exception as e:
                 db.session.rollback()
                 log.error('Error updating News Widget active status')
-
+    log.info('Exiting \'News\' widget update.')
 
 
 if __name__ =='__main__':

@@ -15,12 +15,16 @@ import sys
 princeton_news_url = 'https://www.princeton.edu/feed'
 
 def updateNews():
+    log.info('Starting \'Princeton News\' widget update...')
     MAX_POSTS = None
-    with app.app_context():
-        princeton_news_widget = Widget.query.filter_by(alias_name='princeton_news').first()
-        if not princeton_news_widget:
-            log.critical('Princeton News Widget not found when attempting to update')
-        MAX_POSTS = princeton_news_widget.post_limit
+    try:
+        with app.app_context():
+            princeton_news_widget = Widget.query.filter_by(alias_name='princeton_news').first()
+            if not princeton_news_widget:
+                log.critical('Princeton News Widget not found when attempting to update')
+            MAX_POSTS = princeton_news_widget.post_limit
+    except Exception as e:
+        return
 
     news_posts = None
     try:
@@ -35,7 +39,6 @@ def updateNews():
         for i, post in enumerate(feed.entries):
             if i == news_posts_count:
                 break
-
             title = post.title
             if not title:
                 continue
@@ -67,6 +70,7 @@ def updateNews():
                 db.session.commit()
             except Exception as e:
                 db.session.rollback()
+    log.info('Exiting \'Princeton News\' widget update.')
 
 if __name__=="__main__":
     updateNews()

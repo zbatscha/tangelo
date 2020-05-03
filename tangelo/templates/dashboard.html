@@ -10,7 +10,7 @@
     <link rel="icon"
       type="image/png"
       href="{{ url_for('static', filename='tangelo_icon.png') }}">
-
+    
     <title>Tangelo</title>
 
     <!-- Bootstrap CSS CDN -->
@@ -33,6 +33,8 @@
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
 </head>
 
 <body>
@@ -51,16 +53,13 @@
           <!-- Widget Search -->
           <div class="input-group" style="padding-left: 15px; padding-right: 15px;">
             <input class="form-control py-2 border-right-0 border" type="search" placeholder="search" value="" id="searchWidgets">
-            <!-- <span class="input-group-append">
-              <div class="input-group-text"><i class="fas fa-search"></i></div>
-            </span> -->
           </div>
 
           <!-- Unfollow Widget Drag/Drop Here -->
           <div id="widget-follow-list"></div>
-          <div id="trash" style="padding-top: 50px; margin-bottom: 15px; height: 150px;" class="text-center">
+          <div id="trash" class="text-center">
             <div>
-              <ion-icon name="trash" style="font-size: 400%"></ion-icon>
+              <ion-icon name="trash" style="font-size: 500%"></ion-icon>
             </div>
             <div>
               <span><b></b>Drop here to unfollow</b></span>
@@ -192,36 +191,33 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
   <!-- IntroJs -->
-   <script type="text/javascript" src="{{ url_for('static', filename='intro.js') }}"></script>
-   <script type="text/javascript" src="{{ url_for('static', filename='tangelo_intro.js') }}"></script>
+ <script type="text/javascript" src="{{ url_for('static', filename='intro.js') }}"></script>
+ <script type="text/javascript" src="{{ url_for('static', filename='tangelo_intro.js') }}"></script>
 
   <!-- Menu Toggle Script -->
   <script>
 
+      let csrf_token = "{{ csrf_token() }}";
+
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+          }
+      });
       $(document).ready(function () {
           searchFollowWidgets();
           $("#searchWidgets").on('input', searchFollowWidgets);
-          $("#left-sidebar-wrapper").mCustomScrollbar({
-              theme: "minimal",
-              advanced: {
-                updateOnContentResize: true
-              },
-          });
 
           $(document).on('click', "#create_widget_submit", function(event) {
 
-              let csrf_token = "{{ csrf_token }}";
               let url = "{{ url_for('createWidget') }}";
               event.preventDefault();
               $.ajax({
                   type: "POST",
                   url: url,
                   dataType: 'json',
-                  beforeSend: function(xhr, settings) {
-                      if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                          xhr.setRequestHeader("X-CSRFToken", csrf_token)
-                      }
-                  },
                   data: $('#create-widget-form').serialize(),
                   success: function (response) {
                       window.location.reload();
@@ -234,239 +230,233 @@
           });
       });
 
-    $("#left-menu-toggle").click(function(e) {
-        e.preventDefault();
-        searchFollowWidgets();
-        $("#wrapper").toggleClass("left-toggled");
-    });
-
-    $("#right-menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("right-toggled");
-    });
-
-    // populate follow sidebar with available widgets
-    function handlePostUpdateResponse(response)
-    {
-      location.reload();
-    }
-
-    function clearPost()
-    {
-      document.getElementById("postText").value = "";
-      document.getElementById("postText").placeholder = "Share it with the world";
-    }
-
-
-
-    // rotates right menu arrow
-    function rotateArrow(arrowId)
-    {
-      let arrow = document.getElementById(arrowId)
-      var st = window.getComputedStyle(arrow, null);
-      var rotation = st.getPropertyValue("transform")
-
-      if(rotation[17] == "-")
-      {
-        arrow.style.transform = "rotate(45deg)";
-        arrow.style.top = "-2px";
-        arrow.style.left = "2px";
-        arrow.style.position = "relative";
-      }
-      else
-      {
-        arrow.style.transform = "rotate(-45deg)";
-        arrow.style.left = "0px";
-        arrow.style.top = "0px";
-      }
-    }
-
-    // left: 37, up: 38, right: 39, down: 40,
-    // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
-    var keys = {37: 1, 38: 1, 39: 1, 40: 1};
-
-    function preventDefault(e) {
-    e.preventDefault();
-    }
-
-    function preventDefaultForScrollKeys(e) {
-    if (keys[e.keyCode]) {
-        preventDefault(e);
-        return false;
-    }
-    }
-
-    // modern Chrome requires { passive: false } when adding event
-    var supportsPassive = false;
-    try {
-    window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
-        get: function () { supportsPassive = true; }
-    }));
-    } catch(e) {}
-
-    var wheelOpt = supportsPassive ? { passive: false } : false;
-    var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
-
-    // Submit Post
-    let widget_id = '';
-    function updateButton(widget_target) {
-
-      // stops scrolling
-      window.addEventListener('DOMMouseScroll', preventDefault, false); // older FF
-      window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
-      window.addEventListener('touchmove', preventDefault, wheelOpt); // mobile
-      window.addEventListener('keydown', preventDefaultForScrollKeys, false);
-
-
-      document.querySelector(".postPopup").style.display = "flex";
-      document.querySelector(".postPopup").style.opacity = "100%";
-      document.querySelector(".postPopup").style.zIndex = 1004;
-      var redoWidth = $(window).width() - 80;
-      redoWidth = redoWidth + "px";
-      document.querySelector(".postPopup").style.width = redoWidth;
-      //document.querySelector(".postPopup").style.width = (document.getElementById("page-content-wrapper").style.width - 80) + 'px';
-
-      document.getElementsByClassName("navbar")[0].style.zIndex = 1002;
-
-      let w = $(window).width();
-      let h = $(window).height();
-      let $overlay = $('<div/>', {
-        'id': 'overlay',
-        css: {
-          position   : 'absolute',
-          height     : h + 'px',
-          width      : w + 'px',
-          left       : 0,
-          top        : 0,
-          background : '#000',
-          opacity    : 0.3,
-          zIndex     : 1003
-       }
-     }).appendTo('body');
-     // access the id, name, and content of the widget to use for front end stuff
-     widget_id = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-id");
-     widget_name = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-name");
-     if (widget_name.length > 25) {
-       widget_name = widget_name.substring(0, 25).concat("..");
-     }
-     widget_post = widget_target.parentNode.parentNode.parentNode.parentNode.getAttribute("wicontent");
-     let postLen = widget_post.length;
-     // replace texts with widget info
-     document.getElementById("popupTop").textContent = widget_name;
-     if (postLen < 1) {
-       document.getElementById("postText").placeholder = "Share it with the world";
-     }
-     else {
-       document.getElementById("postText").value = widget_post;
-     }
-
-  // Click overlay to remove
-  }
-  function closeUpdate() {
-
-    // enable scrolling
-    window.removeEventListener('DOMMouseScroll', preventDefault, false);
-    window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
-    window.removeEventListener('touchmove', preventDefault, wheelOpt);
-    window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
-
-    document.querySelector(".postPopup").style.display = "none";
-    document.querySelector(".postPopup").style.opacity = "0";
-    document.getElementById("overlay").remove();
-    document.getElementsByClassName("navbar")[0].style.zIndex = 1020;
-    document.getElementById("postText").value = ""
-  }
-
-  function deleteAdminWidget(widgetTarget) {
-    let widgetId = widgetTarget.getAttribute('data-widgetId');
-    let widgetName = widgetTarget.getAttribute('data-widgetName');
-    if (window.confirm("Deleting " + widgetName + " will remove the widget for all users. This action cannot be undone. Would you still like to permanently delete?")) {
-        $.ajax({
-            type : 'POST',
-            url : "{{url_for('deleteWidget')}}",
-            data : JSON.stringify({"widget": {"widgetId": widgetId}}),
-            dataType: "json",
-            contentType: "application/json",
-            success: function (response) {
-                window.location.reload();
-            }
-        });
-    } else {
-       return
-    }
-  }
-  // toggles sidebars when the screen gets too small
-  $(window).resize(function() {
-      if( $(this).width() < 900) {
-        closeSidebars();
-      }
-
-      var redoWidth = $(window).width() - 80;
-      redoWidth = redoWidth + "px";
-      document.querySelector(".postPopup").style.width = redoWidth;
-      document.querySelector(".postPopup").style.height = "100vh";
-
-      document.getElementById("overlay").style.height = $(window).height() + 'px';
-      document.getElementById("overlay").style.width = $(window).width() + 'px';
-
-  });
-
-  if($(window).width() < 900){
-    closeSidebars();
-  }
-
-  // closes windows if they are open
-  function closeSidebars() {
-    if (!document.getElementById("wrapper").classList.contains("left-toggled")) {
-      $("#wrapper").toggleClass("left-toggled");
-    }
-
-    if (!document.getElementById("wrapper").classList.contains("right-toggled")) {
-      $("#wrapper").toggleClass("right-toggled");
-    }
-  }
-
-
-  function submitPost() {
-    let request = null;
-
-    let post = $("#postText").val();
-    post = encodeURIComponent(post);
-    let url = '/postUpdate?post=' + post + '&id=' + widget_id;
-    if (request != null)
-        request.abort();
-      request = $.ajax({
-        type: "GET",
-        url: url,
-        success: handlePostUpdateResponse
+      $("#left-menu-toggle").click(function(e) {
+          e.preventDefault();
+          searchFollowWidgets();
+          $("#wrapper").toggleClass("left-toggled");
       });
-      closeUpdate();
-  }
+
+      $("#right-menu-toggle").click(function(e) {
+          e.preventDefault();
+          $("#wrapper").toggleClass("right-toggled");
+      });
 
       // populate follow sidebar with available widgets
-    function handleWidgetSearchResponse(response) {
-      $('#widget-follow-list').html(response);
-    }
+      function handlePostUpdateResponse(response)
+      {
+          location.reload();
+      }
 
-    // call getSearchWidgets route for all available widgets to follow
-    let request = null;
-    function searchFollowWidgets()
-    {
-      let text = $("#searchWidgets").val();
-      text = encodeURIComponent(text);
-      let url = '/getSearchWidgets?text=' + text
-      if (request != null)
-        request.abort();
-        request = $.ajax({
-        type: "GET",
-        url: url,
-        success: handleWidgetSearchResponse
+      function clearPost()
+      {
+          document.getElementById("postText").value = "";
+          document.getElementById("postText").placeholder = "Share it with the world";
+      }
+
+      // rotates right menu arrow
+      function rotateArrow(arrowId)
+      {
+          let arrow = document.getElementById(arrowId)
+          var st = window.getComputedStyle(arrow, null);
+          var rotation = st.getPropertyValue("transform")
+
+          if(rotation[17] == "-")
+          {
+              arrow.style.transform = "rotate(45deg)";
+              arrow.style.top = "-2px";
+              arrow.style.left = "2px";
+              arrow.style.position = "relative";
+          }
+          else
+          {
+              arrow.style.transform = "rotate(-45deg)";
+              arrow.style.left = "0px";
+              arrow.style.top = "0px";
+          }
+      }
+
+      // left: 37, up: 38, right: 39, down: 40,
+      // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
+      var keys = {37: 1, 38: 1, 39: 1, 40: 1};
+
+      function preventDefault(e) {
+          e.preventDefault();
+      }
+
+      function preventDefaultForScrollKeys(e) {
+          if (keys[e.keyCode]) {
+              preventDefault(e);
+              return false;
+          }
+      }
+
+      // modern Chrome requires { passive: false } when adding event
+      var supportsPassive = false;
+      try {
+          window.addEventListener("test", null, Object.defineProperty({}, 'passive', {
+              get: function () { supportsPassive = true; }
+          }));
+      } catch(e) {}
+
+      var wheelOpt = supportsPassive ? { passive: false } : false;
+      var wheelEvent = 'onwheel' in document.createElement('div') ? 'wheel' : 'mousewheel';
+
+      // Submit Post
+      let widget_id = '';
+      function updateButton(widget_target) {
+
+          // stops scrolling
+          window.addEventListener('DOMMouseScroll', preventDefault, false); // older FF
+          window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
+          window.addEventListener('touchmove', preventDefault, wheelOpt); // mobile
+          window.addEventListener('keydown', preventDefaultForScrollKeys, false);
+
+
+          document.querySelector(".postPopup").style.display = "flex";
+          document.querySelector(".postPopup").style.opacity = "100%";
+          document.querySelector(".postPopup").style.zIndex = 1004;
+          var redoWidth = $(window).width() - 80;
+          redoWidth = redoWidth + "px";
+          document.querySelector(".postPopup").style.width = redoWidth;
+          //document.querySelector(".postPopup").style.width = (document.getElementById("page-content-wrapper").style.width - 80) + 'px';
+
+          document.getElementsByClassName("navbar")[0].style.zIndex = 1002;
+
+          let w = $(window).width();
+          let h = $(window).height();
+          let $overlay = $('<div/>', {
+              'id': 'overlay',
+              css: {
+                position   : 'absolute',
+                height     : h + 'px',
+                width      : w + 'px',
+                left       : 0,
+                top        : 0,
+                background : '#000',
+                opacity    : 0.3,
+                zIndex     : 1003
+             }
+         }).appendTo('body');
+         // access the id, name, and content of the widget to use for front end stuff
+         widget_id = widget_target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-id");
+         widget_name = widget_target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute("widget-name");
+         if (widget_name.length > 25) {
+           widget_name = widget_name.substring(0, 25).concat("..");
+         }
+         widget_post = widget_target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute("wicontent");
+         let postLen = widget_post.length;
+         // replace texts with widget info
+         document.getElementById("popupTop").textContent = widget_name;
+         if (postLen < 1) {
+           document.getElementById("postText").placeholder = "Share it with the world";
+         }
+         else {
+           document.getElementById("postText").value = widget_post;
+         }
+      }
+
+      function closeUpdate() {
+
+          // enable scrolling
+          window.removeEventListener('DOMMouseScroll', preventDefault, false);
+          window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
+          window.removeEventListener('touchmove', preventDefault, wheelOpt);
+          window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
+
+          document.querySelector(".postPopup").style.display = "none";
+          document.querySelector(".postPopup").style.opacity = "0";
+          document.getElementById("overlay").remove();
+          document.getElementsByClassName("navbar")[0].style.zIndex = 1020;
+          document.getElementById("postText").value = ""
+      }
+
+      function deleteAdminWidget(widgetTarget) {
+          let widgetId = widgetTarget.getAttribute('data-widgetId');
+          let widgetName = widgetTarget.getAttribute('data-widgetName');
+          if (window.confirm("Deleting " + widgetName + " will remove the widget for all users. This action cannot be undone. Would you still like to permanently delete?")) {
+              $.ajax({
+                  type : 'POST',
+                  url : "{{url_for('deleteWidget')}}",
+                  data : JSON.stringify({"widget": {"widgetId": widgetId}}),
+                  dataType: "json",
+                  contentType: "application/json",
+                  success: function (response) {
+                      window.location.reload();
+                  }
+              });
+          } else {
+              return
+          }
+      }
+      // toggles sidebars when the screen gets too small
+      $(window).resize(function() {
+          if( $(this).width() < 900) {
+              closeSidebars();
+          }
+
+          var redoWidth = $(window).width() - 80;
+          redoWidth = redoWidth + "px";
+          document.querySelector(".postPopup").style.width = redoWidth;
+          document.querySelector(".postPopup").style.height = "100vh";
+
+          document.getElementById("overlay").style.height = $(window).height() + 'px';
+          document.getElementById("overlay").style.width = $(window).width() + 'px';
+
       });
-    }
-    // remove displayed errors/messages after 3 seconds
-    setTimeout(function(){
-      $('.displayed_errors').remove();
-    }, 3000);
+
+      if($(window).width() < 900){
+          closeSidebars();
+      }
+
+      // closes windows if they are open
+      function closeSidebars() {
+          if (!document.getElementById("wrapper").classList.contains("left-toggled")) {
+              $("#wrapper").toggleClass("left-toggled");
+          }
+
+          if (!document.getElementById("wrapper").classList.contains("right-toggled")) {
+              $("#wrapper").toggleClass("right-toggled");
+          }
+      }
+
+
+      function submitPost() {
+          let post = $("#postText").val();
+          let url = "{{ url_for('createPost') }}";
+          $.ajax({
+              type: "POST",
+              url: url,
+              dataType: 'json',
+              contentType: "application/json",
+              data: JSON.stringify({"postData": {"post": post, "widgetId": widget_id}}),
+              success: handlePostUpdateResponse,
+          });
+          closeUpdate();
+      }
+
+      // populate follow sidebar with available widgets
+      function handleWidgetSearchResponse(response) {
+          $('#widget-follow-list').html(response);
+      }
+
+      // call getSearchWidgets route for all available widgets to follow
+      let request = null;
+      function searchFollowWidgets() {
+          let text = $("#searchWidgets").val();
+          text = encodeURIComponent(text);
+          let url = '/getSearchWidgets?text=' + text
+          if (request != null)
+              request.abort();
+              request = $.ajax({
+              type: "GET",
+              url: url,
+              success: handleWidgetSearchResponse
+          });
+      }
+      // remove displayed errors/messages after 3 seconds
+      setTimeout(function(){
+          $('.displayed_errors').remove();
+      }, 4000);
   </script>
 
 </body>

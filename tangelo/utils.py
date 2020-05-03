@@ -13,10 +13,14 @@ from tangelo import db, app, log
 from tangelo.models import User, Widget, Post, Subscription, CustomPost
 import tangelo.user_utils as user_utils
 from sqlalchemy import desc, or_
-from datetime import datetime
 
 error_msg_global = "hmmm, something\'s not right."
-default_widget_location = {'x': 0, 'y': 0, 'width': 6, 'height': 2, 'minWidth': 4, 'minHeight': 1}
+default_widget_location = {'x': 0,
+                           'y': 0,
+                           'width': 6,
+                           'height': 4,
+                           'minWidth': 4,
+                           'minHeight': 1}
 
 #-----------------------------------------------------------------------
 
@@ -62,8 +66,10 @@ def getGridWidgets(current_user):
     -------
     list(dict)
         A list of widget-associated dictionaries, where keys are `widget_id`,
-        gridstack `grid_location`, displayed widget `content`, the most recent
-        post `widget_post`, and unique css/js `widget_style` if any.
+        gridstack `grid_location`, `widget_name`, the most recent
+        post/s `widget_post`, unique css/js `widget_style` if any, and a boolen
+        `widget_admin` indicating whether current_user is an admin of this
+        displayed widget.
 
     """
     subscriptions = Subscription.query.filter_by(user_id=current_user.id).all()
@@ -82,7 +88,8 @@ def getGridWidgets(current_user):
 
 def isAdmin(current_user, widget_id):
     """
-    Checks if current_user is an administrator if widget with primary_key = widget_id.
+    Checks if current_user is an administrator of widget with
+    primary_key = widget_id.
 
     Parameters
     ----------
@@ -95,22 +102,19 @@ def isAdmin(current_user, widget_id):
         True if current_user is an admin. False otherwise.
 
     """
+    widget_id = int(widget_id)
     widget = Widget.query.get(widget_id)
     return (current_user in widget.admins)
 
 #-----------------------------------------------------------------------
 def updateBirthday(current_user, birthday):
     """
-    Set the current user's birthday to month/day/year
+    Set the current user's birthday.
 
     Parameters
     ----------
     current_user : User
-    day : int
-    month : int
-    year : int
-
-    Fields are validated in frontend
+    birthday : Date
 
     Returns
     -------
@@ -118,35 +122,12 @@ def updateBirthday(current_user, birthday):
 
     """
     try:
-        current_user.birthday_date = birthday
+        current_user.birthday = birthday
         db.session.commit()
     except Exception as e:
         print(e)
+        log.error(f'Failed to set birthday for {current_user}')
         db.session.rollback()
-
-#-----------------------------------------------------------------------
-def getBirthday(current_user):
-    """
-    Get the birthday of the current user
-
-    Parameters
-    ----------
-    current_user : User
-
-    Returns
-    ----------
-    Tuple
-    (boolean, month, day, year)
-
-    Note: if boolean false, birthday has not yet been set
-
-    """
-    birthday = current_user.birthday_date
-    if birthday is not None:
-        return (True, birthday)
-    else:
-        return (False, None)
-
 
 #-----------------------------------------------------------------------
 
@@ -358,7 +339,7 @@ def getPost(widget_id):
 
     if widget.type == 'generic':
         post = Post.query.filter_by(widget_id=widget_id).order_by(desc(Post.create_dttm)).first()
-        generic_post = [{'content': post.content, 'author': post.author.netid, 'url': ''}]
+        generic_post = [{'content': post.content, 'author': '@' + post.author.netid, 'url': ''}]
         return generic_post
     else:
         # Need to update this method to return multiple posts
@@ -369,7 +350,11 @@ def getPost(widget_id):
         posts = posts[:post_count]
         displayed_custom_posts = [None] * post_count
         for i, post in enumerate(posts):
-            displayed_custom_posts[i] = {'content': post.content, 'author': post.custom_author, 'url': post.url}
+            if widget.handle_display == 'date_published':
+                handle = post.create_dttm.strftime("%m/%d/%y")
+            else:
+                handle = '@' + post.custom_author
+            displayed_custom_posts[i] = {'content': post.content, 'author': handle, 'url': post.url}
         return displayed_custom_posts
 
 

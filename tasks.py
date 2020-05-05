@@ -2,14 +2,11 @@ from tangelo import log
 from celery import Celery
 from celery.task import periodic_task
 from datetime import timedelta
-from os import environ
-import news_api
-import poem_api
-import princetonNews_api
-import academic_calendar
-import covid_api
+import os
+from dataService import news_api, poem_api, princetonNews_api, academic_calendar, covid_api
 
-REDIS_URL = environ.get('REDISTOGO_URL', 'redis://localhost:6379')
+
+REDIS_URL = os.environ.get('REDISTOGO_URL', 'redis://localhost:6379')
 
 celery = Celery('tasks', broker=REDIS_URL)
 

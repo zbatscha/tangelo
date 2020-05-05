@@ -1,15 +1,12 @@
-from tangelo import app, db
+from tangelo import app, db, log
 from tangelo.models import User, Widget, Subscription, Post, AdminAssociation, CustomPost
-import news_api
-import poem_api
-import princetonNews_api
-import covid_api
-import academic_calendar
+from dataService import news_api, poem_api, princetonNews_api, academic_calendar, covid_api
 import sys
 
 def setupTangelo():
     try:
         with app.app_context():
+            db.session.remove()
             db.drop_all()
             db.create_all()
 
@@ -49,13 +46,13 @@ def setupTangelo():
             widget_9.admins.append(user_1)
             widget_10.admins.append(user_1)
 
-
             db.session.add(user_1)
 
             db.session.commit()
+
     except Exception as e:
-        print('Failed to setup Tangelo db')
-        print(e)
+        db.session.rollback()
+        log.error('Failed to setup Tangelo DB!', exc_info=True)
 
 if __name__=="__main__":
     setupTangelo()

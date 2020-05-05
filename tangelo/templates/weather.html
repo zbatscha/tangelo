@@ -1,9 +1,45 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="../static/weather.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap" rel="stylesheet">
+
 <div id="centerPanelWeather">
     <h1 id="temperature">One moment, we're getting some weathery goodness</h1>
     <h1 id="sky"></h1>
     <h1 id="demo"></h1>
 </div>
 
-<script type="text/javascript" src="../static/weather.js"></script>
+<script>
+    let x = document.getElementById("temperature");
+    let long
+    let lat
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+
+    function showPosition(position) {
+        lat = position.coords.latitude
+        long = position.coords.longitude
+    }
+
+    function serverrequest() {
+        if (long != null) {
+            fetch("https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + long +"&appid=ff9101a1b97b3e7617260a4da9012daa")
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                var temp = ((data.main.temp - 273.15) * 9/5 + 32).toFixed(1)
+                temp += " °F"
+                document.getElementById('temperature').innerHTML = temp;
+                document.getElementById('sky').innerHTML = data.weather[0].description;
+            });
+        } else {
+            setTimeout(serverrequest, 300)
+        }
+    };
+
+    serverrequest();
+</script>

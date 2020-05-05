@@ -26,7 +26,7 @@ def updateCOVIDReport():
     today_deaths = country_data[-1]['deaths']
     yesterday_deaths = country_data[-2]['deaths']
 
-    post = f'Since yesterday, the US has witnessed an increase in total confirmed cases by {today_confirmed-yesterday_confirmed:n}, and an in increase in total deaths by {today_deaths-yesterday_deaths:n}.'
+    post = f'Since yesterday, the US has witnessed an increase in total confirmed cases by {today_confirmed-yesterday_confirmed:n}, and an increase in total deaths by {today_deaths-yesterday_deaths:n}.'
 
     with app.app_context():
         covid_widget = None

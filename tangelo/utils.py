@@ -107,6 +107,7 @@ def isAdmin(current_user, widget_id):
     return (current_user in widget.admins)
 
 #-----------------------------------------------------------------------
+
 def updateBirthday(current_user, birthday):
     """
     Set the current user's birthday.
@@ -125,7 +126,6 @@ def updateBirthday(current_user, birthday):
         current_user.birthday = birthday
         db.session.commit()
     except Exception as e:
-        print(e)
         log.error(f'Failed to set birthday for {current_user}')
         db.session.rollback()
 
@@ -357,9 +357,6 @@ def getPost(widget_id):
             displayed_custom_posts[i] = {'content': post.content, 'author': handle, 'url': post.url}
         return displayed_custom_posts
 
-
-
-
 #-----------------------------------------------------------------------
 
 def addPost(current_user, widget_id, post):
@@ -407,7 +404,6 @@ def addPost(current_user, widget_id, post):
 
 #-----------------------------------------------------------------------
 
-
 def deleteWidget(current_user, widget_id):
     """
     Deletes widget of id widget_id adminstered by current_user. This action
@@ -442,115 +438,4 @@ def deleteWidget(current_user, widget_id):
         db.session.rollback()
         raise Exception(error_msg_global)
 
-
-
-
-"""
-Methods not yet in use....
-"""
 #-----------------------------------------------------------------------
-
-
-def addUserClosedWidget(form):
-    """
-    Allow admins to add a user to a closed (private or secret) widget.
-
-    Parameters
-    ----------
-    form : CreateAddTeam
-
-    Returns
-    -------
-    None
-
-    """
-    try:
-        user = User.query.filter_by(netid=form.user.data).first()
-        # check if valid widget
-        widget = Widget.query.filter_by(id=form.widget_target.data).first()
-        if not widget:
-            raise Exception('Selected widget does not exist.')
-        sub = Subscription(user=user, widget=widget)
-        db.session.add(sub)
-        db.session.commit()
-
-    except Exception as e:
-        db.session.rollback()
-        raise Exception(e)
-
-#-----------------------------------------------------------------------
-"""
-Critical: add validation check on CreateAddTeam form.
-Admin should not be able to remove themself if they are the only admin.
-"""
-def removeUserClosedWidget(current_user, form):
-    """
-    Allow admins to remove a user from a closed (private or secret) widget.
-
-    Parameters
-    ----------
-    form : CreateAddTeam
-
-    Returns
-    -------
-    None
-
-    """
-    try:
-        subscription = Subscription.query.filter_by(user_id=form.user.data).filter_by(widget_id=form.widget_target.data).first()
-        if not subscription:
-            raise Exception('Selected user not subscribed to this widget.')
-        db.session.delete(subscription)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        raise Exception(e)
-
-#-----------------------------------------------------------------------
-
-
-def getWidgetChoicesForNewPost(current_user):
-    """
-    Return list of widgets that current user can post to.
-
-    Parameters
-    ----------
-    current_user : User
-
-    Returns
-    -------
-    list(tuple(int, str))
-        A list of tuples representing valid widgets, where first element of
-        tuple is the widget_id, and the second is the name of the widget.
-
-    """
-    all_widgets = current_user.widgets
-    choices = []
-    for widget in all_widgets:
-        if widget.post_type == 'public' or current_user in widget.admins:
-            choices.append((widget.id, widget.name))
-    return choices
-
-#-----------------------------------------------------------------------
-
-
-def getValidWidgetsAdmin(current_user):
-    """
-    Return list of widgets that current user is an admin of.
-
-    Parameters
-    ----------
-    current_user : User
-
-    Returns
-    -------
-    list(tuple(int, str))
-        A list of tuples representing administered widgets, where first element of
-        tuple is the widget_id, and the second is the name of the widget.
-
-    """
-    all_widgets = current_user.widgets_admin
-    choices = []
-    for widget in all_widgets:
-        choices.append((widget.id, widget.name))
-    return choices

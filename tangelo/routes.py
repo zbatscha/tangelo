@@ -6,16 +6,13 @@
 
 from tangelo import app, db, log
 from tangelo.CASClient import CASClient
-from tangelo.tangeloService import getGreetingDayTime
-from tangelo.models import User, Widget, Subscription
 from flask import request, make_response, abort, redirect, url_for, flash
-from flask import render_template, session
+from flask import render_template
 from flask_login import login_user, logout_user, login_required, current_user
 import tangelo.forms as createForm
 from tangelo import utils
 import json
 from flask import jsonify
-from tangelo.weather_api import getWeather
 import datetime
 
 error_msg_global = "hmmm, something\'s not right."
@@ -31,8 +28,11 @@ def add_header(response):
     response.cache_control.public = False
     return response
 
+#-----------------------------------------------------------------------
+
 """
-Landing page. If user logged in, redirect them to their ashboard.
+Login landing page. If user previously authenticated, redirect them to
+their dashboard.
 """
 @app.route('/', methods=['GET'])
 @app.route('/welcome', methods=['GET'])
@@ -45,12 +45,15 @@ def welcome():
 #-----------------------------------------------------------------------
 
 """
-Log in user with Princeton CAS.
+Log in user with Princeton CAS, and set flask_login current_user.
+If user does not exist, create a new user account associated with CAS provided
+netid. Redirect to next page (or dashboard).
 """
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
+    # retrieve netid from CAS
     netid = CASClient().authenticate()
+    # retrieve user associated with netid
     user = utils.getUser(netid)
     if not user:
         return redirect(url_for('welcome'))
@@ -63,10 +66,6 @@ def login():
     return redirect(next_page) if next_page else redirect(url_for('dashboard'))
 
 #-----------------------------------------------------------------------
-
-@app.route('/renderCustomWidget', methods=['GET', 'POST'])
-def renderCustomWidget():
-    return make_response(render_template(request.args.get('template')))
 
 """
 Log out User current_user.
@@ -84,11 +83,12 @@ def logout():
 #-----------------------------------------------------------------------
 
 """
-Tangelo Dashboard
+Tangelo Dashboard. Render with a user's subscribed widgets.
 """
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
+    # retrieve user subscriptions and associated display info
     displayed_widgets = utils.getGridWidgets(current_user)
     create_widget_form = createForm.CreateWidget()
     return make_response(render_template('dashboard.html',
@@ -98,7 +98,16 @@ def dashboard():
 #-----------------------------------------------------------------------
 
 """
-Populate widgets that conform to user's search in the left follow sidebar.
+Render the specified template. Route unique to Tangelo admin custom widgets.
+"""
+@app.route('/renderCustomWidget', methods=['GET', 'POST'])
+def renderCustomWidget():
+    return make_response(render_template(request.args.get('template')))
+
+#-----------------------------------------------------------------------
+
+"""
+Populate left follow sidebar with widgets that conform to user's search.
 """
 @app.route('/getSearchWidgets', methods=['GET'])
 @login_required
@@ -111,7 +120,8 @@ def getSearchFollowWidgets():
 #-----------------------------------------------------------------------
 
 """
-Create a new widget with current_user as admin, if form is valid.
+If CreateWidget form is valid on submit, create a new widget with current_user
+as admin, and reload page. If form not valid, renders form with errors.
 """
 @app.route('/createwidget', methods=['POST'])
 @login_required
@@ -123,13 +133,15 @@ def createWidget():
             flash(f'Your widget has been created!', 'success')
             return jsonify(success=True)
         except Exception as e:
-            flash(e, 'danger')
+            flash(str(e), 'danger')
             return jsonify(success=True)
-    return make_response(render_template('createWidget.html', widget_form=create_widget_form)), 409
+    return make_response(render_template('createWidget.html',
+        widget_form=create_widget_form)), 409
 
 #-----------------------------------------------------------------------
+
 """
-Add a post to a widget
+Update the displayed post. Only accessible by widget admins.
 """
 @app.route('/postUpdate', methods=['GET', 'POST'])
 @login_required
@@ -138,13 +150,17 @@ def createPost():
         try:
             postData = request.json.get('postData')
             utils.addPost(current_user, postData.get('widgetId'), postData.get('post'))
-            flash('Your post has been created!', 'success') # not flashing on redirect
+            flash('Your post has been created!', 'success')
         except Exception as e:
-            flash(str(e), 'danger') # not flashing on redirect
+            flash(str(e), 'danger')
         return jsonify(success=True)
     abort(404)
 
+#-----------------------------------------------------------------------
 
+"""
+Update a user's birthday.
+"""
 @app.route('/updateBirthday', methods=['GET', 'POST'])
 @login_required
 def updateBirthday():
@@ -154,12 +170,14 @@ def updateBirthday():
             birthday = datetime.datetime.strptime(birthday_str, '%Y/%m/%d')
             utils.updateBirthday(current_user, birthday)
         except Exception as e:
-            print(e)
+            log.error(f'Error updating {current_user} birthday', exc_info=True)
     return redirect(url_for('dashboard'))
 
 #-----------------------------------------------------------------------
+
 """
-Remove subscription from user after widget is dragged to trash/unfollow on left sidebar.
+Unsubscribe user from specified widget after widget is dragged to and released
+over trash/unfollow on left sidebar.
 """
 @app.route('/update/removed', methods=['GET','POST'])
 @login_required
@@ -178,25 +196,7 @@ def removeSubscription():
 #-----------------------------------------------------------------------
 
 """
-currently not in use.
-"""
-@app.route('/update/added', methods=['GET','POST'])
-@login_required
-def addedSubscription():
-    response = jsonify(success=True)
-    try:
-        if request.method == "POST":
-            widgets = request.json.get('widgets')
-    except Exception as e:
-        print(e)
-        flash(f'Error occured!', 'danger')
-        response = jsonify(success=False)
-    return response
-
-#-----------------------------------------------------------------------
-
-"""
-Change grid_location/size of widget.
+Update grid_location of widget on drag and resize.
 """
 @app.route('/update/change', methods=['GET','POST'])
 @login_required
@@ -232,6 +232,10 @@ def addSubscription():
 
 #-----------------------------------------------------------------------
 
+"""
+Delete widget administered by current_user. Removes subscription for all
+followers.
+"""
 @app.route('/deleteWidget', methods=['GET', 'POST'])
 @login_required
 def deleteWidget():
@@ -247,18 +251,3 @@ def deleteWidget():
         return jsonify(success=False), 500
     flash(f'Successfully deleted {widget_name}', 'success')
     return jsonify(success=True), 200
-
-@app.route('/updateWeather', methods=['GET', 'POST'])
-@login_required
-def updateWeather():
-    weather_info = None
-    try:
-        coordinates = request.json.get('coordinates')
-        if not coordinates:
-            raise Exception('Error')
-        weather_info = getWeather(coordinates.get('lat'), coordinates.get('long'))
-    except Exception as e:
-        pass
-    if weather_info:
-        return json.dumps(weather_info), 200
-    return jsonify(success=False), 500

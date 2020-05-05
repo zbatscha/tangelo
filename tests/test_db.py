@@ -4,12 +4,15 @@
 # test_db.py
 #-----------------------------------------------------------------------
 
+"""
+Provides methods for unittesting the SQLALchemy+postgres db table relationships
+and deletion cascades.
+"""
+
 import unittest
 from tangelo.models import User, Widget, Subscription, Post, AdminAssociation
 import tangelo.user_utils as user_utils
 import tangelo.utils as utils
-from news_collector import news_object
-from tangelo.WHO_RSS import covid_data
 from tangelo import app, db
 import sys
 import os

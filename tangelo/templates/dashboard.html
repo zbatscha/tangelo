@@ -10,7 +10,7 @@
     <link rel="icon"
       type="image/png"
       href="{{ url_for('static', filename='tangelo_icon.png') }}">
-    
+
     <title>Tangelo</title>
 
     <!-- Bootstrap CSS CDN -->
@@ -123,7 +123,7 @@
 
       <!-- Page Content -->
       <div id="page-content-wrapper">
-        
+
         <div class="container-fluid">
           <div class="row">
             <div class="col-lg-12">
@@ -133,13 +133,9 @@
                 <div class="container-fluid">
 
                     <!-- Follow Button Left Sidebar Collapse -->
-                    <div id ="step-4">
-                      <div id="follow-button">
-                        <button class="btn btn-info" id="left-menu-toggle">
-                          <i class="fas fa-chevron-left"></i><span class="d-none d-lg-block">&nbsp;&nbsp;Follow</span>
-                        </button>
-                      </div>
-                    </div>
+                    <button class="btn btn-info" id="left-menu-toggle">
+                        <i class="fas fa-chevron-left"></i><span class="d-none d-lg-block">&nbsp;&nbsp;Follow</span>
+                    </button>
 
                     <!-- Tangelo Logo -->
                     <ul class="nav navbar-nav flex-fill justify-content-center">
@@ -324,7 +320,7 @@
           var body = document.body,
               html = document.documentElement;
 
-          var height = Math.max( body.scrollHeight, body.offsetHeight, 
+          var height = Math.max( body.scrollHeight, body.offsetHeight,
                                 html.clientHeight, html.scrollHeight, html.offsetHeight );
 
           let $overlay = $('<div/>', {
@@ -393,13 +389,14 @@
       }
       // toggles sidebars when the screen gets too small
       $(window).resize(function() {
+
           if (document.getElementById("overlay")) {
             let overlay = document.getElementById("overlay");
 
             var body = document.body,
                 html = document.documentElement;
 
-            var height = Math.max( body.scrollHeight, body.offsetHeight, 
+            var height = Math.max( body.scrollHeight, body.offsetHeight,
                                   html.clientHeight, html.scrollHeight, html.offsetHeight );
 
             console.log(height + "px");

@@ -18,7 +18,8 @@ import datetime
 error_msg_global = "hmmm, something\'s not right."
 # beta testing
 authorized_users = ['zbatscha', 'rmthorpe', 'almejia', 'fawaza', 'josephoe', 'rdondero',
-                    'sazam', 'aarbab', 'cl43', 'tinaas', 'eacruz']
+                    'sazam', 'aarbab', 'cl43', 'tinaas', 'eacruz', 'tmarcu',
+                    'theodor.marcu', 'ayushis', 'johnns']
 
 #-----------------------------------------------------------------------
 

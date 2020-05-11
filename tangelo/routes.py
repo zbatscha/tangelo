@@ -16,10 +16,6 @@ from flask import jsonify
 import datetime
 
 error_msg_global = "hmmm, something\'s not right."
-# beta testing
-authorized_users = ['zbatscha', 'rmthorpe', 'almejia', 'fawaza', 'josephoe', 'rdondero',
-                    'sazam', 'aarbab', 'cl43', 'tinaas', 'eacruz', 'tmarcu',
-                    'theodor.marcu', 'ayushis', 'johnns']
 
 #-----------------------------------------------------------------------
 
@@ -65,8 +61,6 @@ def login():
     user = utils.getUser(netid)
     if not user:
         return redirect(url_for('welcome'))
-    if netid not in authorized_users:
-        return make_response(render_template("tangelohome.html"))
     # login and redirect to requested page
     user.authenticated = True
     login_user(user)

@@ -114,17 +114,17 @@ In another terminal window, start the worker:
 
 ## Additional Documents
 
-[Project Overview](https://github.com/zbatscha/tangelo/docs/ProjectOverview.pdf)
+[Project Overview](https://github.com/zbatscha/tangelo/blob/master/docs/ProjectOverview.pdf)
 
-[User's Guide](https://github.com/zbatscha/tangelo/docs/UserGuide.pdf)
+[User's Guide](https://github.com/zbatscha/tangelo/blob/master/docs/UserGuide.pdf)
 
-[Programmer's Guide (High-level)](https://github.com/zbatscha/tangelo/docs/ProgrammersGuide.pdf)
+[Programmer's Guide (High-level)](https://github.com/zbatscha/tangelo/blob/master/docs/ProgrammersGuide.pdf)
 
-[Product Evaluation](https://github.com/zbatscha/tangelo/docs/ProductEvaluation.pdf)
+[Product Evaluation](https://github.com/zbatscha/tangelo/blob/master/docs/ProductEvaluation.pdf)
 
-[Project Evaluation](https://github.com/zbatscha/tangelo/docs/ProjectEvaluation.pdf)
+[Project Evaluation](https://github.com/zbatscha/tangelo/blob/master/docs/ProjectEvaluation.pdf)
 
-[Tangelo Slidedeck](https://github.com/zbatscha/tangelo/docs/TangeloSlidedeck.pdf)
+[Tangelo Slidedeck](https://github.com/zbatscha/tangelo/blob/master/docs/TangeloSlidedeck.pdf)
 
 
 

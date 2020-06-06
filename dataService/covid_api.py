@@ -5,7 +5,6 @@ import locale
 locale.setlocale(locale.LC_ALL, '')
 
 country = 'US'
-error_msg_global = "hmmm, something\'s not right."
 
 def updateCOVIDReport():
     log.info('Starting \'COVID\' widget update...')

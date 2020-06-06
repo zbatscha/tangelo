@@ -5,7 +5,6 @@ from tangelo import app, db, log
 from tangelo.models import CustomPost, Widget, User
 from operator import itemgetter
 
-error_message = "hmmm, something\'s not right."
 MAX_EVENTS = 10
 
 def updateCalendar():
@@ -38,11 +37,9 @@ def updateCalendar():
     while sorted_info[j]['start_month'] < current_month:
         j += 1
 
-
     m = j
     while sorted_info[m]['start_day'] < current_day:
         m += 1
-
 
     k = m
     next_ten_events = []
@@ -91,50 +88,6 @@ def updateCalendar():
                 log.error('Error updating Pton Calendar Widget active status')
     log.info('Exiting \'Academic Calendar\' widget update.')
 
-def weekday_converter(weekday):
-    if weekday == 0:
-        return "Monday"
-    elif weekday == 1:
-        return "Tuesday"
-    elif weekday == 2:
-        return "Wednesday"
-    elif weekday == 3:
-        return "Thursday"
-    elif weekday == 4:
-        return "Friday"
-    elif weekday == 5:
-        return "Saturday"
-    else:
-        return "Sunday"
-
-def month_converter(month):
-    if month == 1:
-        return "January"
-    elif month == 2:
-        return "February"
-    elif month == 3:
-        return "March"
-    elif month == 4:
-        return "April"
-    elif month == 5:
-        return "May"
-    elif month == 6:
-        return "June"
-    elif month == 7:
-        return "July"
-    elif month == 8:
-        return "August"
-    elif month == 9:
-        return "September"
-    elif month == 10:
-        return "October"
-    elif month == 11:
-        return "November"
-    else:
-        return "December"
-
-
-
 def date_extraction(event_date):
     year = str(event_date[0:4])
     month = str(event_date[5:7])
@@ -144,11 +97,8 @@ def date_extraction(event_date):
         month = month[1]
     if day[0] == '0':
         day = day[1]
-
-    date = datetime.datetime(int(year), int(month), int(day))
-    weekday = date.weekday()
-    weekday = weekday_converter(weekday)
-    return [int(month), int(day), int(year), str(weekday)]
+    
+    return [int(month), int(day), int(year)]
 
 if __name__ == "__main__":
     updateCalendar()

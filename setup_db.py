@@ -56,9 +56,9 @@ def setupTangelo():
 
 if __name__=="__main__":
     setupTangelo()
-    if len(sys.argv) > 1:
-        news_api.updateNews()
-        poem_api.updatePoem()
-        princetonNews_api.updateNews()
-        academic_calendar.updateCalendar()
-        covid_api.updateCOVIDReport()
+    
+    news_api.updateNews()
+    poem_api.updatePoem()
+    princetonNews_api.updateNews()
+    academic_calendar.updateCalendar()
+    covid_api.updateCOVIDReport()

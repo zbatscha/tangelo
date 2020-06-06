@@ -3,14 +3,15 @@ import requests
 from tangelo.models import CustomPost, Widget, User
 from tangelo import app, db, log
 import re
+import os
 
-error_msg_global = "hmmm, something\'s not right."
 MAX_POSTS = 10
+
 def updateNews():
     log.info('Starting \'News\' widget update...')
-    news_url = ('http://newsapi.org/v2/top-headlines?country=us&apiKey=02f90cf35f2b4176a559db2847011096')
-
     try:
+        news_key = os.environ['NEWS_KEY']
+        news_url = f'http://newsapi.org/v2/top-headlines?country=us&apiKey={news_key}'
         response = requests.get(news_url)
         response.raise_for_status()
         data = response.json()
